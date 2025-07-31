@@ -351,8 +351,8 @@
 .footer {
   background-color: var(--ss-carbon);
   color: var(--ss-white);
-  padding: 3rem 0 1rem 0;
-  margin-top: 4rem;
+  padding: 2rem 0 1rem 0;
+  margin-top: 2rem;
 }
 
 .footer-content {
@@ -360,7 +360,7 @@
   margin: 0 auto;
   padding: 0 2rem;
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
   gap: 2rem;
 }
 
@@ -422,37 +422,7 @@
   text-decoration: underline;
 }
 
-.footer-bottom {
-  border-top: 1px solid var(--ss-steel);
-  margin-top: 2rem;
-  padding-top: 1.5rem;
-}
 
-.footer-bottom-content {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 0 2rem;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 1rem;
-}
-
-.footer-copyright {
-  color: var(--ss-gray-light);
-  font-size: 0.8125rem;
-  margin: 0;
-}
-
-.footer-attribution {
-  color: var(--ss-gray-medium);
-  font-size: 0.75rem;
-  margin: 0;
-  font-family: var(--ss-font-mono);
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-}
 
 /* RESPONSIVE DESIGN TOKENS */
 @media (max-width: 768px) {
@@ -470,19 +440,13 @@
   }
   
   .footer {
-    padding: 2rem 0 1rem 0;
+    padding: 1.5rem 0 1rem 0;
   }
   
   .footer-content {
     padding: 0 1rem;
     grid-template-columns: 1fr;
-    gap: 2rem;
-  }
-  
-  .footer-bottom-content {
-    padding: 0 1rem;
-    flex-direction: column;
-    text-align: center;
+    gap: 1.5rem;
   }
   
   .footer-logo {

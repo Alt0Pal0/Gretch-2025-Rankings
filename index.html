@@ -28,59 +28,32 @@
         .rankings-container {
             max-width: 1400px;
             margin: 0 auto;
-            padding: 2rem;
-        }
-        
-        .page-header {
-            text-align: center;
-            margin-bottom: 3rem;
-        }
-        
-        .page-title {
-            font-size: 3rem;
-            font-weight: 700;
-            font-family: var(--ss-font-display);
-            color: var(--ss-text-primary);
-            margin-bottom: 0.5rem;
-            letter-spacing: -0.025em;
-        }
-        
-        .page-subtitle {
-            color: var(--ss-text-secondary);
-            font-size: 1.125rem;
-            margin: 0;
+            padding: 1rem;
         }
         
         .positions-grid {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
-            gap: 1.5rem;
-            margin-bottom: 2rem;
+            gap: 0.75rem;
         }
         
         .position-column {
             background: var(--ss-white);
-            border-radius: 0.75rem;
+            border-radius: 0.5rem;
             overflow: hidden;
             box-shadow: var(--ss-shadow-sm);
             border: 1px solid var(--ss-border);
-            transition: all 0.3s ease;
-        }
-        
-        .position-column:hover {
-            transform: translateY(-2px);
-            box-shadow: var(--ss-shadow-md);
         }
         
         .position-header {
             background: linear-gradient(135deg, var(--ss-orange-primary), var(--ss-orange-dark));
             color: var(--ss-white);
-            padding: 1rem 1.25rem;
+            padding: 0.75rem 1rem;
             text-align: center;
         }
         
         .position-title {
-            font-size: 1.125rem;
+            font-size: 1rem;
             font-weight: 700;
             font-family: var(--ss-font-display);
             margin: 0;
@@ -89,15 +62,13 @@
         }
         
         .players-list {
-            padding: 1rem 0;
-            max-height: 70vh;
-            overflow-y: auto;
+            padding: 0;
         }
         
         .player-item {
             display: flex;
             align-items: center;
-            padding: 0.375rem 1.25rem;
+            padding: 0.25rem 0.75rem;
             border-bottom: 1px solid var(--ss-border);
             transition: background-color 0.2s ease;
         }
@@ -111,60 +82,20 @@
         }
         
         .player-rank {
-            font-size: 0.75rem;
+            font-size: 0.6875rem;
             font-weight: 600;
-            color: var(--ss-orange-primary);
-            background: var(--ss-orange-pale);
-            padding: 0.25rem 0.5rem;
-            border-radius: 0.375rem;
-            min-width: 2rem;
-            text-align: center;
-            margin-right: 0.75rem;
+            color: var(--ss-text-secondary);
+            min-width: 1.5rem;
+            text-align: right;
+            margin-right: 0.5rem;
             font-family: var(--ss-font-mono);
         }
         
         .player-name {
-            font-size: 0.8125rem;
-            font-weight: 500;
-            color: var(--ss-text-primary);
-            line-height: 1.3;
-        }
-        
-        .top-3 .player-rank {
-            background: var(--ss-orange-primary);
-            color: var(--ss-white);
-            font-weight: 700;
-        }
-        
-        .stats-bar {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 1rem;
-            margin-top: 2rem;
-            padding: 1.5rem;
-            background: var(--ss-white);
-            border-radius: 0.75rem;
-            box-shadow: var(--ss-shadow-sm);
-        }
-        
-        .stat-item {
-            text-align: center;
-        }
-        
-        .stat-number {
-            font-size: 1.75rem;
-            font-weight: 700;
-            color: var(--ss-orange-primary);
-            font-family: var(--ss-font-display);
-            display: block;
-        }
-        
-        .stat-label {
             font-size: 0.75rem;
-            color: var(--ss-text-muted);
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-            font-weight: 600;
+            font-weight: 400;
+            color: var(--ss-text-primary);
+            line-height: 1.2;
         }
         
         /* Responsive Design */
@@ -172,57 +103,36 @@
             .positions-grid {
                 grid-template-columns: repeat(2, 1fr);
             }
-            
-            .page-title {
-                font-size: 2.5rem;
-            }
         }
         
         @media (max-width: 768px) {
             .positions-grid {
                 grid-template-columns: 1fr;
-                gap: 1rem;
+                gap: 0.5rem;
             }
             
             .rankings-container {
-                padding: 1rem;
-            }
-            
-            .page-title {
-                font-size: 2rem;
-            }
-            
-            .stats-bar {
-                grid-template-columns: repeat(2, 1fr);
-                gap: 1rem;
-            }
-            
-            .players-list {
-                max-height: 50vh;
+                padding: 0.5rem;
             }
         }
         
         @media (max-width: 480px) {
-            .page-title {
-                font-size: 1.75rem;
-            }
-            
             .position-title {
-                font-size: 1rem;
+                font-size: 0.875rem;
             }
             
             .player-name {
-                font-size: 0.75rem;
+                font-size: 0.6875rem;
             }
             
             .player-rank {
-                font-size: 0.6875rem;
-                min-width: 1.75rem;
-                margin-right: 0.5rem;
+                font-size: 0.625rem;
+                min-width: 1.25rem;
+                margin-right: 0.375rem;
             }
             
-            .stats-bar {
-                grid-template-columns: 1fr;
+            .player-item {
+                padding: 0.1875rem 0.5rem;
             }
         }
     </style>
@@ -231,11 +141,6 @@
     <div id="header-placeholder"></div>
     
     <main class="rankings-container">
-        <div class="page-header">
-            <h1 class="page-title">2025 NFL Player Rankings</h1>
-            <p class="page-subtitle">Comprehensive position-by-position player analysis by Stealing Signals</p>
-        </div>
-        
         <div class="positions-grid">
             <!-- Quarterbacks Column -->
             <div class="position-column">
@@ -277,26 +182,6 @@
                 </div>
             </div>
         </div>
-        
-        <!-- Stats Bar -->
-        <div class="stats-bar">
-            <div class="stat-item">
-                <span class="stat-number">37</span>
-                <div class="stat-label">Quarterbacks</div>
-            </div>
-            <div class="stat-item">
-                <span class="stat-number">93</span>
-                <div class="stat-label">Running Backs</div>
-            </div>
-            <div class="stat-item">
-                <span class="stat-number">94</span>
-                <div class="stat-label">Wide Receivers</div>
-            </div>
-            <div class="stat-item">
-                <span class="stat-number">46</span>
-                <div class="stat-label">Tight Ends</div>
-            </div>
-        </div>
     </main>
     
     <div id="footer-placeholder"></div>
@@ -320,9 +205,8 @@
 
         // Function to create player HTML
         function createPlayerHTML(playerName, rank) {
-            const isTopThree = rank <= 3;
             return `
-                <div class="player-item ${isTopThree ? 'top-3' : ''}">
+                <div class="player-item">
                     <div class="player-rank">${rank}</div>
                     <div class="player-name">${playerName}</div>
                 </div>
