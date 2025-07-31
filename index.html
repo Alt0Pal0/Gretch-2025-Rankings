@@ -6,50 +6,75 @@
     <title>Gretch 2025 Rankings</title>
     
     <!-- Favicon -->
-    <link rel="icon" type="image/png" sizes="32x32" href="favicon.png">
-    <link rel="icon" type="image/png" sizes="16x16" href="favicon.png">
-    <link rel="shortcut icon" href="favicon.png">
-    <link rel="apple-touch-icon" sizes="180x180" href="favicon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="assets/images/favicon.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="assets/images/favicon.png">
+    <link rel="shortcut icon" href="assets/images/favicon.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="assets/images/favicon.png">
+    
+    <!-- Design System -->
+    <link rel="stylesheet" href="css/design-system.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
+        /* Page-specific styles using design system */
         body {
-            font-family: Arial, sans-serif;
+            font-family: var(--ss-font-primary);
             margin: 0;
-            background-color: #f0f0f0;
+            background-color: var(--ss-light-gray);
             min-height: 100vh;
+            color: var(--ss-text-primary);
         }
         
         .header {
-            background-color: white;
+            background-color: var(--ss-white);
             padding: 1rem 2rem;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            box-shadow: var(--ss-shadow-md);
             position: sticky;
             top: 0;
             z-index: 100;
+            border-bottom: 1px solid var(--ss-border);
         }
         
         .header-content {
             display: flex;
             align-items: center;
-            gap: 1rem;
+            gap: 1.5rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .logo-link {
+            display: inline-block;
+            transition: all 0.3s ease;
+        }
+        
+        .logo-link:hover {
+            opacity: 0.8;
+            transform: scale(1.02);
         }
         
         .logo {
             height: 40px;
             width: auto;
             max-width: 200px;
+            display: block;
         }
         
         .substack-link {
-            color: #ff6b35;
+            color: var(--ss-orange-primary);
             text-decoration: none;
             font-weight: 600;
             font-size: 1.1rem;
-            transition: color 0.3s ease;
+            font-family: var(--ss-font-display);
+            transition: all 0.3s ease;
+            letter-spacing: 0.025em;
         }
         
         .substack-link:hover {
-            color: #e55a2e;
+            color: var(--ss-orange-dark);
             text-decoration: underline;
+            transform: translateY(-1px);
         }
         
         .main-content {
@@ -60,24 +85,65 @@
             padding: 2rem;
         }
         
-        .container {
+        .hero-container {
             text-align: center;
-            padding: 2rem;
-            background-color: white;
-            border-radius: 10px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            max-width: 600px;
+            padding: 3rem 2rem;
+            background: linear-gradient(135deg, var(--ss-white) 0%, var(--ss-off-white) 100%);
+            border-radius: 1rem;
+            box-shadow: var(--ss-shadow-lg);
+            max-width: 700px;
             width: 100%;
+            border: 1px solid var(--ss-border);
+            position: relative;
+            overflow: hidden;
         }
         
-        h1 {
-            color: #333;
+        .hero-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--ss-orange-primary), var(--ss-cyan), var(--ss-teal));
+        }
+        
+        .hero-title {
+            color: var(--ss-text-primary);
             margin-bottom: 1rem;
+            font-size: 2.5rem;
+            font-weight: 700;
+            font-family: var(--ss-font-display);
+            letter-spacing: -0.025em;
         }
         
-        p {
-            color: #666;
-            font-size: 1.1rem;
+        .hero-subtitle {
+            color: var(--ss-text-secondary);
+            font-size: 1.25rem;
+            margin-bottom: 2rem;
+            line-height: 1.6;
+        }
+        
+        .hero-accent {
+            color: var(--ss-orange-primary);
+            font-weight: 600;
+        }
+        
+        /* Add some demo components */
+        .demo-section {
+            margin-top: 3rem;
+            padding: 2rem;
+            background-color: var(--ss-white);
+            border-radius: 0.75rem;
+            box-shadow: var(--ss-shadow-sm);
+        }
+        
+        .demo-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-bottom: 2rem;
         }
         
         /* Responsive design */
@@ -87,7 +153,7 @@
             }
             
             .header-content {
-                gap: 0.75rem;
+                gap: 1rem;
             }
             
             .logo {
@@ -104,14 +170,27 @@
                 min-height: calc(100vh - 64px);
             }
             
-            .container {
-                padding: 1.5rem;
+            .hero-container {
+                padding: 2rem 1.5rem;
+            }
+            
+            .hero-title {
+                font-size: 2rem;
+            }
+            
+            .hero-subtitle {
+                font-size: 1.125rem;
+            }
+            
+            .demo-buttons {
+                flex-direction: column;
+                align-items: center;
             }
         }
         
         @media (max-width: 480px) {
             .header-content {
-                gap: 0.5rem;
+                gap: 0.75rem;
             }
             
             .logo {
@@ -123,8 +202,12 @@
                 font-size: 0.9rem;
             }
             
-            .container {
-                padding: 1rem;
+            .hero-container {
+                padding: 1.5rem 1rem;
+            }
+            
+            .hero-title {
+                font-size: 1.75rem;
             }
         }
     </style>
@@ -133,15 +216,39 @@
     <div id="header-placeholder"></div>
     
     <main class="main-content">
-        <div class="container">
-            <h1>Hello World</h1>
-            <p>Welcome to Gretch 2025 Rankings</p>
+        <div class="hero-container">
+            <h1 class="hero-title">Hello World</h1>
+            <p class="hero-subtitle">Welcome to <span class="hero-accent">Gretch 2025 Rankings</span></p>
+            <p class="ss-text-muted">Powered by Stealing Signals intelligence and analytics</p>
+            
+            <div class="demo-section">
+                <h3 style="margin-bottom: 1.5rem; color: var(--ss-text-primary);">Design System Demo</h3>
+                
+                <div class="demo-buttons">
+                    <button class="ss-btn ss-btn-primary">Primary Action</button>
+                    <button class="ss-btn ss-btn-secondary">Secondary</button>
+                    <button class="ss-btn ss-btn-outline">Outline</button>
+                    <button class="ss-btn ss-btn-ghost">Ghost</button>
+                </div>
+                
+                <div style="display: flex; gap: 0.5rem; justify-content: center; flex-wrap: wrap; margin-bottom: 1.5rem;">
+                    <span class="ss-badge ss-badge-primary">Primary</span>
+                    <span class="ss-badge ss-badge-secondary">Secondary</span>
+                    <span class="ss-badge ss-badge-success">Success</span>
+                </div>
+                
+                <div class="ss-alert ss-alert-info">
+                    🛸 This site uses the Stealing Signals design system - inspired by the industrial aesthetic of signal interception and data analysis.
+                </div>
+            </div>
         </div>
     </main>
     
+    <div id="footer-placeholder"></div>
+    
     <script>
-        // Load header include
-        fetch('includes/header.html')
+        // Load header and footer components
+        fetch('components/header.html')
             .then(response => response.text())
             .then(data => {
                 document.getElementById('header-placeholder').innerHTML = data;
@@ -150,7 +257,16 @@
                 console.error('Error loading header:', error);
                 // Fallback: create header manually if include fails
                 document.getElementById('header-placeholder').innerHTML = 
-                    '<header class="header"><img src="logo.png" alt="Stealing Signals" class="logo"></header>';
+                    '<header class="header"><img src="assets/images/logo.png" alt="Stealing Signals" class="logo"></header>';
+            });
+        
+        fetch('components/footer.html')
+            .then(response => response.text())
+            .then(data => {
+                document.getElementById('footer-placeholder').innerHTML = data;
+            })
+            .catch(error => {
+                console.error('Error loading footer:', error);
             });
     </script>
 </body>

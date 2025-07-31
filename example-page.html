@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Example Page - Gretch 2025 Rankings</title>
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" sizes="32x32" href="assets/images/favicon.png">
+    <link rel="shortcut icon" href="assets/images/favicon.png">
+    
+    <!-- Design System -->
+    <link rel="stylesheet" href="css/design-system.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@400;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        body {
+            font-family: var(--ss-font-primary);
+            margin: 0;
+            background-color: var(--ss-light-gray);
+            color: var(--ss-text-primary);
+        }
+        
+        .content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin: 2rem 0;
+        }
+    </style>
+</head>
+<body>
+    <div id="header-placeholder"></div>
+    
+    <div class="content">
+        <h1 style="font-family: var(--ss-font-display); color: var(--ss-text-primary);">Design System Components</h1>
+        <p class="ss-text-secondary">This page demonstrates the various components available in the Stealing Signals design system.</p>
+        
+        <div class="grid">
+            <!-- Card Example -->
+            <div class="ss-card">
+                <div class="ss-card-header">
+                    <h3 class="ss-card-title">Sample Card</h3>
+                    <p class="ss-card-description">A card component with header and content</p>
+                </div>
+                <p>This is the card content area. Perfect for displaying information in organized blocks.</p>
+                <button class="ss-btn ss-btn-primary">Learn More</button>
+            </div>
+            
+            <!-- Form Example -->
+            <div class="ss-card">
+                <h3 class="ss-card-title">Form Elements</h3>
+                <form style="margin-top: 1rem;">
+                    <input type="text" class="ss-input" placeholder="Enter your name" style="margin-bottom: 1rem;">
+                    <input type="email" class="ss-input" placeholder="Email address" style="margin-bottom: 1rem;">
+                    <select class="ss-input ss-select" style="margin-bottom: 1rem;">
+                        <option>Choose an option</option>
+                        <option>Option 1</option>
+                        <option>Option 2</option>
+                    </select>
+                    <textarea class="ss-input ss-textarea" placeholder="Your message"></textarea>
+                </form>
+            </div>
+            
+            <!-- Alerts Example -->
+            <div class="ss-card">
+                <h3 class="ss-card-title">Alert Components</h3>
+                <div class="ss-alert ss-alert-success">Success: Operation completed!</div>
+                <div class="ss-alert ss-alert-warning">Warning: Check your settings</div>
+                <div class="ss-alert ss-alert-error">Error: Something went wrong</div>
+                <div class="ss-alert ss-alert-info">Info: New update available</div>
+            </div>
+        </div>
+        
+        <!-- Color Palette Demo -->
+        <div class="ss-card" style="margin-top: 2rem;">
+            <h3 class="ss-card-title">Color Palette</h3>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 1rem; margin-top: 1rem;">
+                <div style="text-align: center;">
+                    <div style="height: 60px; background-color: var(--ss-orange-primary); border-radius: 0.5rem; margin-bottom: 0.5rem;"></div>
+                    <small class="ss-text-muted">Orange Primary</small>
+                </div>
+                <div style="text-align: center;">
+                    <div style="height: 60px; background-color: var(--ss-gray-metallic); border-radius: 0.5rem; margin-bottom: 0.5rem;"></div>
+                    <small class="ss-text-muted">Gray Metallic</small>
+                </div>
+                <div style="text-align: center;">
+                    <div style="height: 60px; background-color: var(--ss-navy); border-radius: 0.5rem; margin-bottom: 0.5rem;"></div>
+                    <small class="ss-text-muted">Navy</small>
+                </div>
+                <div style="text-align: center;">
+                    <div style="height: 60px; background-color: var(--ss-cyan); border-radius: 0.5rem; margin-bottom: 0.5rem;"></div>
+                    <small class="ss-text-muted">Signal Cyan</small>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div id="footer-placeholder"></div>
+    
+    <script>
+        // Load header and footer components
+        fetch('components/header.html')
+            .then(response => response.text())
+            .then(data => {
+                document.getElementById('header-placeholder').innerHTML = data;
+            })
+            .catch(error => {
+                console.error('Error loading header:', error);
+                document.getElementById('header-placeholder').innerHTML = 
+                    '<header class="header"><div class="header-content"><a href="https://bengretch.substack.com/" target="_blank" rel="noopener noreferrer" class="logo-link"><img src="assets/images/logo.png" alt="Stealing Signals" class="logo"></a><a href="https://bengretch.substack.com/" target="_blank" rel="noopener noreferrer" class="substack-link">Stealing Signals</a></div></header>';
+            });
+        
+        fetch('components/footer.html')
+            .then(response => response.text())
+            .then(data => {
+                document.getElementById('footer-placeholder').innerHTML = data;
+            })
+            .catch(error => {
+                console.error('Error loading footer:', error);
+            });
+    </script>
+</body>
+</html>
