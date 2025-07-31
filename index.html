@@ -34,15 +34,21 @@
         .positions-grid {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
-            gap: 0.75rem;
-        }
-        
-        .position-column {
-            background: var(--ss-white);
+            gap: 0;
             border-radius: 0.5rem;
             overflow: hidden;
             box-shadow: var(--ss-shadow-sm);
             border: 1px solid var(--ss-border);
+            background: var(--ss-white);
+        }
+        
+        .position-column {
+            background: var(--ss-white);
+            border-right: 1px solid var(--ss-border);
+        }
+        
+        .position-column:last-child {
+            border-right: none;
         }
         
         .position-header {
@@ -103,16 +109,37 @@
             .positions-grid {
                 grid-template-columns: repeat(2, 1fr);
             }
+            
+            .position-column {
+                border-right: 1px solid var(--ss-border);
+                border-bottom: 1px solid var(--ss-border);
+            }
+            
+            .position-column:nth-child(2n) {
+                border-right: none;
+            }
+            
+            .position-column:nth-last-child(-n+2) {
+                border-bottom: none;
+            }
         }
         
         @media (max-width: 768px) {
             .positions-grid {
                 grid-template-columns: 1fr;
-                gap: 0.5rem;
             }
             
             .rankings-container {
                 padding: 0.5rem;
+            }
+            
+            .position-column {
+                border-right: none;
+                border-bottom: 1px solid var(--ss-border);
+            }
+            
+            .position-column:last-child {
+                border-bottom: none;
             }
         }
         
