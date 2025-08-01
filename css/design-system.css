@@ -453,7 +453,7 @@
 }
 
 .footer-link {
-  color: var(--ss-gray-light);
+  color: var(--ss-orange-primary);
   text-decoration: none;
   font-size: 0.875rem;
   transition: color 0.3s ease;
