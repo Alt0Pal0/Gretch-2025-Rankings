@@ -27,7 +27,6 @@
         
         .logo-header {
             background-color: var(--ss-white);
-            border-bottom: 1px solid var(--ss-border);
             position: sticky;
             top: 0;
             z-index: 101;
@@ -46,6 +45,7 @@
             top: 0;
             z-index: 100;
             margin-top: -1px; /* Overlap to prevent gap */
+            border-bottom: 1px solid var(--ss-border); /* Full-width border */
         }
         
         .table-headers-content {
@@ -64,7 +64,6 @@
             text-align: center;
             position: relative;
             border-right: 1px solid var(--ss-border);
-            border-bottom: 1px solid var(--ss-border);
         }
         
         .table-header-item:last-child {
