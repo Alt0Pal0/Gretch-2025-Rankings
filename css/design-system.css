@@ -454,7 +454,7 @@
 .footer-link {
   color: var(--ss-orange-primary);
   text-decoration: none;
-  font-size: 0.875rem;
+  font-size: 0.6875rem; /* Match player data table font size */
   transition: color 0.3s ease;
 }
 
