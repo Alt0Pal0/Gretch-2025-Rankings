@@ -397,6 +397,35 @@
                 padding: 0.875rem 1rem;
             }
         }
+        
+        /* LEGEND */
+        .legend {
+            background: var(--ss-white);
+            padding: 0.75rem 1rem;
+            text-align: center;
+            font-size: 0.75rem;
+            color: var(--ss-text-muted);
+            border-top: 1px solid var(--ss-border);
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        
+        .legend-bold {
+            font-weight: 700;
+            color: var(--ss-text-secondary);
+        }
+        
+        .legend-italic {
+            font-style: italic;
+            color: var(--ss-text-secondary);
+        }
+        
+        @media (max-width: 768px) {
+            .legend {
+                font-size: 0.6875rem;
+                padding: 0.5rem 0.75rem;
+            }
+        }
     </style>
 </head>
 <body>
@@ -452,6 +481,11 @@
                     <!-- TE players will be loaded here -->
                 </div>
             </div>
+        </div>
+        
+        <!-- Legend -->
+        <div class="legend">
+            <span class="legend-bold">Bold</span> = player to target. <span class="legend-italic">Italics</span> = player to fade.
         </div>
     </main>
     
