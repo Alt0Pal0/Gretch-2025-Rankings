@@ -52,19 +52,32 @@
         }
         
         .position-header {
-            background: linear-gradient(135deg, var(--ss-orange-primary), var(--ss-orange-dark));
-            color: var(--ss-white);
-            padding: 0.75rem 1rem;
+            background: var(--ss-white);
+            color: var(--ss-text-primary);
+            padding: 0.5rem 1rem;
             text-align: center;
+            position: relative;
+            border-bottom: 1px solid var(--ss-border);
+        }
+        
+        .position-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--ss-orange-primary), var(--ss-cyan), var(--ss-teal));
         }
         
         .position-title {
-            font-size: 1rem;
-            font-weight: 700;
+            font-size: 0.875rem;
+            font-weight: 600;
             font-family: var(--ss-font-display);
             margin: 0;
             text-transform: uppercase;
             letter-spacing: 0.05em;
+            color: var(--ss-text-secondary);
         }
         
         .players-list {
@@ -139,8 +152,12 @@
         }
         
         @media (max-width: 480px) {
+            .position-header {
+                padding: 0.375rem 0.75rem;
+            }
+            
             .position-title {
-                font-size: 0.875rem;
+                font-size: 0.75rem;
             }
             
             .player-name {
