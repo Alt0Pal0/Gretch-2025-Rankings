@@ -78,6 +78,36 @@
             background: linear-gradient(90deg, var(--ss-orange-primary), var(--ss-cyan), var(--ss-teal));
         }
         
+        /* Mobile-specific styles */
+        @media (max-width: 768px) {
+            .table-headers {
+                background: var(--ss-white);
+                position: sticky;
+                top: 0;
+                z-index: 100;
+            }
+            
+            .table-headers-content {
+                display: block; /* Single column on mobile */
+            }
+            
+            .table-header-item {
+                display: none; /* Hide all by default */
+                border-right: none;
+                width: 100%;
+            }
+            
+            .table-header-item.mobile-active {
+                display: block; /* Show only the active one */
+            }
+            
+            .table-header-item.mobile-active::before {
+                left: 0;
+                right: 0;
+                width: 100%;
+            }
+        }
+        
         .table-header-title {
             font-size: 0.875rem;
             font-weight: 600;
@@ -392,6 +422,92 @@
             ticking = false;
         }
 
+        // Mobile header switching functionality
+        let isMobile = false;
+        let currentActiveHeader = 0; // 0=QB, 1=RB, 2=WR, 3=TE
+        let headerItems = [];
+        let positionColumns = [];
+        let observer = null;
+
+        function isMobileDevice() {
+            return window.innerWidth <= 768;
+        }
+
+        function initMobileHeaders() {
+            isMobile = isMobileDevice();
+            
+            if (isMobile) {
+                headerItems = document.querySelectorAll('.table-header-item');
+                positionColumns = document.querySelectorAll('.position-column');
+                
+                // Set QB as default active header on mobile
+                setActiveHeader(0);
+                
+                // Set up Intersection Observer to monitor which section is visible
+                setupIntersectionObserver();
+            }
+        }
+
+        function setActiveHeader(index) {
+            if (!isMobile) return;
+            
+            // Remove active class from all headers
+            headerItems.forEach(item => item.classList.remove('mobile-active'));
+            
+            // Add active class to current header
+            if (headerItems[index]) {
+                headerItems[index].classList.add('mobile-active');
+                currentActiveHeader = index;
+            }
+        }
+
+        function setupIntersectionObserver() {
+            if (!isMobile || !positionColumns.length) return;
+            
+            // Create intersection observer
+            observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        // Find which column is intersecting
+                        const index = Array.from(positionColumns).indexOf(entry.target);
+                        if (index !== -1 && index !== currentActiveHeader) {
+                            setActiveHeader(index);
+                        }
+                    }
+                });
+            }, {
+                threshold: 0.1, // Trigger when 10% of the section is visible
+                rootMargin: '-100px 0px -70% 0px' // Adjust to trigger at the right scroll position
+            });
+            
+            // Observe all position columns
+            positionColumns.forEach(column => {
+                if (observer) observer.observe(column);
+            });
+        }
+
+        function handleWindowResize() {
+            const wasMobile = isMobile;
+            isMobile = isMobileDevice();
+            
+            // If switching between mobile and desktop, reinitialize
+            if (wasMobile !== isMobile) {
+                if (observer) {
+                    observer.disconnect();
+                    observer = null;
+                }
+                
+                if (isMobile) {
+                    initMobileHeaders();
+                } else {
+                    // Reset all headers to visible on desktop
+                    headerItems.forEach(item => {
+                        item.classList.remove('mobile-active');
+                    });
+                }
+            }
+        }
+
         // Load components and populate data
         document.addEventListener('DOMContentLoaded', function() {
             // Populate player rankings
@@ -417,7 +533,15 @@
                 .catch(error => {
                     console.error('Error loading footer:', error);
                 });
+            
+            // Initialize mobile headers after content loads
+            setTimeout(() => {
+                initMobileHeaders();
+            }, 200);
         });
+
+        // Listen for window resize to handle mobile/desktop switching
+        window.addEventListener('resize', handleWindowResize);
     </script>
 </body>
 </html>
