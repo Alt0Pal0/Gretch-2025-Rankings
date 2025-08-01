@@ -206,6 +206,10 @@
             font-weight: 700;
         }
         
+        .player-name.italic {
+            font-style: italic;
+        }
+        
         /* Responsive Design */
         
         @media (max-width: 768px) {
@@ -487,6 +491,16 @@
             "Diontae Johnson", "Keenan Allen"
         ];
 
+        // Italic players list
+        const italicPlayers = [
+            "Baker Mayfield", "Travis Kelce", "Evan Engram", "Isaiah Likely", "Theo Johnson", 
+            "Alvin Kamara", "Isiah Pacheco", "Brian Robinson", "Travis Etienne", "Tyrone Tracy", 
+            "Javonte Williams", "Quinshon Judkins", "Mike Evans", "D.J. Moore", "DK Metcalf", 
+            "Courtland Sutton", "Jakobi Meyers", "Cooper Kupp", "Darnell Mooney", "Rashid Shaheed", 
+            "Marvin Mims", "Xavier Legette", "Quentin Johnston", "Josh Palmer", "Jack Bech", 
+            "Adam Thielen"
+        ];
+
         // Player data
         const positions = {
             quarterbacks: [
@@ -506,12 +520,14 @@
         // Function to create player HTML
         function createPlayerHTML(playerName, rank) {
             const isBold = boldPlayers.includes(playerName);
+            const isItalic = italicPlayers.includes(playerName);
             const boldClass = isBold ? ' bold' : '';
+            const italicClass = isItalic ? ' italic' : '';
             
             return `
                 <div class="player-item" data-player="${playerName}" data-rank="${rank}">
                     <div class="player-rank">${rank}</div>
-                    <div class="player-name${boldClass}">${playerName}</div>
+                    <div class="player-name${boldClass}${italicClass}">${playerName}</div>
                 </div>
             `;
         }
