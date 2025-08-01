@@ -232,11 +232,9 @@
 .header {
   background-color: var(--ss-white);
   padding: 0.5rem 2rem;
-  box-shadow: var(--ss-shadow-md);
   position: sticky;
   top: 0;
   z-index: 100;
-  border-bottom: 1px solid var(--ss-border);
 }
 
 .header-content {
