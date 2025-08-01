@@ -25,31 +25,35 @@
             color: var(--ss-text-primary);
         }
         
+        .header-container {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
         .logo-header {
             background-color: var(--ss-white);
             border-bottom: 1px solid var(--ss-border);
             transition: transform 0.3s ease;
-            z-index: 100;
-            position: relative;
+            transform: translateY(0);
         }
         
-        .logo-header.hidden {
+        .logo-header.scroll-hidden {
             transform: translateY(-100%);
         }
         
         .table-headers {
-            position: sticky;
-            top: 0;
-            z-index: 99;
             background: var(--ss-white);
             box-shadow: var(--ss-shadow-md);
-            opacity: 0;
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
             transform: translateY(-100%);
-            transition: all 0.3s ease;
+            transition: transform 0.3s ease;
         }
         
-        .table-headers.sticky {
-            opacity: 1;
+        .table-headers.show {
             transform: translateY(0);
         }
         
@@ -246,25 +250,28 @@
     </style>
 </head>
 <body>
-    <!-- Logo Header -->
-    <div class="logo-header" id="logo-header">
-        <div id="header-placeholder"></div>
-    </div>
-    
-    <!-- Sticky Table Headers -->
-    <div class="table-headers" id="table-headers">
-        <div class="table-headers-content">
-            <div class="table-header-item">
-                <h2 class="table-header-title">Quarterbacks</h2>
-            </div>
-            <div class="table-header-item">
-                <h2 class="table-header-title">Running Backs</h2>
-            </div>
-            <div class="table-header-item">
-                <h2 class="table-header-title">Wide Receivers</h2>
-            </div>
-            <div class="table-header-item">
-                <h2 class="table-header-title">Tight Ends</h2>
+    <!-- Combined Header Container -->
+    <div class="header-container">
+        <!-- Logo Header -->
+        <div class="logo-header" id="logo-header">
+            <div id="header-placeholder"></div>
+        </div>
+        
+        <!-- Sticky Table Headers -->
+        <div class="table-headers" id="table-headers">
+            <div class="table-headers-content">
+                <div class="table-header-item">
+                    <h2 class="table-header-title">Quarterbacks</h2>
+                </div>
+                <div class="table-header-item">
+                    <h2 class="table-header-title">Running Backs</h2>
+                </div>
+                <div class="table-header-item">
+                    <h2 class="table-header-title">Wide Receivers</h2>
+                </div>
+                <div class="table-header-item">
+                    <h2 class="table-header-title">Tight Ends</h2>
+                </div>
             </div>
         </div>
     </div>
@@ -361,7 +368,7 @@
         let logoHeader = null;
         let tableHeaders = null;
         let logoHeaderHeight = 0;
-        let lastScrollY = 0;
+        let ticking = false;
         
         function initScrollBehavior() {
             logoHeader = document.getElementById('logo-header');
@@ -372,24 +379,33 @@
                 logoHeaderHeight = logoHeader.offsetHeight;
             }, 100);
             
-            window.addEventListener('scroll', handleScroll);
+            window.addEventListener('scroll', requestScrollUpdate);
+        }
+        
+        function requestScrollUpdate() {
+            if (!ticking) {
+                requestAnimationFrame(handleScroll);
+                ticking = true;
+            }
         }
         
         function handleScroll() {
             const scrollY = window.scrollY;
             
-            // Stage 1: Hide logo header when scrolling down
-            if (scrollY > logoHeaderHeight / 2 && scrollY > lastScrollY) {
-                // Scrolling down past threshold
-                logoHeader.classList.add('hidden');
-                tableHeaders.classList.add('sticky');
-            } else if (scrollY <= logoHeaderHeight / 4 || scrollY < lastScrollY - 10) {
-                // Scrolling up or near top
-                logoHeader.classList.remove('hidden');
-                tableHeaders.classList.remove('sticky');
+            // Threshold for transition - start when user scrolls past 80% of logo header height
+            const threshold = logoHeaderHeight * 0.8;
+            
+            if (scrollY > threshold) {
+                // Show table headers, hide logo header
+                logoHeader.classList.add('scroll-hidden');
+                tableHeaders.classList.add('show');
+            } else {
+                // Show logo header, hide table headers
+                logoHeader.classList.remove('scroll-hidden');
+                tableHeaders.classList.remove('show');
             }
             
-            lastScrollY = scrollY;
+            ticking = false;
         }
 
         // Load components and populate data
