@@ -23,6 +23,9 @@
             margin: 0;
             background-color: var(--ss-light-gray);
             color: var(--ss-text-primary);
+            /* Prevent horizontal bouncing/drift on mobile */
+            overscroll-behavior-x: none;
+            touch-action: pan-y pinch-zoom;
         }
         
         .logo-header {
@@ -81,16 +84,22 @@
                 position: sticky;
                 top: 0;
                 z-index: 100;
+                overflow-x: hidden; /* Prevent horizontal overflow */
             }
             
             .table-headers-content {
                 display: block; /* Single column on mobile */
+                width: 100%;
+                max-width: 100%;
+                overflow-x: hidden; /* Prevent content overflow */
             }
             
             .table-header-item {
                 display: none; /* Hide all by default */
                 border-right: none;
                 width: 100%;
+                max-width: 100%;
+                box-sizing: border-box;
             }
             
             .table-header-item.mobile-active {
@@ -100,7 +109,7 @@
             .table-header-item.mobile-active::before {
                 left: 0;
                 right: 0;
-                width: 100%;
+                /* Remove width: 100% to avoid conflicts with left/right positioning */
             }
         }
         
@@ -118,6 +127,9 @@
             max-width: 1400px;
             margin: 0 auto;
             padding: 0 1rem 1rem 1rem; /* Only bottom and side padding */
+            /* Additional mobile touch optimization */
+            overscroll-behavior-x: none;
+            touch-action: pan-y;
         }
         
         .positions-grid {
