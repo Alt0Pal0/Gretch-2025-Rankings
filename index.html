@@ -426,6 +426,75 @@
                 padding: 0.5rem 0.75rem;
             }
         }
+        
+        /* TIER BREAKS */
+        .tier-break {
+            display: flex;
+            align-items: center;
+            margin: 0.75rem 0.625rem;
+            position: relative;
+        }
+        
+        .tier-break.small {
+            margin: 0.5rem 0.625rem; /* Less space for small breaks */
+        }
+        
+        .tier-break.big {
+            margin: 1rem 0.625rem; /* More space for big breaks */
+        }
+        
+        .tier-break::before {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: var(--ss-border);
+            opacity: 0.6;
+        }
+        
+        .tier-break-text {
+            font-size: 0.5rem;
+            color: var(--ss-text-muted);
+            opacity: 0.7;
+            padding: 0 0.5rem;
+            background: var(--ss-white);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            font-weight: 500;
+            white-space: nowrap;
+        }
+        
+        .tier-break::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: var(--ss-border);
+            opacity: 0.6;
+        }
+        
+        .tier-break.big::before,
+        .tier-break.big::after {
+            height: 1.5px; /* Slightly thicker line for big breaks */
+            opacity: 0.8;
+        }
+        
+        @media (max-width: 768px) {
+            .tier-break {
+                margin: 0.5rem 0.5rem;
+            }
+            
+            .tier-break.small {
+                margin: 0.375rem 0.5rem;
+            }
+            
+            .tier-break.big {
+                margin: 0.75rem 0.5rem;
+            }
+            
+            .tier-break-text {
+                font-size: 0.4375rem;
+                padding: 0 0.375rem;
+            }
+        }
     </style>
 </head>
 <body>
@@ -535,6 +604,23 @@
             "Adam Thielen"
         ];
 
+        // Tier breaks - defines where breaks occur after specific players
+        const tierBreaks = {
+            quarterbacks: {
+                "Jayden Daniels": "small",  // Small break after Jayden Daniels, before Josh Allen
+                "Jalen Hurts": "big"       // Big break after Jalen Hurts, before Joe Burrow
+            },
+            runningbacks: {
+                // Add tier breaks for RBs as needed
+            },
+            widereceivers: {
+                // Add tier breaks for WRs as needed
+            },
+            tightends: {
+                // Add tier breaks for TEs as needed
+            }
+        };
+
         // Player data
         const positions = {
             quarterbacks: [
@@ -550,6 +636,18 @@
                 "Brock Bowers", "Trey McBride", "George Kittle", "Sam LaPorta", "T.J. Hockenson", "David Njoku", "Tucker Kraft", "Travis Kelce", "Mark Andrews", "Tyler Warren", "Colston Loveland", "Evan Engram", "Dallas Goedert", "Dalton Kincaid", "Jake Ferguson", "Kyle Pitts", "Brenton Strange", "Harold Fannin", "Zach Ertz", "Ja'Tavion Sanders", "Mike Gesicki", "Chig Okonkwo", "Hunter Henry", "Jonnu Smith", "Pat Freiermuth", "Cade Otton", "Isaiah Likely", "Dalton Schultz", "Tyler Higbee", "Terrance Ferguson", "Juwan Johnson", "Elijah Arroyo", "Darren Waller", "Tyler Conklin", "Mason Taylor", "Noah Fant", "Theo Johnson", "Cade Stover", "Will Dissly", "Orande Gadsden", "Cole Kmet", "Austin Hooper", "Gunnar Helm", "Michael Mayer", "AJ Barner", "Grant Calcaterra"
             ]
         };
+
+        // Function to create tier break HTML
+        function createTierBreakHTML(type) {
+            const breakType = type === 'big' ? 'big' : 'small';
+            const breakText = type === 'big' ? 'Big Tier Break' : 'Small Tier Break';
+            
+            return `
+                <div class="tier-break ${breakType}">
+                    <span class="tier-break-text">${breakText}</span>
+                </div>
+            `;
+        }
 
         // Function to create player HTML
         function createPlayerHTML(playerName, rank) {
@@ -739,31 +837,31 @@
             }
         }
 
+        // Function to populate position lists with tier breaks
+        function populatePositionWithTierBreaks(positionName, players, containerId) {
+            let html = '';
+            const breaks = tierBreaks[positionName] || {};
+            
+            players.forEach((player, index) => {
+                // Add the player
+                html += createPlayerHTML(player, index + 1);
+                
+                // Check if there's a tier break after this player
+                if (breaks[player]) {
+                    html += createTierBreakHTML(breaks[player]);
+                }
+            });
+            
+            document.getElementById(containerId).innerHTML = html;
+        }
+
         // Function to populate position lists
         function populatePositions() {
-            // Quarterbacks
-            const qbList = document.getElementById('qb-list');
-            qbList.innerHTML = positions.quarterbacks.map((player, index) => 
-                createPlayerHTML(player, index + 1)
-            ).join('');
-
-            // Running Backs
-            const rbList = document.getElementById('rb-list');
-            rbList.innerHTML = positions.runningbacks.map((player, index) => 
-                createPlayerHTML(player, index + 1)
-            ).join('');
-
-            // Wide Receivers
-            const wrList = document.getElementById('wr-list');
-            wrList.innerHTML = positions.widereceivers.map((player, index) => 
-                createPlayerHTML(player, index + 1)
-            ).join('');
-
-            // Tight Ends
-            const teList = document.getElementById('te-list');
-            teList.innerHTML = positions.tightends.map((player, index) => 
-                createPlayerHTML(player, index + 1)
-            ).join('');
+            // Populate each position with tier breaks
+            populatePositionWithTierBreaks('quarterbacks', positions.quarterbacks, 'qb-list');
+            populatePositionWithTierBreaks('runningbacks', positions.runningbacks, 'rb-list');
+            populatePositionWithTierBreaks('widereceivers', positions.widereceivers, 'wr-list');
+            populatePositionWithTierBreaks('tightends', positions.tightends, 'te-list');
             
             // Initialize player selection after all players are created
             initializePlayerSelection();
