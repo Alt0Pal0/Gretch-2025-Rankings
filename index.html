@@ -25,15 +25,12 @@
             color: var(--ss-text-primary);
         }
         
-        .header-container {
-            position: sticky;
-            top: 0;
-            z-index: 100;
-        }
-        
         .logo-header {
             background-color: var(--ss-white);
             border-bottom: 1px solid var(--ss-border);
+            position: sticky;
+            top: 0;
+            z-index: 101;
             transition: transform 0.3s ease;
             transform: translateY(0);
         }
@@ -45,16 +42,10 @@
         .table-headers {
             background: var(--ss-white);
             box-shadow: var(--ss-shadow-md);
-            position: absolute;
+            position: sticky;
             top: 0;
-            left: 0;
-            right: 0;
-            transform: translateY(-100%);
-            transition: transform 0.3s ease;
-        }
-        
-        .table-headers.show {
-            transform: translateY(0);
+            z-index: 100;
+            margin-top: -1px; /* Overlap to prevent gap */
         }
         
         .table-headers-content {
@@ -250,28 +241,25 @@
     </style>
 </head>
 <body>
-    <!-- Combined Header Container -->
-    <div class="header-container">
-        <!-- Logo Header -->
-        <div class="logo-header" id="logo-header">
-            <div id="header-placeholder"></div>
-        </div>
-        
-        <!-- Sticky Table Headers -->
-        <div class="table-headers" id="table-headers">
-            <div class="table-headers-content">
-                <div class="table-header-item">
-                    <h2 class="table-header-title">Quarterbacks</h2>
-                </div>
-                <div class="table-header-item">
-                    <h2 class="table-header-title">Running Backs</h2>
-                </div>
-                <div class="table-header-item">
-                    <h2 class="table-header-title">Wide Receivers</h2>
-                </div>
-                <div class="table-header-item">
-                    <h2 class="table-header-title">Tight Ends</h2>
-                </div>
+    <!-- Logo Header -->
+    <div class="logo-header" id="logo-header">
+        <div id="header-placeholder"></div>
+    </div>
+    
+    <!-- Sticky Table Headers -->
+    <div class="table-headers" id="table-headers">
+        <div class="table-headers-content">
+            <div class="table-header-item">
+                <h2 class="table-header-title">Quarterbacks</h2>
+            </div>
+            <div class="table-header-item">
+                <h2 class="table-header-title">Running Backs</h2>
+            </div>
+            <div class="table-header-item">
+                <h2 class="table-header-title">Wide Receivers</h2>
+            </div>
+            <div class="table-header-item">
+                <h2 class="table-header-title">Tight Ends</h2>
             </div>
         </div>
     </div>
@@ -392,17 +380,15 @@
         function handleScroll() {
             const scrollY = window.scrollY;
             
-            // Threshold for transition - start when user scrolls past 80% of logo header height
-            const threshold = logoHeaderHeight * 0.8;
+            // Threshold for transition - start when user scrolls past 50% of logo header height
+            const threshold = logoHeaderHeight * 0.5;
             
             if (scrollY > threshold) {
-                // Show table headers, hide logo header
+                // Hide logo header (table headers are always visible)
                 logoHeader.classList.add('scroll-hidden');
-                tableHeaders.classList.add('show');
             } else {
-                // Show logo header, hide table headers
+                // Show logo header
                 logoHeader.classList.remove('scroll-hidden');
-                tableHeaders.classList.remove('show');
             }
             
             ticking = false;
