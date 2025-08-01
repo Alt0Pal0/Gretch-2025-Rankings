@@ -493,6 +493,8 @@
         // Function to toggle player selection
         function togglePlayerSelection(playerElement) {
             playerElement.classList.toggle('selected');
+            // Save to cookie after every selection change
+            saveSelectionsToCookie();
         }
 
         // Function to add click/tap event listeners to all players
@@ -512,12 +514,75 @@
             });
         }
 
+        // Cookie utility functions
+        function setCookie(name, value, days = 7) {
+            const expires = new Date();
+            expires.setTime(expires.getTime() + (days * 24 * 60 * 60 * 1000));
+            document.cookie = `${name}=${value};expires=${expires.toUTCString()};path=/`;
+        }
+
+        function getCookie(name) {
+            const nameEQ = name + "=";
+            const ca = document.cookie.split(';');
+            for(let i = 0; i < ca.length; i++) {
+                let c = ca[i];
+                while (c.charAt(0) === ' ') c = c.substring(1, c.length);
+                if (c.indexOf(nameEQ) === 0) return c.substring(nameEQ.length, c.length);
+            }
+            return null;
+        }
+
+        function deleteCookie(name) {
+            document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;`;
+        }
+
+        // Function to save current selections to cookie
+        function saveSelectionsToCookie() {
+            const selectedPlayers = [];
+            const allSelectedItems = document.querySelectorAll('.player-item.selected');
+            
+            allSelectedItems.forEach(item => {
+                const playerName = item.getAttribute('data-player');
+                const playerRank = item.getAttribute('data-rank');
+                if (playerName && playerRank) {
+                    selectedPlayers.push({
+                        name: playerName,
+                        rank: playerRank
+                    });
+                }
+            });
+            
+            setCookie('auctionSelections', JSON.stringify(selectedPlayers));
+        }
+
+        // Function to load selections from cookie
+        function loadSelectionsFromCookie() {
+            const savedSelections = getCookie('auctionSelections');
+            if (savedSelections) {
+                try {
+                    const selections = JSON.parse(savedSelections);
+                    selections.forEach(selection => {
+                        const playerElement = document.querySelector(`[data-player="${selection.name}"]`);
+                        if (playerElement) {
+                            playerElement.classList.add('selected');
+                        }
+                    });
+                } catch (e) {
+                    console.warn('Error loading saved selections:', e);
+                    deleteCookie('auctionSelections'); // Clear corrupted cookie
+                }
+            }
+        }
+
         // Function to reset all player selections
         function resetAllSelections() {
             const allPlayers = document.querySelectorAll('.player-item.selected');
             allPlayers.forEach(player => {
                 player.classList.remove('selected');
             });
+            
+            // Clear the cookie when resetting
+            deleteCookie('auctionSelections');
         }
 
         // Function to show reset confirmation modal
@@ -626,6 +691,9 @@
             
             // Initialize player selection after all players are created
             initializePlayerSelection();
+            
+            // Load saved selections from cookie
+            loadSelectionsFromCookie();
         }
 
         // Scroll behavior for two-stage sticky header
