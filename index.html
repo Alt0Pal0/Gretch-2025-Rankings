@@ -156,11 +156,33 @@
             display: flex;
             align-items: center;
             padding: 0.1875rem 0.625rem; /* Smaller padding for desktop */
-            transition: background-color 0.2s ease;
+            transition: all 0.2s ease;
+            cursor: pointer;
+            user-select: none; /* Prevent text selection on mobile taps */
+            -webkit-tap-highlight-color: transparent; /* Remove tap highlight on iOS */
         }
         
-        .player-item:hover {
+        .player-item:hover:not(.selected) {
             background-color: var(--ss-orange-pale);
+        }
+        
+        .player-item.selected {
+            background-color: var(--ss-light-gray);
+            opacity: 0.8; /* More visible while still clearly selected */
+        }
+        
+        .player-item.selected .player-name {
+            text-decoration: line-through;
+            color: var(--ss-text-secondary); /* More legible than muted */
+        }
+        
+        .player-item.selected .player-rank {
+            color: var(--ss-text-secondary); /* More legible than muted */
+        }
+        
+        .player-item.selected:hover {
+            background-color: var(--ss-border);
+            opacity: 0.85; /* Slightly more visible on hover */
         }
         
         .player-rank {
@@ -253,6 +275,120 @@
                 padding: 0.1875rem 0.5rem;
             }
         }
+        
+        /* CONFIRMATION MODAL */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(15, 23, 42, 0.5);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+        
+        .modal-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        .modal-content {
+            background: var(--ss-white);
+            border-radius: 0.75rem;
+            box-shadow: 0 20px 25px rgba(15, 23, 42, 0.2);
+            max-width: 400px;
+            width: 100%;
+            padding: 1.5rem;
+            transform: scale(0.9);
+            transition: transform 0.3s ease;
+        }
+        
+        .modal-overlay.active .modal-content {
+            transform: scale(1);
+        }
+        
+        .modal-header {
+            margin-bottom: 1rem;
+        }
+        
+        .modal-title {
+            font-size: 1.125rem;
+            font-weight: 600;
+            color: var(--ss-text-primary);
+            margin: 0 0 0.5rem 0;
+            font-family: var(--ss-font-display);
+        }
+        
+        .modal-message {
+            color: var(--ss-text-secondary);
+            margin: 0;
+            line-height: 1.5;
+        }
+        
+        .modal-actions {
+            display: flex;
+            gap: 0.75rem;
+            margin-top: 1.5rem;
+        }
+        
+        .modal-btn {
+            flex: 1;
+            padding: 0.75rem 1rem;
+            border-radius: 0.5rem;
+            font-weight: 600;
+            font-size: 0.875rem;
+            border: none;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-family: var(--ss-font-primary);
+        }
+        
+        .modal-btn-primary {
+            background-color: var(--ss-orange-primary);
+            color: var(--ss-white);
+        }
+        
+        .modal-btn-primary:hover {
+            background-color: var(--ss-orange-dark);
+        }
+        
+        .modal-btn-secondary {
+            background-color: var(--ss-light-gray);
+            color: var(--ss-text-secondary);
+            border: 1px solid var(--ss-border);
+        }
+        
+        .modal-btn-secondary:hover {
+            background-color: var(--ss-border);
+            color: var(--ss-text-primary);
+        }
+        
+        /* Mobile modal adjustments */
+        @media (max-width: 480px) {
+            .modal-overlay {
+                padding: 0.75rem;
+            }
+            
+            .modal-content {
+                padding: 1.25rem;
+            }
+            
+            .modal-actions {
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+            
+            .modal-btn {
+                padding: 0.875rem 1rem;
+            }
+        }
     </style>
 </head>
 <body>
@@ -313,6 +449,20 @@
     
     <div id="footer-placeholder"></div>
     
+    <!-- Reset Confirmation Modal -->
+    <div id="reset-modal" class="modal-overlay">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Reset All Selections</h3>
+                <p class="modal-message">Are you sure you want to reset all player selections? This will clear all drafted players for the current auction.</p>
+            </div>
+            <div class="modal-actions">
+                <button id="confirm-reset" class="modal-btn modal-btn-primary">Reset All</button>
+                <button id="cancel-reset" class="modal-btn modal-btn-secondary">Cancel</button>
+            </div>
+        </div>
+    </div>
+    
     <script>
         // Player data
         const positions = {
@@ -333,11 +483,119 @@
         // Function to create player HTML
         function createPlayerHTML(playerName, rank) {
             return `
-                <div class="player-item">
+                <div class="player-item" data-player="${playerName}" data-rank="${rank}">
                     <div class="player-rank">${rank}</div>
                     <div class="player-name">${playerName}</div>
                 </div>
             `;
+        }
+
+        // Function to toggle player selection
+        function togglePlayerSelection(playerElement) {
+            playerElement.classList.toggle('selected');
+        }
+
+        // Function to add click/tap event listeners to all players
+        function initializePlayerSelection() {
+            const allPlayers = document.querySelectorAll('.player-item');
+            allPlayers.forEach(player => {
+                player.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    togglePlayerSelection(this);
+                });
+                
+                // Add touch event for better mobile responsiveness
+                player.addEventListener('touchend', function(e) {
+                    e.preventDefault();
+                    togglePlayerSelection(this);
+                });
+            });
+        }
+
+        // Function to reset all player selections
+        function resetAllSelections() {
+            const allPlayers = document.querySelectorAll('.player-item.selected');
+            allPlayers.forEach(player => {
+                player.classList.remove('selected');
+            });
+        }
+
+        // Function to show reset confirmation modal
+        function showResetModal() {
+            const modal = document.getElementById('reset-modal');
+            if (modal) {
+                modal.classList.add('active');
+                // Prevent body scroll when modal is open
+                document.body.style.overflow = 'hidden';
+            }
+        }
+
+        // Function to hide reset confirmation modal
+        function hideResetModal() {
+            const modal = document.getElementById('reset-modal');
+            if (modal) {
+                modal.classList.remove('active');
+                // Restore body scroll
+                document.body.style.overflow = '';
+            }
+        }
+
+        // Function to initialize reset button and modal
+        function initResetButton() {
+            const resetBtn = document.getElementById('reset-btn');
+            const confirmBtn = document.getElementById('confirm-reset');
+            const cancelBtn = document.getElementById('cancel-reset');
+            const modal = document.getElementById('reset-modal');
+            
+            // Reset button shows modal
+            if (resetBtn) {
+                resetBtn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    showResetModal();
+                });
+                
+                resetBtn.addEventListener('touchend', function(e) {
+                    e.preventDefault();
+                    showResetModal();
+                });
+            }
+            
+            // Confirm button resets and closes modal
+            if (confirmBtn) {
+                confirmBtn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    resetAllSelections();
+                    hideResetModal();
+                });
+                
+                confirmBtn.addEventListener('touchend', function(e) {
+                    e.preventDefault();
+                    resetAllSelections();
+                    hideResetModal();
+                });
+            }
+            
+            // Cancel button just closes modal
+            if (cancelBtn) {
+                cancelBtn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    hideResetModal();
+                });
+                
+                cancelBtn.addEventListener('touchend', function(e) {
+                    e.preventDefault();
+                    hideResetModal();
+                });
+            }
+            
+            // Close modal when clicking overlay
+            if (modal) {
+                modal.addEventListener('click', function(e) {
+                    if (e.target === modal) {
+                        hideResetModal();
+                    }
+                });
+            }
         }
 
         // Function to populate position lists
@@ -365,6 +623,9 @@
             teList.innerHTML = positions.tightends.map((player, index) => 
                 createPlayerHTML(player, index + 1)
             ).join('');
+            
+            // Initialize player selection after all players are created
+            initializePlayerSelection();
         }
 
         // Scroll behavior for two-stage sticky header
@@ -545,6 +806,8 @@
                     document.getElementById('header-placeholder').innerHTML = data;
                     // Initialize scroll behavior after header loads
                     setTimeout(initScrollBehavior, 100);
+                    // Initialize reset button functionality
+                    setTimeout(initResetButton, 100);
                 })
                 .catch(error => {
                     console.error('Error loading header:', error);
