@@ -202,6 +202,10 @@
             line-height: 1.2;
         }
         
+        .player-name.bold {
+            font-weight: 700;
+        }
+        
         /* Responsive Design */
         
         @media (max-width: 768px) {
@@ -464,6 +468,25 @@
     </div>
     
     <script>
+        // Bold players list
+        const boldPlayers = [
+            "Jayden Daniels", "Patrick Mahomes", "Brock Bowers", "Trey McBride", "T.J. Hockenson", 
+            "David Njoku", "Tucker Kraft", "Tyler Warren", "Dallas Goedert", "Harold Fannin", 
+            "Zach Ertz", "Ja'Tavion Sanders", "Jahmyr Gibbs", "De'Von Achane", "Ashton Jeanty", 
+            "Kenneth Walker", "Omarion Hampton", "TreVeyon Henderson", "RJ Harvey", "Cam Skattebo", 
+            "Jordan Mason", "Jaylen Warren", "JK Dobbins", "Tyjae Spears", "Dylan Sampson", 
+            "Zach Charbonnet", "Bhayshul Tuten", "Jaydon Blue", "Isaac Guerendo", "Brashard Smith", 
+            "Jarquez Hunter", "Roschon Johnson", "DJ Giddens", "Tahj Brooks", "Jacory Croskey-Merritt", 
+            "Trevor Etienne", "Woody Marks", "Kyle Monangai", "Ja'Marr Chase", "CeeDee Lamb", 
+            "Malik Nabers", "Puka Nacua", "Nico Collins", "Brian Thomas", "Drake London", 
+            "Ladd McConkey", "Tyreek Hill", "Xavier Worthy", "Tetairoa McMillan", "Rashee Rice", 
+            "George Pickens", "Jameson Williams", "Jerry Jeudy", "Chris Olave", "Jordan Addison", 
+            "Jayden Reed", "Emeka Egbuka", "Josh Downs", "Michael Pittman", "Jayden Higgins", 
+            "Matthew Golden", "Luther Burden", "Kyle Williams", "Wan'Dale Robinson", "Jalen Coker", 
+            "Jalen Royals", "Malik Washington", "Jaylin Lane", "Elic Ayomanor", "KeAndre Lambert-Smith", 
+            "Diontae Johnson", "Keenan Allen"
+        ];
+
         // Player data
         const positions = {
             quarterbacks: [
@@ -482,10 +505,13 @@
 
         // Function to create player HTML
         function createPlayerHTML(playerName, rank) {
+            const isBold = boldPlayers.includes(playerName);
+            const boldClass = isBold ? ' bold' : '';
+            
             return `
                 <div class="player-item" data-player="${playerName}" data-rank="${rank}">
                     <div class="player-rank">${rank}</div>
-                    <div class="player-name">${playerName}</div>
+                    <div class="player-name${boldClass}">${playerName}</div>
                 </div>
             `;
         }
