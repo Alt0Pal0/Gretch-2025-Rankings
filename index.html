@@ -168,21 +168,21 @@
         
         .player-item.selected {
             background-color: var(--ss-light-gray);
-            opacity: 0.8; /* More visible while still clearly selected */
+            opacity: 0.5; /* Much more faint so available players pop */
         }
         
         .player-item.selected .player-name {
             text-decoration: line-through;
-            color: var(--ss-text-secondary); /* More legible than muted */
+            color: var(--ss-text-muted); /* More muted for better contrast with available players */
         }
         
         .player-item.selected .player-rank {
-            color: var(--ss-text-secondary); /* More legible than muted */
+            color: var(--ss-text-muted); /* More muted for better contrast with available players */
         }
         
         .player-item.selected:hover {
             background-color: var(--ss-border);
-            opacity: 0.85; /* Slightly more visible on hover */
+            opacity: 0.6; /* Slightly more visible on hover for interaction feedback */
         }
         
         .player-rank {
