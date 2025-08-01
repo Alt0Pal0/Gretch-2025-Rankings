@@ -25,6 +25,77 @@
             color: var(--ss-text-primary);
         }
         
+        .logo-header {
+            background-color: var(--ss-white);
+            border-bottom: 1px solid var(--ss-border);
+            transition: transform 0.3s ease;
+            z-index: 100;
+            position: relative;
+        }
+        
+        .logo-header.hidden {
+            transform: translateY(-100%);
+        }
+        
+        .table-headers {
+            position: sticky;
+            top: 0;
+            z-index: 99;
+            background: var(--ss-white);
+            box-shadow: var(--ss-shadow-md);
+            opacity: 0;
+            transform: translateY(-100%);
+            transition: all 0.3s ease;
+        }
+        
+        .table-headers.sticky {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        .table-headers-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 1rem;
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 0;
+        }
+        
+        .table-header-item {
+            background: var(--ss-white);
+            color: var(--ss-text-primary);
+            padding: 0.5rem 1rem;
+            text-align: center;
+            position: relative;
+            border-right: 1px solid var(--ss-border);
+            border-bottom: 1px solid var(--ss-border);
+        }
+        
+        .table-header-item:last-child {
+            border-right: none;
+        }
+        
+        .table-header-item::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--ss-orange-primary), var(--ss-cyan), var(--ss-teal));
+        }
+        
+        .table-header-title {
+            font-size: 0.875rem;
+            font-weight: 600;
+            font-family: var(--ss-font-display);
+            margin: 0;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--ss-text-secondary);
+        }
+        
         .rankings-container {
             max-width: 1400px;
             margin: 0 auto;
@@ -49,35 +120,6 @@
         
         .position-column:last-child {
             border-right: none;
-        }
-        
-        .position-header {
-            background: var(--ss-white);
-            color: var(--ss-text-primary);
-            padding: 0.5rem 1rem;
-            text-align: center;
-            position: relative;
-            border-bottom: 1px solid var(--ss-border);
-        }
-        
-        .position-header::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 3px;
-            background: linear-gradient(90deg, var(--ss-orange-primary), var(--ss-cyan), var(--ss-teal));
-        }
-        
-        .position-title {
-            font-size: 0.875rem;
-            font-weight: 600;
-            font-family: var(--ss-font-display);
-            margin: 0;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-            color: var(--ss-text-secondary);
         }
         
         .players-list {
@@ -118,6 +160,10 @@
                 grid-template-columns: repeat(2, 1fr);
             }
             
+            .table-headers-content {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
             .position-column {
                 border-right: 1px solid var(--ss-border);
                 border-bottom: 1px solid var(--ss-border);
@@ -130,11 +176,25 @@
             .position-column:nth-last-child(-n+2) {
                 border-bottom: none;
             }
+            
+            .table-header-item {
+                border-right: 1px solid var(--ss-border);
+                border-bottom: 1px solid var(--ss-border);
+            }
+            
+            .table-header-item:nth-child(2n) {
+                border-right: none;
+            }
         }
         
         @media (max-width: 768px) {
             .positions-grid {
                 grid-template-columns: 1fr;
+            }
+            
+            .table-headers-content {
+                grid-template-columns: 1fr;
+                padding: 0 0.5rem;
             }
             
             .rankings-container {
@@ -149,15 +209,24 @@
             .position-column:last-child {
                 border-bottom: none;
             }
+            
+            .table-header-item {
+                border-right: none;
+                border-bottom: 1px solid var(--ss-border);
+            }
+            
+            .table-header-item:last-child {
+                border-bottom: none;
+            }
         }
         
         @media (max-width: 480px) {
-            .position-header {
-                padding: 0.375rem 0.75rem;
+            .table-header-title {
+                font-size: 0.75rem;
             }
             
-            .position-title {
-                font-size: 0.75rem;
+            .table-header-item {
+                padding: 0.375rem 0.75rem;
             }
             
             .player-name {
@@ -177,15 +246,33 @@
     </style>
 </head>
 <body>
-    <div id="header-placeholder"></div>
+    <!-- Logo Header -->
+    <div class="logo-header" id="logo-header">
+        <div id="header-placeholder"></div>
+    </div>
+    
+    <!-- Sticky Table Headers -->
+    <div class="table-headers" id="table-headers">
+        <div class="table-headers-content">
+            <div class="table-header-item">
+                <h2 class="table-header-title">Quarterbacks</h2>
+            </div>
+            <div class="table-header-item">
+                <h2 class="table-header-title">Running Backs</h2>
+            </div>
+            <div class="table-header-item">
+                <h2 class="table-header-title">Wide Receivers</h2>
+            </div>
+            <div class="table-header-item">
+                <h2 class="table-header-title">Tight Ends</h2>
+            </div>
+        </div>
+    </div>
     
     <main class="rankings-container">
         <div class="positions-grid">
             <!-- Quarterbacks Column -->
             <div class="position-column">
-                <div class="position-header">
-                    <h2 class="position-title">Quarterbacks</h2>
-                </div>
                 <div class="players-list" id="qb-list">
                     <!-- QB players will be loaded here -->
                 </div>
@@ -193,9 +280,6 @@
             
             <!-- Running Backs Column -->
             <div class="position-column">
-                <div class="position-header">
-                    <h2 class="position-title">Running Backs</h2>
-                </div>
                 <div class="players-list" id="rb-list">
                     <!-- RB players will be loaded here -->
                 </div>
@@ -203,9 +287,6 @@
             
             <!-- Wide Receivers Column -->
             <div class="position-column">
-                <div class="position-header">
-                    <h2 class="position-title">Wide Receivers</h2>
-                </div>
                 <div class="players-list" id="wr-list">
                     <!-- WR players will be loaded here -->
                 </div>
@@ -213,9 +294,6 @@
             
             <!-- Tight Ends Column -->
             <div class="position-column">
-                <div class="position-header">
-                    <h2 class="position-title">Tight Ends</h2>
-                </div>
                 <div class="players-list" id="te-list">
                     <!-- TE players will be loaded here -->
                 </div>
@@ -279,6 +357,41 @@
             ).join('');
         }
 
+        // Scroll behavior for two-stage sticky header
+        let logoHeader = null;
+        let tableHeaders = null;
+        let logoHeaderHeight = 0;
+        let lastScrollY = 0;
+        
+        function initScrollBehavior() {
+            logoHeader = document.getElementById('logo-header');
+            tableHeaders = document.getElementById('table-headers');
+            
+            // Get logo header height after it loads
+            setTimeout(() => {
+                logoHeaderHeight = logoHeader.offsetHeight;
+            }, 100);
+            
+            window.addEventListener('scroll', handleScroll);
+        }
+        
+        function handleScroll() {
+            const scrollY = window.scrollY;
+            
+            // Stage 1: Hide logo header when scrolling down
+            if (scrollY > logoHeaderHeight / 2 && scrollY > lastScrollY) {
+                // Scrolling down past threshold
+                logoHeader.classList.add('hidden');
+                tableHeaders.classList.add('sticky');
+            } else if (scrollY <= logoHeaderHeight / 4 || scrollY < lastScrollY - 10) {
+                // Scrolling up or near top
+                logoHeader.classList.remove('hidden');
+                tableHeaders.classList.remove('sticky');
+            }
+            
+            lastScrollY = scrollY;
+        }
+
         // Load components and populate data
         document.addEventListener('DOMContentLoaded', function() {
             // Populate player rankings
@@ -289,6 +402,8 @@
                 .then(response => response.text())
                 .then(data => {
                     document.getElementById('header-placeholder').innerHTML = data;
+                    // Initialize scroll behavior after header loads
+                    setTimeout(initScrollBehavior, 100);
                 })
                 .catch(error => {
                     console.error('Error loading header:', error);
