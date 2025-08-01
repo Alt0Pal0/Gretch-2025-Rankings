@@ -421,16 +421,22 @@
                 headerItems = document.querySelectorAll('.table-header-item');
                 positionColumns = document.querySelectorAll('.position-column');
                 
+                console.log(`Initializing mobile headers. Found ${headerItems.length} header items and ${positionColumns.length} position columns`);
+                
                 // Set QB as default active header on mobile
                 setActiveHeader(0);
                 
                 // Set up Intersection Observer to monitor which section is visible
-                setupIntersectionObserver();
+                setTimeout(() => {
+                    setupIntersectionObserver();
+                }, 500); // Small delay to ensure DOM is ready
             }
         }
 
         function setActiveHeader(index) {
             if (!isMobile) return;
+            
+            console.log(`Setting active header to index ${index}: ${['QB', 'RB', 'WR', 'TE'][index]}`);
             
             // Remove active class from all headers
             headerItems.forEach(item => item.classList.remove('mobile-active'));
@@ -439,32 +445,64 @@
             if (headerItems[index]) {
                 headerItems[index].classList.add('mobile-active');
                 currentActiveHeader = index;
+                console.log(`Active header set successfully to: ${['QB', 'RB', 'WR', 'TE'][index]}`);
+            } else {
+                console.error(`Header item at index ${index} not found`);
             }
         }
 
         function setupIntersectionObserver() {
             if (!isMobile || !positionColumns.length) return;
             
-            // Create intersection observer
-            observer = new IntersectionObserver((entries) => {
-                entries.forEach(entry => {
-                    if (entry.isIntersecting) {
-                        // Find which column is intersecting
-                        const index = Array.from(positionColumns).indexOf(entry.target);
-                        if (index !== -1 && index !== currentActiveHeader) {
-                            setActiveHeader(index);
+            // Use a simpler scroll-based approach instead of complex intersection observer
+            function checkActiveSection() {
+                if (!isMobile) return;
+                
+                const headerHeight = document.getElementById('table-headers')?.offsetHeight || 0;
+                const scrollThreshold = headerHeight + 50;
+                
+                // Check each section to see which one is at the top
+                for (let i = 0; i < positionColumns.length; i++) {
+                    const column = positionColumns[i];
+                    const rect = column.getBoundingClientRect();
+                    
+                    // If this section's top is at or above the threshold and bottom is below threshold
+                    if (rect.top <= scrollThreshold && rect.bottom > scrollThreshold) {
+                        if (i !== currentActiveHeader) {
+                            console.log(`Section ${i} (${['QB', 'RB', 'WR', 'TE'][i]}) is now at top`);
+                            setActiveHeader(i);
                         }
+                        break;
                     }
-                });
+                }
+            }
+            
+            // Create intersection observer for triggering checks
+            observer = new IntersectionObserver((entries) => {
+                checkActiveSection();
             }, {
-                threshold: 0.1, // Trigger when 10% of the section is visible
-                rootMargin: '-100px 0px -70% 0px' // Adjust to trigger at the right scroll position
+                threshold: 0.1,
+                rootMargin: '-50px 0px -50px 0px'
             });
             
             // Observe all position columns
-            positionColumns.forEach(column => {
-                if (observer) observer.observe(column);
+            positionColumns.forEach((column, index) => {
+                if (observer) {
+                    observer.observe(column);
+                    console.log(`Observing column ${index}: ${['QB', 'RB', 'WR', 'TE'][index]}`);
+                }
             });
+            
+            // Also check on scroll for more responsive updates
+            let scrollTimeout;
+            window.addEventListener('scroll', () => {
+                if (!isMobile) return;
+                clearTimeout(scrollTimeout);
+                scrollTimeout = setTimeout(checkActiveSection, 50);
+            });
+            
+            // Initial check
+            setTimeout(checkActiveSection, 100);
         }
 
         function handleWindowResize() {
