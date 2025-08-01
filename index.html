@@ -402,27 +402,28 @@
         .legend {
             grid-column: 1 / -1; /* Span all columns in the grid */
             background: var(--ss-white);
-            padding: 1rem;
-            text-align: center;
-            font-size: 0.75rem;
+            padding: 0.75rem 1rem;
+            text-align: left;
+            font-size: 0.625rem; /* Smaller than player names (0.6875rem) */
             color: var(--ss-text-muted);
+            opacity: 0.8; /* Make it fainter than player names */
             border-top: 1px solid var(--ss-border);
         }
         
         .legend-bold {
             font-weight: 700;
-            color: var(--ss-text-secondary);
+            color: var(--ss-text-muted); /* Keep consistent with legend text */
         }
         
         .legend-italic {
             font-style: italic;
-            color: var(--ss-text-secondary);
+            color: var(--ss-text-muted); /* Keep consistent with legend text */
         }
         
         @media (max-width: 768px) {
             .legend {
-                font-size: 0.6875rem;
-                padding: 0.75rem;
+                font-size: 0.5625rem; /* Even smaller on mobile */
+                padding: 0.5rem 0.75rem;
             }
         }
     </style>
