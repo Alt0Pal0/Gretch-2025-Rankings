@@ -796,16 +796,13 @@
                 </div>
             </form>
             <div class="modal-actions">
-                <div style="font-size: 0.65rem; color: var(--ss-text-secondary); margin-bottom: 0.75rem; text-align: center;">
-                    Changes are saved locally. Click "Update Rankings" in header to save to database.
-                </div>
-                <div style="display: flex; justify-content: space-between; width: 100%;">
-                    <button type="button" class="ss-btn ss-btn-danger" onclick="editRankings.deletePlayer()" style="font-size: 0.75rem; padding: 0.5rem 1rem;">
+                <div style="display: flex; justify-content: space-between; width: 100%; align-items: center;">
+                    <button type="button" class="ss-btn ss-btn-danger" onclick="editRankings.deletePlayer()" style="font-size: 0.65rem; padding: 0.375rem 0.75rem;">
                         Delete Player
                     </button>
                     <div style="display: flex; gap: 0.75rem;">
-                        <button type="button" class="ss-btn ss-btn-secondary" onclick="editRankings.closeModal()">Cancel</button>
-                        <button type="button" class="ss-btn ss-btn-primary" onclick="editRankings.savePlayer()">Apply Changes</button>
+                        <button type="button" class="ss-btn ss-btn-secondary" onclick="editRankings.closeModal()" style="font-size: 0.65rem; padding: 0.375rem 0.75rem;">Cancel</button>
+                        <button type="button" class="ss-btn ss-btn-primary" onclick="editRankings.savePlayer()" style="font-size: 0.65rem; padding: 0.375rem 0.75rem;">Update Draft</button>
                     </div>
                 </div>
             </div>
