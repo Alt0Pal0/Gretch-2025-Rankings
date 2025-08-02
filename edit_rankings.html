@@ -101,25 +101,24 @@
             border-color: rgba(255, 255, 255, 0.5);
         }
         
+        /* Reuse exact styles from homepage */
         .players-list {
-            min-height: 500px;
-            padding: 0.375rem 0;
+            padding: 0.375rem 0; /* Add top and bottom spacing for player data */
         }
         
         .player-item {
             display: flex;
             align-items: center;
-            justify-content: space-between;
-            padding: 0.75rem 1rem;
-            border-bottom: 1px solid transparent;
-            cursor: move;
+            padding: 0.1875rem 0.625rem; /* Smaller padding for desktop */
             transition: all 0.2s ease;
-            background: white;
+            cursor: move; /* Changed from pointer to move for drag indication */
+            user-select: none; /* Prevent text selection on mobile taps */
+            -webkit-tap-highlight-color: transparent; /* Remove tap highlight on iOS */
+            position: relative; /* For edit link positioning */
         }
         
-        .player-item:hover {
-            background: rgba(251, 146, 60, 0.05);
-            border-bottom-color: var(--ss-orange-primary);
+        .player-item:hover:not(.selected) {
+            background-color: var(--ss-orange-pale);
         }
         
         .player-item.dragging {
@@ -130,32 +129,22 @@
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
         }
         
-        .player-left {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-            flex: 1;
-        }
-        
         .player-rank {
-            background: var(--ss-orange-primary);
-            color: white;
-            border-radius: 50%;
-            width: 24px;
-            height: 24px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 0.75rem;
+            font-size: 0.625rem; /* Smaller for desktop */
             font-weight: 600;
-            flex-shrink: 0;
+            color: var(--ss-text-secondary);
+            min-width: 1.25rem; /* Slightly narrower */
+            text-align: right;
+            margin-right: 0.375rem; /* Reduced margin */
+            font-family: var(--ss-font-mono);
         }
         
         .player-name {
-            font-size: 0.875rem;
-            font-weight: 500;
+            font-size: 0.6875rem; /* Smaller for desktop */
+            font-weight: 400;
             color: var(--ss-text-primary);
-            font-family: var(--ss-font-primary);
+            line-height: 1.2;
+            flex: 1; /* Take up available space */
         }
         
         .player-name.bold {
@@ -166,81 +155,137 @@
             font-style: italic;
         }
         
-        .player-indicators {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
+        /* Edit link styling */
+        .edit-link {
+            font-size: 0.5625rem;
+            color: var(--ss-orange-primary);
+            text-decoration: none;
+            font-weight: 500;
+            opacity: 0;
+            transition: opacity 0.2s ease;
             margin-left: 0.5rem;
         }
         
-        .indicator {
-            width: 6px;
-            height: 6px;
-            border-radius: 50%;
-            background: var(--ss-text-muted);
+        .player-item:hover .edit-link {
+            opacity: 1;
         }
         
-        .indicator.bold {
-            background: var(--ss-orange-primary);
+        .edit-link:hover {
+            text-decoration: underline;
         }
         
-        .indicator.italic {
-            background: var(--ss-text-secondary);
-        }
-        
+        /* Tier breaks - exact copy from homepage */
         .tier-break {
-            margin-top: 0.5rem;
-            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            margin: 0.75rem 0.625rem;
+            position: relative;
         }
         
         .tier-break.small {
-            height: 1px;
-            background: var(--ss-border);
+            margin: 0.25rem 0.625rem; /* Much less space for small breaks */
         }
         
         .tier-break.big {
-            height: 2px;
-            background: var(--ss-orange-primary);
+            margin: 1rem 0.625rem; /* More space for big breaks */
         }
         
-        .player-controls {
-            display: flex;
-            gap: 0.5rem;
-            align-items: center;
+        .tier-break::before {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: var(--ss-border);
+            opacity: 0.6;
         }
         
-        .edit-btn {
-            background: none;
-            border: 1px solid var(--ss-border);
-            border-radius: 4px;
-            padding: 0.5rem;
-            cursor: pointer;
-            color: var(--ss-text-secondary);
-            transition: all 0.2s ease;
-            font-size: 0.75rem;
+        .tier-break-text {
+            font-size: 0.4375rem; /* Smaller default for small breaks */
+            color: var(--ss-text-muted);
+            opacity: 0.7;
+            padding: 0 0.5rem;
+            background: var(--ss-white);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            font-weight: 500;
+            white-space: nowrap;
         }
         
-        .edit-btn:hover {
-            border-color: var(--ss-orange-primary);
-            color: var(--ss-orange-primary);
-            background: rgba(251, 146, 60, 0.05);
+        .tier-break::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: var(--ss-border);
+            opacity: 0.6;
         }
         
-        .delete-btn {
-            background: none;
-            border: 1px solid var(--ss-border);
-            border-radius: 4px;
-            padding: 0.25rem 0.5rem;
-            cursor: pointer;
-            color: var(--ss-text-secondary);
-            transition: all 0.2s ease;
-            font-size: 0.75rem;
+        .tier-break.big::before,
+        .tier-break.big::after {
+            height: 1.5px; /* Slightly thicker line for big breaks */
+            opacity: 0.8;
         }
         
-        .delete-btn:hover {
-            border-color: var(--ss-error);
-            color: var(--ss-error);
-            background: rgba(239, 68, 68, 0.05);
+        .tier-break.big .tier-break-text {
+            font-size: 0.5625rem; /* Slightly larger text for big breaks */
+        }
+        
+        /* Responsive design - exact copy from homepage */
+        @media (max-width: 768px) {
+            /* Restore larger text and spacing for mobile */
+            .player-item {
+                padding: 0.25rem 0.75rem; /* Original mobile padding */
+            }
+            
+            .player-rank {
+                font-size: 0.6875rem; /* Original mobile font size */
+                min-width: 1.5rem; /* Original mobile width */
+                margin-right: 0.5rem; /* Original mobile margin */
+            }
+            
+            .player-name {
+                font-size: 0.75rem; /* Original mobile font size */
+            }
+            
+            .edit-link {
+                font-size: 0.625rem;
+                opacity: 1; /* Always visible on mobile */
+            }
+            
+            .tier-break {
+                margin: 0.5rem 0.5rem;
+            }
+            
+            .tier-break.small {
+                margin: 0.1875rem 0.5rem; /* Much less space on mobile too */
+            }
+            
+            .tier-break.big {
+                margin: 0.75rem 0.5rem;
+            }
+            
+            .tier-break-text {
+                font-size: 0.375rem; /* Even smaller on mobile for small breaks */
+                padding: 0 0.375rem;
+            }
+            
+            .tier-break.big .tier-break-text {
+                font-size: 0.5rem; /* Slightly larger on mobile too */
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .player-name {
+                font-size: 0.6875rem;
+            }
+            
+            .player-rank {
+                font-size: 0.625rem;
+                min-width: 1.25rem;
+                margin-right: 0.375rem;
+            }
+            
+            .player-item {
+                padding: 0.1875rem 0.5rem;
+            }
         }
         
         /* Modal Styles */

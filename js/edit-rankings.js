@@ -101,65 +101,55 @@ class EditRankings {
     renderPlayers() {
         ['QB', 'RB', 'WR', 'TE'].forEach(position => {
             const container = document.getElementById(`${position.toLowerCase()}-list`);
-            container.innerHTML = '';
+            let html = '';
             
             const players = this.playersData[position] || [];
             players.forEach((player, index) => {
-                const playerItem = this.createPlayerItem(player, index + 1);
-                container.appendChild(playerItem);
+                // Create player HTML - use same structure as homepage
+                const rank = player.position_rank;
+                const boldClass = player.is_bold ? ' bold' : '';
+                const italicClass = player.is_italic ? ' italic' : '';
                 
-                // Add tier breaks
+                html += `
+                    <div class="player-item" draggable="true" data-player-id="${player.id}" data-position="${player.position}">
+                        <div class="player-rank">${rank}</div>
+                        <div class="player-name${boldClass}${italicClass}">${player.name}</div>
+                        <a href="#" class="edit-link" onclick="editRankings.editPlayer(${player.id}); return false;">edit</a>
+                    </div>
+                `;
+                
+                // Add tier breaks after player - exactly like homepage
                 if (player.small_tier_break) {
-                    const smallBreak = document.createElement('div');
-                    smallBreak.className = 'tier-break small';
-                    container.appendChild(smallBreak);
+                    html += this.createTierBreakHTML('small');
                 }
                 if (player.big_tier_break) {
-                    const bigBreak = document.createElement('div');
-                    bigBreak.className = 'tier-break big';
-                    container.appendChild(bigBreak);
+                    html += this.createTierBreakHTML('big');
                 }
+            });
+            
+            container.innerHTML = html;
+            
+            // Set up drag and drop for all player items
+            container.querySelectorAll('.player-item').forEach(item => {
+                this.setupDragAndDrop(item);
             });
 
             this.setupDropZone(container, position);
         });
     }
 
-    createPlayerItem(player, rank) {
-        const item = document.createElement('div');
-        item.className = 'player-item';
-        item.draggable = true;
-        item.dataset.playerId = player.id;
-        item.dataset.position = player.position;
 
-        // Build class names for styling
-        let nameClasses = 'player-name';
-        if (player.is_bold) nameClasses += ' bold';
-        if (player.is_italic) nameClasses += ' italic';
 
-        // Build indicators
-        let indicators = '';
-        if (player.is_bold || player.is_italic) {
-            indicators = '<div class="player-indicators">';
-            if (player.is_bold) indicators += '<div class="indicator bold" title="Target"></div>';
-            if (player.is_italic) indicators += '<div class="indicator italic" title="Fade"></div>';
-            indicators += '</div>';
-        }
-
-        item.innerHTML = `
-            <div class="player-left">
-                <div class="player-rank">${rank}</div>
-                <div class="${nameClasses}">${player.name}</div>
-                ${indicators}
-            </div>
-            <div class="player-controls">
-                <button class="edit-btn" onclick="editRankings.editPlayer(${player.id})">Edit</button>
-                <button class="delete-btn" onclick="editRankings.deletePlayer(${player.id})">×</button>
+    // Function to create tier break HTML - exact copy from homepage
+    createTierBreakHTML(type) {
+        const breakType = type === 'big' ? 'big' : 'small';
+        const breakText = type === 'big' ? 'Big Tier Break' : 'Small Tier Break';
+        
+        return `
+            <div class="tier-break ${breakType}">
+                <span class="tier-break-text">${breakText}</span>
             </div>
         `;
-
-        this.setupDragAndDrop(item);
-        return item;
     }
 
     setupDragAndDrop(item) {
@@ -317,23 +307,7 @@ class EditRankings {
         this.markDirty();
     }
 
-    deletePlayer(playerId) {
-        if (!confirm('Are you sure you want to delete this player?')) return;
 
-        const player = this.findPlayerById(playerId);
-        if (!player) return;
-
-        const position = player.position;
-        this.playersData[position] = this.playersData[position].filter(p => p.id !== playerId);
-
-        // Re-rank remaining players
-        this.playersData[position].forEach((p, index) => {
-            p.position_rank = index + 1;
-        });
-
-        this.renderPlayers();
-        this.markDirty();
-    }
 
     addNewPlayer(position) {
         const newPlayer = {
