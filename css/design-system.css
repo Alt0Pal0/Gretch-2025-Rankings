@@ -271,7 +271,7 @@
 
 .header-title {
   font-family: var(--ss-font-display);
-  font-size: 1.25rem;
+  font-size: 0.9375rem;
   font-weight: 600;
   color: var(--ss-text-primary);
   margin: 0;
@@ -279,7 +279,7 @@
 }
 
 .header-legend {
-  font-size: 0.75rem;
+  font-size: 0.6875rem;
   color: var(--ss-text-muted);
   line-height: 1.3;
 }
@@ -528,11 +528,11 @@
   }
   
   .header-title {
-    font-size: 1rem;
+    font-size: 0.8125rem;
   }
   
   .header-legend {
-    font-size: 0.6875rem;
+    font-size: 0.625rem;
   }
   
 
