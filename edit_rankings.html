@@ -600,6 +600,56 @@
             border-radius: var(--ss-border-radius);
             margin: 1rem 0;
         }
+        
+        /* Form row layout for compact arrangement */
+        .form-row {
+            display: flex;
+            gap: 0.75rem;
+            margin-bottom: 0.75rem;
+        }
+        
+        .form-row .form-group {
+            flex: 1;
+            margin-bottom: 0;
+        }
+        
+        /* Modal buttons to match add player button styling */
+        .modal-btn {
+            border: none;
+            padding: 0.375rem 0.75rem;
+            border-radius: 4px;
+            font-size: 0.6875rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-family: var(--ss-font-primary);
+        }
+        
+        .modal-btn-primary {
+            background: var(--ss-orange-primary);
+            color: white;
+        }
+        
+        .modal-btn-primary:hover {
+            background: var(--ss-orange-dark);
+        }
+        
+        .modal-btn-secondary {
+            background: var(--ss-gray-medium);
+            color: white;
+        }
+        
+        .modal-btn-secondary:hover {
+            background: var(--ss-gray-dark);
+        }
+        
+        .modal-btn-danger {
+            background: var(--ss-error);
+            color: white;
+        }
+        
+        .modal-btn-danger:hover {
+            background: #dc2626;
+        }
     </style>
 </head>
 <body>
@@ -677,88 +727,84 @@
                 <button class="modal-close">&times;</button>
             </div>
             <form class="modal-form">
-                <div class="form-group">
-                    <label class="form-label">Player Name</label>
-                    <input type="text" id="edit-name" class="form-input" placeholder="Enter player name">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">Player Name</label>
+                        <input type="text" id="edit-name" class="form-input" placeholder="Enter player name">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Ranking</label>
+                        <input type="number" id="edit-rank" class="form-input" placeholder="1" min="1">
+                    </div>
                 </div>
-                <div class="form-group">
-                    <label class="form-label">Ranking</label>
-                    <input type="number" id="edit-rank" class="form-input" placeholder="1" min="1">
-                </div>
-                <div class="form-group">
-                    <label class="form-label">NFL Team</label>
-                    <select id="edit-team" class="form-select">
-                        <option value="TBD">TBD</option>
-                        <option value="ARZ">Arizona Cardinals</option>
-                        <option value="ATL">Atlanta Falcons</option>
-                        <option value="BLT">Baltimore Ravens</option>
-                        <option value="BUF">Buffalo Bills</option>
-                        <option value="CAR">Carolina Panthers</option>
-                        <option value="CHI">Chicago Bears</option>
-                        <option value="CIN">Cincinnati Bengals</option>
-                        <option value="CLV">Cleveland Browns</option>
-                        <option value="DAL">Dallas Cowboys</option>
-                        <option value="DEN">Denver Broncos</option>
-                        <option value="DET">Detroit Lions</option>
-                        <option value="GB">Green Bay Packers</option>
-                        <option value="HST">Houston Texans</option>
-                        <option value="IND">Indianapolis Colts</option>
-                        <option value="JAX">Jacksonville Jaguars</option>
-                        <option value="KC">Kansas City Chiefs</option>
-                        <option value="LA">Los Angeles Rams</option>
-                        <option value="LAC">Los Angeles Chargers</option>
-                        <option value="MIA">Miami Dolphins</option>
-                        <option value="MIN">Minnesota Vikings</option>
-                        <option value="NE">New England Patriots</option>
-                        <option value="NO">New Orleans Saints</option>
-                        <option value="NYG">New York Giants</option>
-                        <option value="NYJ">New York Jets</option>
-                        <option value="OAK">Las Vegas Raiders</option>
-                        <option value="PHI">Philadelphia Eagles</option>
-                        <option value="PIT">Pittsburgh Steelers</option>
-                        <option value="SEA">Seattle Seahawks</option>
-                        <option value="SF">San Francisco 49ers</option>
-                        <option value="TB">Tampa Bay Buccaneers</option>
-                        <option value="TEN">Tennessee Titans</option>
-                        <option value="WAS">Washington Commanders</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label class="form-label">Position</label>
-                    <select id="edit-position" class="form-select">
-                        <option value="QB">Quarterback</option>
-                        <option value="RB">Running Back</option>
-                        <option value="WR">Wide Receiver</option>
-                        <option value="TE">Tight End</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label class="form-label">Bye Week</label>
-                    <select id="edit-bye-week" class="form-select">
-                        <option value="">Select Bye Week</option>
-                        <option value="1">Week 1</option>
-                        <option value="2">Week 2</option>
-                        <option value="3">Week 3</option>
-                        <option value="4">Week 4</option>
-                        <option value="5">Week 5</option>
-                        <option value="6">Week 6</option>
-                        <option value="7">Week 7</option>
-                        <option value="8">Week 8</option>
-                        <option value="9">Week 9</option>
-                        <option value="10">Week 10</option>
-                        <option value="11">Week 11</option>
-                        <option value="12">Week 12</option>
-                        <option value="13">Week 13</option>
-                        <option value="14">Week 14</option>
-                        <option value="15">Week 15</option>
-                        <option value="16">Week 16</option>
-                        <option value="17">Week 17</option>
-                        <option value="18">Week 18</option>
-                    </select>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">NFL Team</label>
+                        <select id="edit-team" class="form-select">
+                            <option value="TBD">TBD</option>
+                            <option value="ARZ">ARZ</option>
+                            <option value="ATL">ATL</option>
+                            <option value="BLT">BLT</option>
+                            <option value="BUF">BUF</option>
+                            <option value="CAR">CAR</option>
+                            <option value="CHI">CHI</option>
+                            <option value="CIN">CIN</option>
+                            <option value="CLV">CLV</option>
+                            <option value="DAL">DAL</option>
+                            <option value="DEN">DEN</option>
+                            <option value="DET">DET</option>
+                            <option value="GB">GB</option>
+                            <option value="HST">HST</option>
+                            <option value="IND">IND</option>
+                            <option value="JAX">JAX</option>
+                            <option value="KC">KC</option>
+                            <option value="LA">LA</option>
+                            <option value="LAC">LAC</option>
+                            <option value="MIA">MIA</option>
+                            <option value="MIN">MIN</option>
+                            <option value="NE">NE</option>
+                            <option value="NO">NO</option>
+                            <option value="NYG">NYG</option>
+                            <option value="NYJ">NYJ</option>
+                            <option value="OAK">OAK</option>
+                            <option value="PHI">PHI</option>
+                            <option value="PIT">PIT</option>
+                            <option value="SEA">SEA</option>
+                            <option value="SF">SF</option>
+                            <option value="TB">TB</option>
+                            <option value="TEN">TEN</option>
+                            <option value="WAS">WAS</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Position</label>
+                        <select id="edit-position" class="form-select">
+                            <option value="QB">QB</option>
+                            <option value="RB">RB</option>
+                            <option value="WR">WR</option>
+                            <option value="TE">TE</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Bye Week</label>
+                        <select id="edit-bye-week" class="form-select">
+                            <option value="">Select</option>
+                            <option value="5">5</option>
+                            <option value="6">6</option>
+                            <option value="7">7</option>
+                            <option value="8">8</option>
+                            <option value="9">9</option>
+                            <option value="10">10</option>
+                            <option value="11">11</option>
+                            <option value="12">12</option>
+                            <option value="13">13</option>
+                            <option value="14">14</option>
+                        </select>
+                    </div>
                 </div>
                 <div class="form-group full-width">
-                    <label class="form-label">News Copy</label>
-                    <textarea id="edit-news" class="form-textarea" placeholder="Recent news about this player..."></textarea>
+                    <label class="form-label">Gretch's Thoughts:</label>
+                    <textarea id="edit-news" class="form-textarea" placeholder="Add an optional note of context..."></textarea>
                 </div>
                 <div class="form-group">
                     <label class="form-label">Formatting</label>
@@ -797,12 +843,12 @@
             </form>
             <div class="modal-actions">
                 <div style="display: flex; justify-content: space-between; width: 100%; align-items: center;">
-                    <button type="button" class="ss-btn ss-btn-danger" onclick="editRankings.deletePlayer()" style="font-size: 0.65rem; padding: 0.375rem 0.75rem;">
+                    <button type="button" class="modal-btn modal-btn-danger" onclick="editRankings.deletePlayer()">
                         Delete Player
                     </button>
                     <div style="display: flex; gap: 0.75rem;">
-                        <button type="button" class="ss-btn ss-btn-secondary" onclick="editRankings.closeModal()" style="font-size: 0.65rem; padding: 0.375rem 0.75rem;">Cancel</button>
-                        <button type="button" class="ss-btn ss-btn-primary" onclick="editRankings.savePlayer()" style="font-size: 0.65rem; padding: 0.375rem 0.75rem;">Update Draft</button>
+                        <button type="button" class="modal-btn modal-btn-secondary" onclick="editRankings.closeModal()">Cancel</button>
+                        <button type="button" class="modal-btn modal-btn-primary" onclick="editRankings.savePlayer()">Update Draft</button>
                     </div>
                 </div>
             </div>
