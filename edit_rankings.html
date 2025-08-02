@@ -10,6 +10,16 @@
     <style>
         /* Copy exact styles from homepage */
         
+        body {
+            font-family: var(--ss-font-primary);
+            margin: 0;
+            background-color: var(--ss-light-gray);
+            color: var(--ss-text-primary);
+            /* Prevent horizontal bouncing/drift on mobile */
+            overscroll-behavior-x: none;
+            touch-action: pan-y pinch-zoom;
+        }
+        
         .logo-header {
             background: var(--ss-white);
             position: relative;
@@ -543,6 +553,15 @@
         .radio-input {
             width: 14px;
             height: 14px;
+        }
+        
+        /* Style the formatting labels to match their function */
+        label[for="edit-bold"] {
+            font-weight: 700 !important;
+        }
+        
+        label[for="edit-italic"] {
+            font-style: italic !important;
         }
         
         .modal-actions {

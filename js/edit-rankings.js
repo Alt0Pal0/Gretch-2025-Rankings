@@ -76,6 +76,11 @@ class EditRankings {
             this.updateRankings();
         });
 
+        // Download button - opens homepage in new tab and triggers print dialog
+        document.getElementById('download-btn').addEventListener('click', () => {
+            this.downloadPDF();
+        });
+
         // Preview button - opens homepage in new tab to see how rankings look
         document.getElementById('preview-btn').addEventListener('click', () => {
             window.open('/', '_blank');
@@ -106,6 +111,14 @@ class EditRankings {
             if (positionSelect) {
                 positionSelect.addEventListener('change', (e) => {
                     this.updateRankingMaxValue(e.target.value);
+                });
+            }
+
+            // Set up download button (in case header loads after this script)
+            const downloadBtn = document.getElementById('download-btn');
+            if (downloadBtn) {
+                downloadBtn.addEventListener('click', () => {
+                    this.downloadPDF();
                 });
             }
         }, 100);
@@ -474,6 +487,30 @@ class EditRankings {
         const updateBtn = document.getElementById('update-rankings-btn');
         if (updateBtn && !updateBtn.textContent.includes('*')) {
             updateBtn.textContent = 'Update Rankings *';
+        }
+    }
+
+    downloadPDF() {
+        // Open homepage in a new window and trigger print dialog
+        const printWindow = window.open('/', '_blank');
+        
+        if (printWindow) {
+            // Use a more reliable approach to detect when page is loaded
+            const checkLoaded = () => {
+                if (printWindow.document.readyState === 'complete') {
+                    setTimeout(() => {
+                        printWindow.print();
+                    }, 1000); // Longer delay to ensure everything is rendered
+                } else {
+                    setTimeout(checkLoaded, 100);
+                }
+            };
+            
+            // Start checking after a brief delay
+            setTimeout(checkLoaded, 500);
+        } else {
+            // Fallback if popup is blocked
+            alert('Please allow popups for this site to download PDF, or use Preview button to open the page and print manually.');
         }
     }
 
