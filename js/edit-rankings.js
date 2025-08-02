@@ -44,19 +44,22 @@ class EditRankings {
     }
 
     updateVersionDisplay() {
-        const versionElement = document.getElementById('current-version');
-        const totalPlayersElement = document.getElementById('total-players');
-        
-        if (this.currentVersion && versionElement) {
-            const versionDate = new Date(this.currentVersion.version_date);
-            const formattedDate = `${versionDate.getMonth() + 1}/${versionDate.getDate()}/${versionDate.getFullYear().toString().slice(-2)}`;
-            versionElement.textContent = `v${this.currentVersion.version_number} - ${formattedDate}`;
-        }
-        
-        if (totalPlayersElement) {
-            const total = Object.values(this.playersData).reduce((sum, players) => sum + players.length, 0);
-            totalPlayersElement.textContent = total;
-        }
+        // Update version in header if header is loaded
+        setTimeout(() => {
+            const versionElement = document.querySelector('.header-version');
+            const totalPlayersElement = document.getElementById('total-players');
+            
+            if (this.currentVersion && versionElement) {
+                const versionDate = new Date(this.currentVersion.version_date);
+                const formattedDate = `${versionDate.getMonth() + 1}/${versionDate.getDate()}/${versionDate.getFullYear().toString().slice(-2)}`;
+                versionElement.textContent = `v${this.currentVersion.version_number} - ${formattedDate}`;
+            }
+            
+            if (totalPlayersElement) {
+                const total = Object.values(this.playersData).reduce((sum, players) => sum + players.length, 0);
+                totalPlayersElement.textContent = total;
+            }
+        }, 100); // Small delay to ensure header is loaded
     }
 
     setupEventListeners() {

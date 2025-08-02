@@ -3,13 +3,95 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Edit Rankings - Gretch 2025 Player Rankings</title>
+    <title>Edit Rankings - Gretch 2025 Rankings</title>
+    <link rel="icon" type="image/png" href="assets/images/favicon.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/design-system.css">
-    <link rel="icon" href="assets/images/favicon.png" type="image/png">
-    
     <style>
-        /* Copy exact styles from homepage */
+        .edit-header {
+            background: var(--ss-background);
+            border-bottom: 1px solid var(--ss-border);
+            padding: 1rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
         
+        .edit-header-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+        
+        .edit-title {
+            font-family: var(--ss-font-display);
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--ss-text-primary);
+            margin: 0;
+        }
+        
+        .edit-actions {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+        
+        .version-info {
+            font-size: 0.875rem;
+            color: var(--ss-text-secondary);
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        .edit-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem 1rem;
+        }
+        
+        .positions-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 0;
+            border-radius: 0 0 0.5rem 0.5rem; /* Only bottom corners rounded */
+            overflow: hidden;
+            box-shadow: var(--ss-shadow-sm);
+            border: 1px solid var(--ss-border);
+            border-top: none; /* Remove top border to connect with headers */
+            background: var(--ss-white);
+        }
+        
+        .position-column {
+            background: var(--ss-white);
+        }
+        
+        .add-player-btn {
+            background: var(--ss-orange-primary);
+            border: none;
+            color: white;
+            padding: 0.5rem 1rem;
+            margin: 0.5rem 1rem;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            width: calc(100% - 2rem);
+        }
+        
+        .add-player-btn:hover {
+            background: var(--ss-orange-dark);
+        }
+        
+        /* Header styles - copied from homepage */
         .logo-header {
             background: var(--ss-white);
             position: relative;
@@ -18,10 +100,6 @@
             border-bottom: 1px solid var(--ss-border);
         }
 
-        .logo-header.scroll-hidden {
-            transform: translateY(-100%);
-        }
-        
         .table-headers {
             background: var(--ss-white);
             position: sticky;
@@ -58,7 +136,63 @@
             background: linear-gradient(90deg, var(--ss-orange-primary), var(--ss-cyan), var(--ss-teal));
         }
         
-        /* Mobile-specific styles */
+        .table-header-title {
+            font-size: 0.875rem;
+            font-weight: 600;
+            font-family: var(--ss-font-display);
+            margin: 0;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--ss-text-secondary);
+        }
+        
+        /* Edit actions bar */
+        .edit-actions-bar {
+            background: var(--ss-light-gray);
+            border-bottom: 1px solid var(--ss-border);
+            position: relative;
+            z-index: 50;
+        }
+        
+        .edit-actions-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .edit-info {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        .edit-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin: 0;
+            color: var(--ss-text-primary);
+            font-family: var(--ss-font-display);
+        }
+        
+        .version-info {
+            font-size: 0.875rem;
+            color: var(--ss-text-secondary);
+        }
+        
+        .separator {
+            margin: 0 0.5rem;
+            color: var(--ss-text-muted);
+        }
+        
+        .edit-buttons {
+            display: flex;
+            gap: 0.75rem;
+        }
+        
+        /* Mobile responsive for headers */
         @media (max-width: 768px) {
             .table-headers {
                 background: var(--ss-white);
@@ -90,45 +224,30 @@
             .table-header-item.mobile-active::before {
                 left: 0;
                 right: 0;
-                /* Remove width: 100% to avoid conflicts with left/right positioning */
+            }
+            
+            .table-header-title {
+                font-size: 0.75rem;
+            }
+            
+            .edit-actions-content {
+                flex-direction: column;
+                gap: 1rem;
+                text-align: center;
+            }
+            
+            .edit-info {
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+            
+            .edit-buttons {
+                width: 100%;
+                justify-content: center;
             }
         }
         
-        .table-header-title {
-            font-size: 0.875rem;
-            font-weight: 600;
-            font-family: var(--ss-font-display);
-            margin: 0;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-            color: var(--ss-text-secondary);
-        }
-        
-        .rankings-container {
-            max-width: 1400px;
-            margin: 0 auto;
-            padding: 0 1rem 1rem 1rem; /* Only bottom and side padding */
-            /* Additional mobile touch optimization */
-            overscroll-behavior-x: none;
-            touch-action: pan-y;
-        }
-        
-        .positions-grid {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 0;
-            border-radius: 0 0 0.5rem 0.5rem; /* Only bottom corners rounded */
-            overflow: hidden;
-            box-shadow: var(--ss-shadow-sm);
-            border: 1px solid var(--ss-border);
-            border-top: none; /* Remove top border to connect with headers */
-            background: var(--ss-white);
-        }
-        
-        .position-column {
-            background: var(--ss-white);
-        }
-        
+        /* Reuse exact styles from homepage */
         .players-list {
             padding: 0.375rem 0; /* Add top and bottom spacing for player data */
         }
@@ -154,25 +273,6 @@
             background: rgba(251, 146, 60, 0.1);
             border-radius: 4px;
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-        }
-        
-        .player-item.selected {
-            background-color: var(--ss-light-gray);
-            opacity: 0.3; /* Very faint so available players really pop */
-        }
-        
-        .player-item.selected .player-name {
-            text-decoration: line-through;
-            color: var(--ss-text-muted); /* More muted for better contrast with available players */
-        }
-        
-        .player-item.selected .player-rank {
-            color: var(--ss-text-muted); /* More muted for better contrast with available players */
-        }
-        
-        .player-item.selected:hover {
-            background-color: var(--ss-border);
-            opacity: 0.45; /* Slightly more visible on hover for interaction feedback */
         }
         
         .player-rank {
@@ -218,24 +318,6 @@
         
         .edit-link:hover {
             text-decoration: underline;
-        }
-        
-        /* Add player buttons */
-        .add-player-btn {
-            background: var(--ss-orange-primary);
-            border: none;
-            color: white;
-            padding: 0.5rem 1rem;
-            margin: 0.5rem 0.625rem;
-            border-radius: 4px;
-            font-size: 0.75rem;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            width: calc(100% - 1.25rem);
-        }
-        
-        .add-player-btn:hover {
-            background: var(--ss-orange-dark);
         }
         
         /* Tier breaks - exact copy from homepage */
@@ -292,39 +374,8 @@
             font-size: 0.5625rem; /* Slightly larger text for big breaks */
         }
         
-        /* Responsive Design - exact copy from homepage */
+        /* Responsive design - exact copy from homepage */
         @media (max-width: 768px) {
-            .positions-grid {
-                grid-template-columns: 1fr;
-            }
-            
-            .table-headers-content {
-                grid-template-columns: 1fr;
-                padding: 0 0.5rem;
-            }
-            
-            .rankings-container {
-                padding: 0.5rem;
-            }
-            
-            .position-column {
-                border-right: none;
-                border-bottom: 1px solid var(--ss-border);
-            }
-            
-            .position-column:last-child {
-                border-bottom: none;
-            }
-            
-            .table-header-item {
-                border-right: none;
-                border-bottom: 1px solid var(--ss-border);
-            }
-            
-            .table-header-item:last-child {
-                border-bottom: none;
-            }
-            
             /* Restore larger text and spacing for mobile */
             .player-item {
                 padding: 0.25rem 0.75rem; /* Original mobile padding */
@@ -368,14 +419,6 @@
         }
         
         @media (max-width: 480px) {
-            .table-header-title {
-                font-size: 0.75rem;
-            }
-            
-            .table-header-item {
-                padding: 0.375rem 0.75rem;
-            }
-            
             .player-name {
                 font-size: 0.6875rem;
             }
@@ -548,12 +591,69 @@
             border-radius: var(--ss-border-radius);
             margin: 1rem 0;
         }
+        
+        .drop-zone {
+            min-height: 100px;
+            border: 2px dashed var(--ss-border);
+            border-radius: var(--ss-border-radius);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--ss-text-muted);
+            font-size: 0.875rem;
+            margin: 1rem 0;
+            transition: all 0.2s ease;
+        }
+        
+        .drop-zone.drag-over {
+            border-color: var(--ss-orange-primary);
+            background: rgba(251, 146, 60, 0.05);
+        }
+        
+        @media (max-width: 768px) {
+            .positions-grid {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+            
+            .edit-header-content {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .edit-actions {
+                width: 100%;
+                justify-content: center;
+            }
+            
+            .player-form {
+                grid-template-columns: 1fr;
+            }
+        }
     </style>
 </head>
 <body>
     <!-- Logo Header -->
     <div class="logo-header" id="logo-header">
         <div id="header-placeholder"></div>
+    </div>
+    
+    <!-- Edit Actions Bar -->
+    <div class="edit-actions-bar">
+        <div class="edit-actions-content">
+            <div class="edit-info">
+                <h1 class="edit-title">Edit Rankings</h1>
+                <div class="version-info">
+                    <span>Current Version: <span id="current-version">Loading...</span></span>
+                    <span class="separator">|</span>
+                    <span>Total Players: <span id="total-players">0</span></span>
+                </div>
+            </div>
+            <div class="edit-buttons">
+                <button id="preview-btn" class="ss-btn ss-btn-secondary">Preview</button>
+                <button id="update-rankings-btn" class="ss-btn ss-btn-primary">Update Rankings</button>
+            </div>
+        </div>
     </div>
     
     <!-- Sticky Table Headers -->
@@ -573,7 +673,7 @@
             </div>
         </div>
     </div>
-    
+
     <main class="rankings-container">
         <div id="loading" class="loading">
             Loading player data...
@@ -615,7 +715,7 @@
                 <button class="add-player-btn" data-position="TE">+ Add TE</button>
             </div>
         </div>
-    </main>
+    </div>
 
     <!-- Edit Player Modal -->
     <div id="edit-modal" class="modal">
@@ -740,11 +840,12 @@
 
     <script src="js/edit-rankings.js"></script>
     <script>
-        // Load edit header component
-        fetch('components/edit-header.html')
+        // Load header component
+        fetch('components/header.html')
             .then(response => response.text())
             .then(html => {
                 document.getElementById('header-placeholder').innerHTML = html;
+                // Initialize header functionality if needed
             });
     </script>
 </body>
