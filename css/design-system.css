@@ -244,9 +244,10 @@
   margin: 0 auto;
 }
 
+/* On desktop, row wrappers should be invisible - elements flow normally */
 .header-row-top,
 .header-row-bottom {
-  display: contents; /* On desktop, these act as if they don't exist */
+  display: contents; /* These act as if they don't exist on desktop */
 }
 
 #reset-btn {
@@ -274,7 +275,7 @@
   display: flex;
   flex-direction: row;
   align-items: center;
-  margin-left: 0;
+  margin-left: 1.5rem; /* Space after title on desktop */
   gap: 1.5rem;
 }
 
@@ -285,8 +286,7 @@
   color: var(--ss-text-secondary);
   margin: 0;
   line-height: 1.2;
-  margin-left: 2rem; /* Add margin for desktop since it's no longer inside header-info */
-  margin-right: 1.5rem; /* Space before version/legend */
+  margin-left: 2rem; /* Space after logo on desktop */
 }
 
 .header-version {
@@ -565,14 +565,14 @@
   }
   
   .header-info {
-    margin-left: 0;
+    margin-left: 0; /* Reset desktop margin */
     gap: 0.75rem;
     flex: 0;
   }
   
   .header-title {
     font-size: 0.8125rem;
-    margin: 0;
+    margin: 0; /* Reset desktop margins */
     flex: 1;
   }
   
