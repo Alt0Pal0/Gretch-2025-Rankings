@@ -495,7 +495,7 @@
         }
         
         .form-label {
-            font-size: 0.75rem;
+            font-size: 0.6875rem; /* Match player name font size */
             font-weight: 500;
             color: var(--ss-text-secondary);
             margin-bottom: 0.25rem;
@@ -505,10 +505,17 @@
         .form-input, .form-select, .form-textarea {
             border: 1px solid var(--ss-border);
             border-radius: 4px;
-            padding: 0.5rem;
-            font-size: 0.75rem;
+            padding: 0.375rem; /* More compact padding */
+            font-size: 0.6875rem; /* Match player name font size */
             transition: border-color 0.2s ease;
             font-family: var(--ss-font-primary);
+        }
+        
+        /* Special styling for ranking input to match player rank display */
+        #edit-rank {
+            font-family: var(--ss-font-mono); /* Match player rank font */
+            font-size: 0.625rem; /* Match player rank font size */
+            text-align: center;
         }
         
         .form-input:focus, .form-select:focus, .form-textarea:focus {
@@ -519,7 +526,7 @@
         
         .form-textarea {
             resize: vertical;
-            min-height: 60px;
+            min-height: 50px; /* Slightly more compact */
         }
         
         .form-checkbox {
@@ -733,6 +740,15 @@
                         <input type="text" id="edit-name" class="form-input" placeholder="Enter player name">
                     </div>
                     <div class="form-group">
+                        <label class="form-label">Position</label>
+                        <select id="edit-position" class="form-select">
+                            <option value="QB">QB</option>
+                            <option value="RB">RB</option>
+                            <option value="WR">WR</option>
+                            <option value="TE">TE</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
                         <label class="form-label">Ranking</label>
                         <input type="number" id="edit-rank" class="form-input" placeholder="1" min="1">
                     </div>
@@ -777,17 +793,6 @@
                         </select>
                     </div>
                     <div class="form-group">
-                        <label class="form-label">Position</label>
-                        <select id="edit-position" class="form-select">
-                            <option value="QB">QB</option>
-                            <option value="RB">RB</option>
-                            <option value="WR">WR</option>
-                            <option value="TE">TE</option>
-                        </select>
-                    </div>
-                </div>
-                <div class="form-row">
-                    <div class="form-group" style="max-width: 200px;">
                         <label class="form-label">Bye Week</label>
                         <select id="edit-bye-week" class="form-select">
                             <option value="">Select</option>
