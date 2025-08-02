@@ -76,7 +76,7 @@ class EditRankings {
             this.updateRankings();
         });
 
-        // Preview button
+        // Preview button - opens homepage in new tab to see how rankings look
         document.getElementById('preview-btn').addEventListener('click', () => {
             window.open('/', '_blank');
         });
