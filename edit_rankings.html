@@ -600,6 +600,13 @@
             border-radius: var(--ss-border-radius);
             margin: 1rem 0;
         }
+        
+        /* Pulse animation for unsaved changes button */
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.7; }
+            100% { opacity: 1; }
+        }
     </style>
 </head>
 <body>
@@ -796,8 +803,11 @@
                 </div>
             </form>
             <div class="modal-actions">
+                <div style="font-size: 0.65rem; color: var(--ss-text-secondary); margin-bottom: 0.75rem; text-align: center;">
+                    Changes are saved locally. Click "Update Rankings" in header to save to database.
+                </div>
                 <button type="button" class="ss-btn ss-btn-secondary" onclick="editRankings.closeModal()">Cancel</button>
-                <button type="button" class="ss-btn ss-btn-primary" onclick="editRankings.savePlayer()">Save Player</button>
+                <button type="button" class="ss-btn ss-btn-primary" onclick="editRankings.savePlayer()">Apply Changes</button>
             </div>
         </div>
     </div>

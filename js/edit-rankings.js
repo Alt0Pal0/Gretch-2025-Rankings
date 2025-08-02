@@ -14,6 +14,7 @@ class EditRankings {
         try {
             await this.loadData();
             this.setupEventListeners();
+            this.setupBeforeUnloadWarning();
             this.renderPlayers();
             this.hideLoading();
         } catch (error) {
@@ -461,9 +462,11 @@ class EditRankings {
             this.showSuccess('Rankings updated successfully!');
             this.isDirty = false;
             
-            // Reset button text
+            // Reset button appearance
             const updateBtn = document.getElementById('update-rankings-btn');
             updateBtn.textContent = 'Update Rankings';
+            updateBtn.style.background = '';
+            updateBtn.style.animation = '';
             
             // Reload data to get new version info
             await this.loadData();
@@ -482,7 +485,19 @@ class EditRankings {
         const updateBtn = document.getElementById('update-rankings-btn');
         if (updateBtn && !updateBtn.textContent.includes('*')) {
             updateBtn.textContent = 'Update Rankings *';
+            updateBtn.style.background = 'var(--ss-orange-primary)';
+            updateBtn.style.animation = 'pulse 2s infinite';
         }
+    }
+
+    setupBeforeUnloadWarning() {
+        window.addEventListener('beforeunload', (e) => {
+            if (this.isDirty) {
+                e.preventDefault();
+                e.returnValue = 'You have unsaved changes. Are you sure you want to leave?';
+                return 'You have unsaved changes. Are you sure you want to leave?';
+            }
+        });
     }
 
     downloadPDF() {
