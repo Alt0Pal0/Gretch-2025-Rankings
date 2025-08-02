@@ -527,6 +527,24 @@
             margin-top: 0.25rem;
         }
         
+        .radio-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            margin-top: 0.25rem;
+        }
+        
+        .form-radio {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .radio-input {
+            width: 14px;
+            height: 14px;
+        }
+        
         .modal-actions {
             display: flex;
             justify-content: flex-end;
@@ -717,27 +735,35 @@
                 </div>
                 <div class="form-group">
                     <label class="form-label">Formatting</label>
-                    <div class="checkbox-group">
-                        <div class="form-checkbox">
-                            <input type="checkbox" id="edit-bold" class="checkbox-input">
+                    <div class="radio-group">
+                        <div class="form-radio">
+                            <input type="radio" id="edit-plain" name="formatting" value="plain" class="radio-input">
+                            <label for="edit-plain" class="form-label">Plain</label>
+                        </div>
+                        <div class="form-radio">
+                            <input type="radio" id="edit-bold" name="formatting" value="bold" class="radio-input">
                             <label for="edit-bold" class="form-label">Bold (Target)</label>
                         </div>
-                        <div class="form-checkbox">
-                            <input type="checkbox" id="edit-italic" class="checkbox-input">
+                        <div class="form-radio">
+                            <input type="radio" id="edit-italic" name="formatting" value="italic" class="radio-input">
                             <label for="edit-italic" class="form-label">Italic (Fade)</label>
                         </div>
                     </div>
                 </div>
                 <div class="form-group">
-                    <label class="form-label">Tier Breaks</label>
-                    <div class="checkbox-group">
-                        <div class="form-checkbox">
-                            <input type="checkbox" id="edit-small-tier" class="checkbox-input">
-                            <label for="edit-small-tier" class="form-label">Small Tier Break</label>
+                    <label class="form-label">Tier Break</label>
+                    <div class="radio-group">
+                        <div class="form-radio">
+                            <input type="radio" id="edit-no-tier" name="tier-break" value="none" class="radio-input">
+                            <label for="edit-no-tier" class="form-label">No Break</label>
                         </div>
-                        <div class="form-checkbox">
-                            <input type="checkbox" id="edit-big-tier" class="checkbox-input">
-                            <label for="edit-big-tier" class="form-label">Big Tier Break</label>
+                        <div class="form-radio">
+                            <input type="radio" id="edit-small-tier" name="tier-break" value="small" class="radio-input">
+                            <label for="edit-small-tier" class="form-label">Small Break</label>
+                        </div>
+                        <div class="form-radio">
+                            <input type="radio" id="edit-big-tier" name="tier-break" value="big" class="radio-input">
+                            <label for="edit-big-tier" class="form-label">Big Break</label>
                         </div>
                     </div>
                 </div>

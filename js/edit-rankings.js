@@ -254,10 +254,24 @@ class EditRankings {
         document.getElementById('edit-position').value = player.position || 'QB';
         document.getElementById('edit-bye-week').value = player.bye_week || '';
         document.getElementById('edit-news').value = player.news_copy || '';
-        document.getElementById('edit-bold').checked = player.is_bold || false;
-        document.getElementById('edit-italic').checked = player.is_italic || false;
-        document.getElementById('edit-small-tier').checked = player.small_tier_break || false;
-        document.getElementById('edit-big-tier').checked = player.big_tier_break || false;
+        
+        // Set formatting radio button
+        if (player.is_bold) {
+            document.getElementById('edit-bold').checked = true;
+        } else if (player.is_italic) {
+            document.getElementById('edit-italic').checked = true;
+        } else {
+            document.getElementById('edit-plain').checked = true;
+        }
+        
+        // Set tier break radio button
+        if (player.small_tier_break) {
+            document.getElementById('edit-small-tier').checked = true;
+        } else if (player.big_tier_break) {
+            document.getElementById('edit-big-tier').checked = true;
+        } else {
+            document.getElementById('edit-no-tier').checked = true;
+        }
 
         this.openModal();
     }
@@ -284,10 +298,16 @@ class EditRankings {
         this.currentEditingPlayer.position = document.getElementById('edit-position').value;
         this.currentEditingPlayer.bye_week = document.getElementById('edit-bye-week').value ? parseInt(document.getElementById('edit-bye-week').value) : null;
         this.currentEditingPlayer.news_copy = document.getElementById('edit-news').value;
-        this.currentEditingPlayer.is_bold = document.getElementById('edit-bold').checked;
-        this.currentEditingPlayer.is_italic = document.getElementById('edit-italic').checked;
-        this.currentEditingPlayer.small_tier_break = document.getElementById('edit-small-tier').checked;
-        this.currentEditingPlayer.big_tier_break = document.getElementById('edit-big-tier').checked;
+        
+        // Get formatting from radio buttons
+        const formattingRadio = document.querySelector('input[name="formatting"]:checked');
+        this.currentEditingPlayer.is_bold = formattingRadio?.value === 'bold';
+        this.currentEditingPlayer.is_italic = formattingRadio?.value === 'italic';
+        
+        // Get tier break from radio buttons
+        const tierBreakRadio = document.querySelector('input[name="tier-break"]:checked');
+        this.currentEditingPlayer.small_tier_break = tierBreakRadio?.value === 'small';
+        this.currentEditingPlayer.big_tier_break = tierBreakRadio?.value === 'big';
 
         // Handle position changes
         const newPosition = this.currentEditingPlayer.position;
