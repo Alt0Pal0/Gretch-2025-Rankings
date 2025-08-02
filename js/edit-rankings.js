@@ -1,10 +1,11 @@
-// Edit Rankings JavaScript
+// Edit Rankings JavaScript - Simplified Design
 class EditRankings {
     constructor() {
         this.playersData = null;
         this.currentVersion = null;
         this.isDirty = false;
         this.draggedElement = null;
+        this.currentEditingPlayer = null;
         
         this.init();
     }
@@ -77,6 +78,17 @@ class EditRankings {
             window.open('/', '_blank');
         });
 
+        // Modal close events
+        document.querySelector('.modal-close').addEventListener('click', () => {
+            this.closeModal();
+        });
+
+        document.getElementById('edit-modal').addEventListener('click', (e) => {
+            if (e.target.id === 'edit-modal') {
+                this.closeModal();
+            }
+        });
+
         // Handle beforeunload to warn about unsaved changes
         window.addEventListener('beforeunload', (e) => {
             if (this.isDirty) {
@@ -93,127 +105,72 @@ class EditRankings {
             
             const players = this.playersData[position] || [];
             players.forEach((player, index) => {
-                const playerCard = this.createPlayerCard(player, index + 1);
-                container.appendChild(playerCard);
+                const playerItem = this.createPlayerItem(player, index + 1);
+                container.appendChild(playerItem);
+                
+                // Add tier breaks
+                if (player.small_tier_break) {
+                    const smallBreak = document.createElement('div');
+                    smallBreak.className = 'tier-break small';
+                    container.appendChild(smallBreak);
+                }
+                if (player.big_tier_break) {
+                    const bigBreak = document.createElement('div');
+                    bigBreak.className = 'tier-break big';
+                    container.appendChild(bigBreak);
+                }
             });
 
             this.setupDropZone(container, position);
         });
     }
 
-    createPlayerCard(player, rank) {
-        const card = document.createElement('div');
-        card.className = 'player-card';
-        card.draggable = true;
-        card.dataset.playerId = player.id;
-        card.dataset.position = player.position;
+    createPlayerItem(player, rank) {
+        const item = document.createElement('div');
+        item.className = 'player-item';
+        item.draggable = true;
+        item.dataset.playerId = player.id;
+        item.dataset.position = player.position;
 
-        card.innerHTML = `
-            <div class="player-header">
+        // Build class names for styling
+        let nameClasses = 'player-name';
+        if (player.is_bold) nameClasses += ' bold';
+        if (player.is_italic) nameClasses += ' italic';
+
+        // Build indicators
+        let indicators = '';
+        if (player.is_bold || player.is_italic) {
+            indicators = '<div class="player-indicators">';
+            if (player.is_bold) indicators += '<div class="indicator bold" title="Target"></div>';
+            if (player.is_italic) indicators += '<div class="indicator italic" title="Fade"></div>';
+            indicators += '</div>';
+        }
+
+        item.innerHTML = `
+            <div class="player-left">
                 <div class="player-rank">${rank}</div>
-                <div class="player-controls">
-                    <button class="control-btn" onclick="editRankings.movePlayerUp(${player.id})" title="Move Up">↑</button>
-                    <button class="control-btn" onclick="editRankings.movePlayerDown(${player.id})" title="Move Down">↓</button>
-                    <button class="control-btn danger" onclick="editRankings.deletePlayer(${player.id})" title="Delete">×</button>
-                </div>
+                <div class="${nameClasses}">${player.name}</div>
+                ${indicators}
             </div>
-            <div class="player-form">
-                <div class="form-group">
-                    <label class="form-label">Name</label>
-                    <input type="text" class="form-input" value="${player.name}" 
-                           onchange="editRankings.updatePlayerField(${player.id}, 'name', this.value)">
-                </div>
-                <div class="form-group">
-                    <label class="form-label">NFL Team</label>
-                    <select class="form-select" onchange="editRankings.updatePlayerField(${player.id}, 'nfl_team', this.value)">
-                        ${this.getNFLTeamOptions(player.nfl_team)}
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label class="form-label">Position</label>
-                    <select class="form-select" onchange="editRankings.updatePlayerPosition(${player.id}, this.value)">
-                        ${this.getPositionOptions(player.position)}
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label class="form-label">Bye Week</label>
-                    <select class="form-select" onchange="editRankings.updatePlayerField(${player.id}, 'bye_week', this.value ? parseInt(this.value) : null)">
-                        <option value="">Select Bye Week</option>
-                        ${Array.from({length: 18}, (_, i) => i + 1).map(week => 
-                            `<option value="${week}" ${player.bye_week === week ? 'selected' : ''}>${week}</option>`
-                        ).join('')}
-                    </select>
-                </div>
-                <div class="form-group full-width">
-                    <label class="form-label">News Copy</label>
-                    <textarea class="form-textarea" placeholder="Recent news about this player..."
-                              onchange="editRankings.updatePlayerField(${player.id}, 'news_copy', this.value)">${player.news_copy || ''}</textarea>
-                </div>
-                <div class="form-group">
-                    <div class="form-checkbox">
-                        <input type="checkbox" class="checkbox-input" id="bold-${player.id}" 
-                               ${player.is_bold ? 'checked' : ''}
-                               onchange="editRankings.updatePlayerField(${player.id}, 'is_bold', this.checked)">
-                        <label for="bold-${player.id}" class="form-label">Bold (Target)</label>
-                    </div>
-                    <div class="form-checkbox">
-                        <input type="checkbox" class="checkbox-input" id="italic-${player.id}" 
-                               ${player.is_italic ? 'checked' : ''}
-                               onchange="editRankings.updatePlayerField(${player.id}, 'is_italic', this.checked)">
-                        <label for="italic-${player.id}" class="form-label">Italic (Fade)</label>
-                    </div>
-                </div>
-                <div class="form-group">
-                    <div class="tier-breaks">
-                        <div class="form-checkbox">
-                            <input type="checkbox" class="checkbox-input" id="small-tier-${player.id}" 
-                                   ${player.small_tier_break ? 'checked' : ''}
-                                   onchange="editRankings.updatePlayerField(${player.id}, 'small_tier_break', this.checked)">
-                            <label for="small-tier-${player.id}" class="form-label">Small Tier Break</label>
-                        </div>
-                        <div class="form-checkbox">
-                            <input type="checkbox" class="checkbox-input" id="big-tier-${player.id}" 
-                                   ${player.big_tier_break ? 'checked' : ''}
-                                   onchange="editRankings.updatePlayerField(${player.id}, 'big_tier_break', this.checked)">
-                            <label for="big-tier-${player.id}" class="form-label">Big Tier Break</label>
-                        </div>
-                    </div>
-                </div>
+            <div class="player-controls">
+                <button class="edit-btn" onclick="editRankings.editPlayer(${player.id})">Edit</button>
+                <button class="delete-btn" onclick="editRankings.deletePlayer(${player.id})">×</button>
             </div>
         `;
 
-        this.setupDragAndDrop(card);
-        return card;
+        this.setupDragAndDrop(item);
+        return item;
     }
 
-    getNFLTeamOptions(selectedTeam) {
-        const teams = [
-            'ARZ', 'ATL', 'BLT', 'BUF', 'CAR', 'CHI', 'CIN', 'CLV', 'DAL', 'DEN',
-            'DET', 'GB', 'HST', 'IND', 'JAX', 'KC', 'LA', 'LAC', 'MIA', 'MIN',
-            'NE', 'NO', 'NYG', 'NYJ', 'OAK', 'PHI', 'PIT', 'SEA', 'SF', 'TB', 'TEN', 'WAS', 'TBD'
-        ];
-        
-        return teams.map(team => 
-            `<option value="${team}" ${team === selectedTeam ? 'selected' : ''}>${team}</option>`
-        ).join('');
-    }
-
-    getPositionOptions(selectedPosition) {
-        const positions = ['QB', 'RB', 'WR', 'TE'];
-        return positions.map(pos => 
-            `<option value="${pos}" ${pos === selectedPosition ? 'selected' : ''}>${pos}</option>`
-        ).join('');
-    }
-
-    setupDragAndDrop(card) {
-        card.addEventListener('dragstart', (e) => {
-            this.draggedElement = card;
-            card.classList.add('dragging');
+    setupDragAndDrop(item) {
+        item.addEventListener('dragstart', (e) => {
+            this.draggedElement = item;
+            item.classList.add('dragging');
             e.dataTransfer.effectAllowed = 'move';
         });
 
-        card.addEventListener('dragend', () => {
-            card.classList.remove('dragging');
+        item.addEventListener('dragend', () => {
+            item.classList.remove('dragging');
             this.draggedElement = null;
         });
     }
@@ -224,13 +181,13 @@ class EditRankings {
             e.dataTransfer.dropEffect = 'move';
             
             const afterElement = this.getDragAfterElement(container, e.clientY);
-            const draggedCard = this.draggedElement;
+            const draggedItem = this.draggedElement;
             
-            if (draggedCard && draggedCard.dataset.position === position) {
+            if (draggedItem && draggedItem.dataset.position === position) {
                 if (afterElement == null) {
-                    container.appendChild(draggedCard);
+                    container.appendChild(draggedItem);
                 } else {
-                    container.insertBefore(draggedCard, afterElement);
+                    container.insertBefore(draggedItem, afterElement);
                 }
             }
         });
@@ -245,7 +202,7 @@ class EditRankings {
     }
 
     getDragAfterElement(container, y) {
-        const draggableElements = [...container.querySelectorAll('.player-card:not(.dragging)')];
+        const draggableElements = [...container.querySelectorAll('.player-item:not(.dragging)')];
         
         return draggableElements.reduce((closest, child) => {
             const box = child.getBoundingClientRect();
@@ -261,20 +218,27 @@ class EditRankings {
 
     reorderPlayers(position) {
         const container = document.getElementById(`${position.toLowerCase()}-list`);
-        const cards = [...container.querySelectorAll('.player-card')];
+        const items = [...container.querySelectorAll('.player-item')];
         
-        cards.forEach((card, index) => {
-            const playerId = parseInt(card.dataset.playerId);
+        // Update the order in our data
+        const newOrder = [];
+        items.forEach((item, index) => {
+            const playerId = parseInt(item.dataset.playerId);
             const player = this.findPlayerById(playerId);
             if (player) {
                 player.position_rank = index + 1;
+                newOrder.push(player);
+                
                 // Update the rank display
-                const rankElement = card.querySelector('.player-rank');
+                const rankElement = item.querySelector('.player-rank');
                 if (rankElement) {
                     rankElement.textContent = index + 1;
                 }
             }
         });
+        
+        // Update our data structure
+        this.playersData[position] = newOrder;
     }
 
     findPlayerById(id) {
@@ -285,72 +249,72 @@ class EditRankings {
         return null;
     }
 
-    updatePlayerField(playerId, field, value) {
-        const player = this.findPlayerById(playerId);
-        if (player) {
-            player[field] = value;
-            this.markDirty();
-        }
-    }
-
-    updatePlayerPosition(playerId, newPosition) {
-        const player = this.findPlayerById(playerId);
-        if (!player || player.position === newPosition) return;
-
-        // Remove from old position
-        const oldPosition = player.position;
-        this.playersData[oldPosition] = this.playersData[oldPosition].filter(p => p.id !== playerId);
-
-        // Add to new position
-        player.position = newPosition;
-        player.position_rank = this.playersData[newPosition].length + 1;
-        this.playersData[newPosition].push(player);
-
-        // Re-render both affected positions
-        this.renderPlayers();
-        this.markDirty();
-    }
-
-    movePlayerUp(playerId) {
-        const player = this.findPlayerById(playerId);
-        if (!player || player.position_rank <= 1) return;
-
-        const position = player.position;
-        const players = this.playersData[position];
-        const currentIndex = players.findIndex(p => p.id === playerId);
-        
-        if (currentIndex > 0) {
-            // Swap with player above
-            [players[currentIndex - 1], players[currentIndex]] = [players[currentIndex], players[currentIndex - 1]];
-            
-            // Update position ranks
-            players[currentIndex - 1].position_rank = currentIndex;
-            players[currentIndex].position_rank = currentIndex + 1;
-            
-            this.renderPlayers();
-            this.markDirty();
-        }
-    }
-
-    movePlayerDown(playerId) {
+    editPlayer(playerId) {
         const player = this.findPlayerById(playerId);
         if (!player) return;
 
-        const position = player.position;
-        const players = this.playersData[position];
-        const currentIndex = players.findIndex(p => p.id === playerId);
+        this.currentEditingPlayer = player;
         
-        if (currentIndex < players.length - 1) {
-            // Swap with player below
-            [players[currentIndex], players[currentIndex + 1]] = [players[currentIndex + 1], players[currentIndex]];
+        // Populate form
+        document.getElementById('edit-name').value = player.name || '';
+        document.getElementById('edit-team').value = player.nfl_team || 'TBD';
+        document.getElementById('edit-position').value = player.position || 'QB';
+        document.getElementById('edit-bye-week').value = player.bye_week || '';
+        document.getElementById('edit-news').value = player.news_copy || '';
+        document.getElementById('edit-bold').checked = player.is_bold || false;
+        document.getElementById('edit-italic').checked = player.is_italic || false;
+        document.getElementById('edit-small-tier').checked = player.small_tier_break || false;
+        document.getElementById('edit-big-tier').checked = player.big_tier_break || false;
+
+        this.openModal();
+    }
+
+    openModal() {
+        document.getElementById('edit-modal').classList.add('active');
+        document.body.style.overflow = 'hidden';
+    }
+
+    closeModal() {
+        document.getElementById('edit-modal').classList.remove('active');
+        document.body.style.overflow = '';
+        this.currentEditingPlayer = null;
+    }
+
+    savePlayer() {
+        if (!this.currentEditingPlayer) return;
+
+        const oldPosition = this.currentEditingPlayer.position;
+        
+        // Update player data
+        this.currentEditingPlayer.name = document.getElementById('edit-name').value;
+        this.currentEditingPlayer.nfl_team = document.getElementById('edit-team').value;
+        this.currentEditingPlayer.position = document.getElementById('edit-position').value;
+        this.currentEditingPlayer.bye_week = document.getElementById('edit-bye-week').value ? parseInt(document.getElementById('edit-bye-week').value) : null;
+        this.currentEditingPlayer.news_copy = document.getElementById('edit-news').value;
+        this.currentEditingPlayer.is_bold = document.getElementById('edit-bold').checked;
+        this.currentEditingPlayer.is_italic = document.getElementById('edit-italic').checked;
+        this.currentEditingPlayer.small_tier_break = document.getElementById('edit-small-tier').checked;
+        this.currentEditingPlayer.big_tier_break = document.getElementById('edit-big-tier').checked;
+
+        // Handle position changes
+        const newPosition = this.currentEditingPlayer.position;
+        if (oldPosition !== newPosition) {
+            // Remove from old position
+            this.playersData[oldPosition] = this.playersData[oldPosition].filter(p => p.id !== this.currentEditingPlayer.id);
             
-            // Update position ranks
-            players[currentIndex].position_rank = currentIndex + 1;
-            players[currentIndex + 1].position_rank = currentIndex + 2;
-            
-            this.renderPlayers();
-            this.markDirty();
+            // Re-rank remaining players in old position
+            this.playersData[oldPosition].forEach((p, index) => {
+                p.position_rank = index + 1;
+            });
+
+            // Add to new position
+            this.currentEditingPlayer.position_rank = this.playersData[newPosition].length + 1;
+            this.playersData[newPosition].push(this.currentEditingPlayer);
         }
+
+        this.renderPlayers();
+        this.closeModal();
+        this.markDirty();
     }
 
     deletePlayer(playerId) {
@@ -391,6 +355,9 @@ class EditRankings {
         this.playersData[position].push(newPlayer);
         this.renderPlayers();
         this.markDirty();
+        
+        // Auto-open edit modal for new player
+        this.editPlayer(newPlayer.id);
     }
 
     async updateRankings() {
@@ -422,6 +389,10 @@ class EditRankings {
 
             this.showSuccess('Rankings updated successfully!');
             this.isDirty = false;
+            
+            // Reset button text
+            const updateBtn = document.getElementById('update-rankings-btn');
+            updateBtn.textContent = 'Update Rankings';
             
             // Reload data to get new version info
             await this.loadData();
