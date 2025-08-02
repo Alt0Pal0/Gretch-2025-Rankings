@@ -263,10 +263,10 @@
 
 .header-info {
   display: flex;
-  flex-direction: column;
-  align-items: flex-start;
+  flex-direction: row;
+  align-items: center;
   margin-left: 2rem;
-  gap: 0.25rem;
+  gap: 1.5rem;
 }
 
 .header-title {
@@ -282,6 +282,8 @@
   font-size: 0.625rem;
   color: var(--ss-text-muted);
   line-height: 1.3;
+  padding-left: 0.75rem;
+  border-left: 2px solid var(--ss-border);
 }
 
 .header-legend .legend-bold {
@@ -524,7 +526,7 @@
   
   .header-info {
     margin-left: 1rem;
-    gap: 0.125rem;
+    gap: 0.75rem;
   }
   
   .header-title {
@@ -533,6 +535,8 @@
   
   .header-legend {
     font-size: 0.5625rem;
+    padding-left: 0.5rem;
+    border-left: 1px solid var(--ss-border);
   }
   
 
