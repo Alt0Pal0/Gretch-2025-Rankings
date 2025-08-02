@@ -291,6 +291,17 @@ class EditRankings {
     openModal() {
         document.getElementById('edit-modal').classList.add('active');
         document.body.style.overflow = 'hidden';
+        
+        // Auto-focus on name field for new players
+        if (this.currentEditingPlayer && this.currentEditingPlayer.isNew) {
+            setTimeout(() => {
+                const nameField = document.getElementById('edit-name');
+                if (nameField) {
+                    nameField.focus();
+                    nameField.select(); // Also select the default "New Player" text
+                }
+            }, 100); // Small delay to ensure modal is fully rendered
+        }
     }
 
     closeModal() {
@@ -510,7 +521,7 @@ class EditRankings {
             updateBtn.classList.remove('ss-btn-inactive');
             updateBtn.classList.add('ss-btn-active');
             updateBtn.disabled = false;
-            updateBtn.textContent = 'Update Rankings *';
+            updateBtn.textContent = 'Update Rankings';
         }
     }
 
