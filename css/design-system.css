@@ -566,7 +566,7 @@
   }
   
   .header-info {
-    margin-left: 0; /* Reset desktop margin */
+    margin-left: calc(24px + 1rem); /* Align with title's left edge (logo width + gap) */
     gap: 0.5rem;
     flex: 1;
     min-width: 0; /* Allow shrinking */
@@ -582,8 +582,8 @@
   
   .header-version {
     font-size: 0.45rem;
-    padding-left: 0.75rem;
-    border-left: 1px solid var(--ss-border);
+    padding-left: 0; /* Remove left padding on mobile */
+    border-left: none; /* Remove border on mobile */
     white-space: nowrap;
     line-height: 1.2;
   }
