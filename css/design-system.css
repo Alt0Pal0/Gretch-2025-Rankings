@@ -261,6 +261,39 @@
   display: block;
 }
 
+.header-info {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  margin-left: 2rem;
+  gap: 0.25rem;
+}
+
+.header-title {
+  font-family: var(--ss-font-display);
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--ss-text-primary);
+  margin: 0;
+  line-height: 1.2;
+}
+
+.header-legend {
+  font-size: 0.75rem;
+  color: var(--ss-text-muted);
+  line-height: 1.3;
+}
+
+.header-legend .legend-bold {
+  font-weight: 600;
+  color: var(--ss-text-muted);
+}
+
+.header-legend .legend-italic {
+  font-style: italic;
+  color: var(--ss-text-muted);
+}
+
 
 
 /* NAVIGATION */
@@ -487,6 +520,19 @@
   .logo {
     height: 24px;
     max-width: 120px;
+  }
+  
+  .header-info {
+    margin-left: 1rem;
+    gap: 0.125rem;
+  }
+  
+  .header-title {
+    font-size: 1rem;
+  }
+  
+  .header-legend {
+    font-size: 0.6875rem;
   }
   
 
