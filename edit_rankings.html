@@ -25,7 +25,6 @@
             position: relative;
             z-index: 200;
             transition: transform 0.3s ease;
-            border-bottom: 1px solid var(--ss-border);
         }
 
         .logo-header.scroll-hidden {
@@ -37,7 +36,6 @@
             position: sticky;
             top: 0;
             z-index: 100;
-            margin-top: -1px; /* Overlap to prevent gap */
             border-bottom: 1px solid var(--ss-border); /* Full-width bottom border */
         }
         
@@ -214,10 +212,11 @@
         
         /* Edit link styling */
         .edit-link {
-            font-size: 0.5625rem;
+            font-size: 0.6875rem; /* Same as player name font size */
             color: var(--ss-orange-primary);
             text-decoration: none;
-            font-weight: 500;
+            font-weight: 400; /* Same as player name font weight */
+            font-family: var(--ss-font-primary); /* Same as player name font family */
             opacity: 0;
             transition: opacity 0.2s ease;
             margin-left: 0.5rem;
@@ -243,13 +242,14 @@
             background: var(--ss-orange-primary);
             border: none;
             color: white;
-            padding: 0.5rem 1rem;
-            margin: 0.5rem 0.625rem;
+            padding: 0.375rem 0.75rem;
+            margin: 0.5rem 0.625rem 0.25rem 0.625rem; /* Less bottom margin since it's at top */
             border-radius: 4px;
-            font-size: 0.75rem;
+            font-size: 0.6875rem;
             cursor: pointer;
             transition: all 0.2s ease;
             width: calc(100% - 1.25rem);
+            font-family: var(--ss-font-primary);
         }
         
         .add-player-btn:hover {
@@ -359,7 +359,7 @@
             }
             
             .edit-link {
-                font-size: 0.625rem;
+                font-size: 0.75rem; /* Same as mobile player name font size */
                 opacity: 1; /* Always visible on mobile */
             }
             
@@ -406,6 +406,10 @@
             
             .player-item {
                 padding: 0.1875rem 0.5rem;
+            }
+            
+            .edit-link {
+                font-size: 0.6875rem; /* Same as smallest mobile player name font size */
             }
         }
         
@@ -633,34 +637,34 @@
         <div id="positions-container" class="positions-grid" style="display: none;">
             <!-- Quarterbacks Column -->
             <div class="position-column">
+                <button class="add-player-btn" data-position="QB">+ Add QB</button>
                 <div class="players-list" id="qb-list">
                     <!-- QB players will be loaded here -->
                 </div>
-                <button class="add-player-btn" data-position="QB">+ Add QB</button>
             </div>
             
             <!-- Running Backs Column -->
             <div class="position-column">
+                <button class="add-player-btn" data-position="RB">+ Add RB</button>
                 <div class="players-list" id="rb-list">
                     <!-- RB players will be loaded here -->
                 </div>
-                <button class="add-player-btn" data-position="RB">+ Add RB</button>
             </div>
             
             <!-- Wide Receivers Column -->
             <div class="position-column">
+                <button class="add-player-btn" data-position="WR">+ Add WR</button>
                 <div class="players-list" id="wr-list">
                     <!-- WR players will be loaded here -->
                 </div>
-                <button class="add-player-btn" data-position="WR">+ Add WR</button>
             </div>
             
             <!-- Tight Ends Column -->
             <div class="position-column">
+                <button class="add-player-btn" data-position="TE">+ Add TE</button>
                 <div class="players-list" id="te-list">
                     <!-- TE players will be loaded here -->
                 </div>
-                <button class="add-player-btn" data-position="TE">+ Add TE</button>
             </div>
         </div>
     </main>
