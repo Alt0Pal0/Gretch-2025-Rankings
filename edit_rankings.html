@@ -61,44 +61,190 @@
         .positions-grid {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
-            gap: 2rem;
+            gap: 0;
+            border-radius: 0 0 0.5rem 0.5rem; /* Only bottom corners rounded */
+            overflow: hidden;
+            box-shadow: var(--ss-shadow-sm);
+            border: 1px solid var(--ss-border);
+            border-top: none; /* Remove top border to connect with headers */
+            background: var(--ss-white);
         }
         
         .position-column {
-            background: white;
-            border-radius: var(--ss-border-radius);
-            border: 1px solid var(--ss-border);
-            overflow: hidden;
+            background: var(--ss-white);
         }
         
-        .position-header {
-            background: linear-gradient(135deg, var(--ss-orange-primary) 0%, var(--ss-accent-cyan) 50%, var(--ss-accent-teal) 100%);
+        .add-player-btn {
+            background: var(--ss-orange-primary);
+            border: none;
             color: white;
-            padding: 1rem;
+            padding: 0.5rem 1rem;
+            margin: 0.5rem 1rem;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            width: calc(100% - 2rem);
+        }
+        
+        .add-player-btn:hover {
+            background: var(--ss-orange-dark);
+        }
+        
+        /* Header styles - copied from homepage */
+        .logo-header {
+            background: var(--ss-white);
+            position: relative;
+            z-index: 200;
+            transition: transform 0.3s ease;
+            border-bottom: 1px solid var(--ss-border);
+        }
+
+        .table-headers {
+            background: var(--ss-white);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            margin-top: -1px; /* Overlap to prevent gap */
+            border-bottom: 1px solid var(--ss-border); /* Full-width bottom border */
+        }
+        
+        .table-headers-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 1rem;
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 0;
+        }
+        
+        .table-header-item {
+            background: var(--ss-white);
+            color: var(--ss-text-primary);
+            padding: 0.5rem 1rem;
             text-align: center;
-            font-family: var(--ss-font-display);
-            font-weight: 600;
+            position: relative;
+        }
+        
+        .table-header-item::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--ss-orange-primary), var(--ss-cyan), var(--ss-teal));
+        }
+        
+        .table-header-title {
             font-size: 0.875rem;
+            font-weight: 600;
+            font-family: var(--ss-font-display);
+            margin: 0;
+            text-transform: uppercase;
             letter-spacing: 0.05em;
+            color: var(--ss-text-secondary);
+        }
+        
+        /* Edit actions bar */
+        .edit-actions-bar {
+            background: var(--ss-light-gray);
+            border-bottom: 1px solid var(--ss-border);
+            position: relative;
+            z-index: 50;
+        }
+        
+        .edit-actions-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 1rem;
             display: flex;
             justify-content: space-between;
             align-items: center;
         }
         
-        .add-player-btn {
-            background: rgba(255, 255, 255, 0.2);
-            border: 1px solid rgba(255, 255, 255, 0.3);
-            color: white;
-            border-radius: 4px;
-            padding: 0.25rem 0.5rem;
-            font-size: 0.75rem;
-            cursor: pointer;
-            transition: all 0.2s ease;
+        .edit-info {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
         }
         
-        .add-player-btn:hover {
-            background: rgba(255, 255, 255, 0.3);
-            border-color: rgba(255, 255, 255, 0.5);
+        .edit-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin: 0;
+            color: var(--ss-text-primary);
+            font-family: var(--ss-font-display);
+        }
+        
+        .version-info {
+            font-size: 0.875rem;
+            color: var(--ss-text-secondary);
+        }
+        
+        .separator {
+            margin: 0 0.5rem;
+            color: var(--ss-text-muted);
+        }
+        
+        .edit-buttons {
+            display: flex;
+            gap: 0.75rem;
+        }
+        
+        /* Mobile responsive for headers */
+        @media (max-width: 768px) {
+            .table-headers {
+                background: var(--ss-white);
+                position: sticky;
+                top: 0;
+                z-index: 100;
+                overflow-x: hidden; /* Prevent horizontal overflow */
+            }
+            
+            .table-headers-content {
+                display: block; /* Single column on mobile */
+                width: 100%;
+                max-width: 100%;
+                overflow-x: hidden; /* Prevent content overflow */
+            }
+            
+            .table-header-item {
+                display: none; /* Hide all by default */
+                border-right: none;
+                width: 100%;
+                max-width: 100%;
+                box-sizing: border-box;
+            }
+            
+            .table-header-item.mobile-active {
+                display: block; /* Show only the active one */
+            }
+            
+            .table-header-item.mobile-active::before {
+                left: 0;
+                right: 0;
+            }
+            
+            .table-header-title {
+                font-size: 0.75rem;
+            }
+            
+            .edit-actions-content {
+                flex-direction: column;
+                gap: 1rem;
+                text-align: center;
+            }
+            
+            .edit-info {
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+            
+            .edit-buttons {
+                width: 100%;
+                justify-content: center;
+            }
         }
         
         /* Reuse exact styles from homepage */
@@ -487,28 +633,48 @@
     </style>
 </head>
 <body>
-    <div class="edit-header">
-        <div class="edit-header-content">
-            <div>
+    <!-- Logo Header -->
+    <div class="logo-header" id="logo-header">
+        <div id="header-placeholder"></div>
+    </div>
+    
+    <!-- Edit Actions Bar -->
+    <div class="edit-actions-bar">
+        <div class="edit-actions-content">
+            <div class="edit-info">
                 <h1 class="edit-title">Edit Rankings</h1>
                 <div class="version-info">
                     <span>Current Version: <span id="current-version">Loading...</span></span>
-                    <span>|</span>
+                    <span class="separator">|</span>
                     <span>Total Players: <span id="total-players">0</span></span>
                 </div>
             </div>
-            <div class="edit-actions">
-                <button id="preview-btn" class="ss-btn ss-btn-secondary">
-                    Preview
-                </button>
-                <button id="update-rankings-btn" class="ss-btn ss-btn-primary">
-                    Update Rankings
-                </button>
+            <div class="edit-buttons">
+                <button id="preview-btn" class="ss-btn ss-btn-secondary">Preview</button>
+                <button id="update-rankings-btn" class="ss-btn ss-btn-primary">Update Rankings</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Sticky Table Headers -->
+    <div class="table-headers" id="table-headers">
+        <div class="table-headers-content">
+            <div class="table-header-item">
+                <h2 class="table-header-title">Quarterbacks</h2>
+            </div>
+            <div class="table-header-item">
+                <h2 class="table-header-title">Running Backs</h2>
+            </div>
+            <div class="table-header-item">
+                <h2 class="table-header-title">Wide Receivers</h2>
+            </div>
+            <div class="table-header-item">
+                <h2 class="table-header-title">Tight Ends</h2>
             </div>
         </div>
     </div>
 
-    <div class="edit-container">
+    <main class="rankings-container">
         <div id="loading" class="loading">
             Loading player data...
         </div>
@@ -517,36 +683,36 @@
         <div id="success-message" class="success" style="display: none;"></div>
         
         <div id="positions-container" class="positions-grid" style="display: none;">
-            <div class="position-column" data-position="QB">
-                <div class="position-header">
-                    <span>QUARTERBACKS</span>
-                    <button class="add-player-btn" data-position="QB">+ Add</button>
+            <!-- Quarterbacks Column -->
+            <div class="position-column">
+                <div class="players-list" id="qb-list">
+                    <!-- QB players will be loaded here -->
                 </div>
-                <div class="players-list" id="qb-list"></div>
+                <button class="add-player-btn" data-position="QB">+ Add QB</button>
             </div>
             
-            <div class="position-column" data-position="RB">
-                <div class="position-header">
-                    <span>RUNNING BACKS</span>
-                    <button class="add-player-btn" data-position="RB">+ Add</button>
+            <!-- Running Backs Column -->
+            <div class="position-column">
+                <div class="players-list" id="rb-list">
+                    <!-- RB players will be loaded here -->
                 </div>
-                <div class="players-list" id="rb-list"></div>
+                <button class="add-player-btn" data-position="RB">+ Add RB</button>
             </div>
             
-            <div class="position-column" data-position="WR">
-                <div class="position-header">
-                    <span>WIDE RECEIVERS</span>
-                    <button class="add-player-btn" data-position="WR">+ Add</button>
+            <!-- Wide Receivers Column -->
+            <div class="position-column">
+                <div class="players-list" id="wr-list">
+                    <!-- WR players will be loaded here -->
                 </div>
-                <div class="players-list" id="wr-list"></div>
+                <button class="add-player-btn" data-position="WR">+ Add WR</button>
             </div>
             
-            <div class="position-column" data-position="TE">
-                <div class="position-header">
-                    <span>TIGHT ENDS</span>
-                    <button class="add-player-btn" data-position="TE">+ Add</button>
+            <!-- Tight Ends Column -->
+            <div class="position-column">
+                <div class="players-list" id="te-list">
+                    <!-- TE players will be loaded here -->
                 </div>
-                <div class="players-list" id="te-list"></div>
+                <button class="add-player-btn" data-position="TE">+ Add TE</button>
             </div>
         </div>
     </div>
@@ -673,5 +839,14 @@
     </div>
 
     <script src="js/edit-rankings.js"></script>
+    <script>
+        // Load header component
+        fetch('components/header.html')
+            .then(response => response.text())
+            .then(html => {
+                document.getElementById('header-placeholder').innerHTML = html;
+                // Initialize header functionality if needed
+            });
+    </script>
 </body>
 </html>
