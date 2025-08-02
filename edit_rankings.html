@@ -509,6 +509,8 @@
             font-size: 0.6875rem; /* Match player name font size */
             transition: border-color 0.2s ease;
             font-family: var(--ss-font-primary);
+            height: 2.25rem; /* Consistent height for all form fields */
+            box-sizing: border-box;
         }
         
         /* Special styling for ranking input to match player rank display */
@@ -516,6 +518,7 @@
             font-family: var(--ss-font-mono); /* Match player rank font */
             font-size: 0.625rem; /* Match player rank font size */
             text-align: center;
+            /* Height inherited from .form-input for consistency */
         }
         
         .form-input:focus, .form-select:focus, .form-textarea:focus {
@@ -527,6 +530,7 @@
         .form-textarea {
             resize: vertical;
             min-height: 50px; /* Slightly more compact */
+            height: auto; /* Override the fixed height for textarea */
         }
         
         .form-checkbox {
@@ -618,6 +622,11 @@
         .form-row .form-group {
             flex: 1;
             margin-bottom: 0;
+        }
+        
+        .form-row .form-radio {
+            flex: 1;
+            justify-content: center;
         }
         
         /* Modal buttons to match add player button styling */
@@ -813,38 +822,32 @@
                     <label class="form-label">Gretch's Thoughts:</label>
                     <textarea id="edit-news" class="form-textarea" placeholder="Add an optional note of context..."></textarea>
                 </div>
-                <div class="form-group">
-                    <label class="form-label">Formatting</label>
-                    <div class="radio-group">
-                        <div class="form-radio">
-                            <input type="radio" id="edit-plain" name="formatting" value="plain" class="radio-input">
-                            <label for="edit-plain" class="form-label">Plain</label>
-                        </div>
-                        <div class="form-radio">
-                            <input type="radio" id="edit-bold" name="formatting" value="bold" class="radio-input">
-                            <label for="edit-bold" class="form-label">Bold (Target)</label>
-                        </div>
-                        <div class="form-radio">
-                            <input type="radio" id="edit-italic" name="formatting" value="italic" class="radio-input">
-                            <label for="edit-italic" class="form-label">Italic (Fade)</label>
-                        </div>
+                <div class="form-row">
+                    <div class="form-radio">
+                        <input type="radio" id="edit-plain" name="formatting" value="plain" class="radio-input">
+                        <label for="edit-plain" class="form-label">Plain</label>
+                    </div>
+                    <div class="form-radio">
+                        <input type="radio" id="edit-bold" name="formatting" value="bold" class="radio-input">
+                        <label for="edit-bold" class="form-label">Bold (Target)</label>
+                    </div>
+                    <div class="form-radio">
+                        <input type="radio" id="edit-italic" name="formatting" value="italic" class="radio-input">
+                        <label for="edit-italic" class="form-label">Italic (Fade)</label>
                     </div>
                 </div>
-                <div class="form-group">
-                    <label class="form-label">Tier Break</label>
-                    <div class="radio-group">
-                        <div class="form-radio">
-                            <input type="radio" id="edit-no-tier" name="tier-break" value="none" class="radio-input">
-                            <label for="edit-no-tier" class="form-label">No Break</label>
-                        </div>
-                        <div class="form-radio">
-                            <input type="radio" id="edit-small-tier" name="tier-break" value="small" class="radio-input">
-                            <label for="edit-small-tier" class="form-label">Small Break</label>
-                        </div>
-                        <div class="form-radio">
-                            <input type="radio" id="edit-big-tier" name="tier-break" value="big" class="radio-input">
-                            <label for="edit-big-tier" class="form-label">Big Break</label>
-                        </div>
+                <div class="form-row">
+                    <div class="form-radio">
+                        <input type="radio" id="edit-no-tier" name="tier-break" value="none" class="radio-input">
+                        <label for="edit-no-tier" class="form-label">No Break</label>
+                    </div>
+                    <div class="form-radio">
+                        <input type="radio" id="edit-small-tier" name="tier-break" value="small" class="radio-input">
+                        <label for="edit-small-tier" class="form-label">Small Break</label>
+                    </div>
+                    <div class="form-radio">
+                        <input type="radio" id="edit-big-tier" name="tier-break" value="big" class="radio-input">
+                        <label for="edit-big-tier" class="form-label">Big Break</label>
                     </div>
                 </div>
             </form>
