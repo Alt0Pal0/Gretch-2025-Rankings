@@ -99,6 +99,16 @@ class EditRankings {
                 e.returnValue = '';
             }
         });
+
+        // Update ranking max value when position changes in modal
+        setTimeout(() => {
+            const positionSelect = document.getElementById('edit-position');
+            if (positionSelect) {
+                positionSelect.addEventListener('change', (e) => {
+                    this.updateRankingMaxValue(e.target.value);
+                });
+            }
+        }, 100);
     }
 
     renderPlayers() {
@@ -250,6 +260,7 @@ class EditRankings {
         
         // Populate form
         document.getElementById('edit-name').value = player.name || '';
+        document.getElementById('edit-rank').value = player.position_rank || 1;
         document.getElementById('edit-team').value = player.nfl_team || 'TBD';
         document.getElementById('edit-position').value = player.position || 'QB';
         document.getElementById('edit-bye-week').value = player.bye_week || '';
@@ -273,6 +284,9 @@ class EditRankings {
             document.getElementById('edit-no-tier').checked = true;
         }
 
+        // Set max ranking based on current position
+        this.updateRankingMaxValue(player.position);
+
         this.openModal();
     }
 
@@ -291,6 +305,7 @@ class EditRankings {
         if (!this.currentEditingPlayer) return;
 
         const oldPosition = this.currentEditingPlayer.position;
+        const oldRank = this.currentEditingPlayer.position_rank;
         
         // Update player data
         this.currentEditingPlayer.name = document.getElementById('edit-name').value;
@@ -298,6 +313,10 @@ class EditRankings {
         this.currentEditingPlayer.position = document.getElementById('edit-position').value;
         this.currentEditingPlayer.bye_week = document.getElementById('edit-bye-week').value ? parseInt(document.getElementById('edit-bye-week').value) : null;
         this.currentEditingPlayer.news_copy = document.getElementById('edit-news').value;
+        
+        // Get new rank from form
+        const newRank = parseInt(document.getElementById('edit-rank').value) || 1;
+        const newPosition = this.currentEditingPlayer.position;
         
         // Get formatting from radio buttons
         const formattingRadio = document.querySelector('input[name="formatting"]:checked');
@@ -309,20 +328,13 @@ class EditRankings {
         this.currentEditingPlayer.small_tier_break = tierBreakRadio?.value === 'small';
         this.currentEditingPlayer.big_tier_break = tierBreakRadio?.value === 'big';
 
-        // Handle position changes
-        const newPosition = this.currentEditingPlayer.position;
+        // Handle position and/or ranking changes
         if (oldPosition !== newPosition) {
-            // Remove from old position
-            this.playersData[oldPosition] = this.playersData[oldPosition].filter(p => p.id !== this.currentEditingPlayer.id);
-            
-            // Re-rank remaining players in old position
-            this.playersData[oldPosition].forEach((p, index) => {
-                p.position_rank = index + 1;
-            });
-
-            // Add to new position
-            this.currentEditingPlayer.position_rank = this.playersData[newPosition].length + 1;
-            this.playersData[newPosition].push(this.currentEditingPlayer);
+            // Position changed - move to new position
+            this.movePlayerToNewPosition(oldPosition, newPosition, newRank);
+        } else if (oldRank !== newRank) {
+            // Same position, different rank - reorder within position
+            this.reorderPlayerWithinPosition(newPosition, oldRank, newRank);
         }
 
         this.renderPlayers();
@@ -330,7 +342,61 @@ class EditRankings {
         this.markDirty();
     }
 
+    movePlayerToNewPosition(oldPosition, newPosition, newRank) {
+        // Remove from old position
+        this.playersData[oldPosition] = this.playersData[oldPosition].filter(p => p.id !== this.currentEditingPlayer.id);
+        
+        // Re-rank remaining players in old position
+        this.playersData[oldPosition].forEach((p, index) => {
+            p.position_rank = index + 1;
+        });
 
+        // Insert into new position at specified rank
+        const maxRank = this.playersData[newPosition].length + 1;
+        const targetRank = Math.max(1, Math.min(newRank, maxRank));
+        
+        // Insert player at target position
+        this.playersData[newPosition].splice(targetRank - 1, 0, this.currentEditingPlayer);
+        
+        // Update all position_rank values for new position
+        this.playersData[newPosition].forEach((p, index) => {
+            p.position_rank = index + 1;
+        });
+    }
+
+    reorderPlayerWithinPosition(position, oldRank, newRank) {
+        const players = this.playersData[position];
+        const maxRank = players.length;
+        const targetRank = Math.max(1, Math.min(newRank, maxRank));
+        
+        if (targetRank === oldRank) return; // No change needed
+        
+        // Remove player from current position
+        const playerIndex = players.findIndex(p => p.id === this.currentEditingPlayer.id);
+        if (playerIndex === -1) return;
+        
+        players.splice(playerIndex, 1);
+        
+        // Insert at new position
+        players.splice(targetRank - 1, 0, this.currentEditingPlayer);
+        
+        // Update all position_rank values
+        players.forEach((p, index) => {
+            p.position_rank = index + 1;
+        });
+    }
+
+    updateRankingMaxValue(position) {
+        const rankInput = document.getElementById('edit-rank');
+        if (rankInput && this.playersData[position]) {
+            const maxRank = this.playersData[position].length;
+            rankInput.max = maxRank;
+            // If current value is higher than max, reset to max
+            if (parseInt(rankInput.value) > maxRank) {
+                rankInput.value = maxRank;
+            }
+        }
+    }
 
     addNewPlayer(position) {
         const newPlayer = {
