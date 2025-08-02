@@ -566,12 +566,13 @@
   }
   
   .header-info {
-    margin-left: calc(24px + 16px + 12px); /* Fine-tune to match title position exactly */
+    margin-left: 0;
     gap: 0.5rem;
     flex: 1;
     min-width: 0; /* Allow shrinking */
     display: flex;
     align-items: center;
+    padding-left: calc(24px + 1rem); /* Match logo width + gap exactly */
   }
   
   .header-title {
