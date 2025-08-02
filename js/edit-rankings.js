@@ -81,11 +81,6 @@ class EditRankings {
             this.downloadPDF();
         });
 
-        // Preview button - opens homepage in new tab to see how rankings look
-        document.getElementById('preview-btn').addEventListener('click', () => {
-            window.open('/', '_blank');
-        });
-
         // Modal close events
         document.querySelector('.modal-close').addEventListener('click', () => {
             this.closeModal();
