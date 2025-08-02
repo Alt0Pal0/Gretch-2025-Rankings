@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Rankings - Gretch 2025 Rankings</title>
+    <link rel="icon" type="image/png" href="assets/images/favicon.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/design-system.css">
+    <style>
+        .edit-header {
+            background: var(--ss-background);
+            border-bottom: 1px solid var(--ss-border);
+            padding: 1rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .edit-header-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+        
+        .edit-title {
+            font-family: var(--ss-font-display);
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--ss-text-primary);
+            margin: 0;
+        }
+        
+        .edit-actions {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+        
+        .version-info {
+            font-size: 0.875rem;
+            color: var(--ss-text-secondary);
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        .edit-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem 1rem;
+        }
+        
+        .positions-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 2rem;
+        }
+        
+        .position-column {
+            background: white;
+            border-radius: var(--ss-border-radius);
+            border: 1px solid var(--ss-border);
+            overflow: hidden;
+        }
+        
+        .position-header {
+            background: linear-gradient(135deg, var(--ss-orange-primary) 0%, var(--ss-accent-cyan) 50%, var(--ss-accent-teal) 100%);
+            color: white;
+            padding: 1rem;
+            text-align: center;
+            font-family: var(--ss-font-display);
+            font-weight: 600;
+            font-size: 0.875rem;
+            letter-spacing: 0.05em;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .add-player-btn {
+            background: rgba(255, 255, 255, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            color: white;
+            border-radius: 4px;
+            padding: 0.25rem 0.5rem;
+            font-size: 0.75rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        
+        .add-player-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+            border-color: rgba(255, 255, 255, 0.5);
+        }
+        
+        .players-list {
+            min-height: 500px;
+            padding: 1rem;
+        }
+        
+        .player-card {
+            background: var(--ss-background);
+            border: 1px solid var(--ss-border);
+            border-radius: var(--ss-border-radius);
+            padding: 1rem;
+            margin-bottom: 1rem;
+            cursor: move;
+            transition: all 0.2s ease;
+            position: relative;
+        }
+        
+        .player-card:hover {
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            border-color: var(--ss-orange-primary);
+        }
+        
+        .player-card.dragging {
+            opacity: 0.5;
+            transform: rotate(5deg);
+        }
+        
+        .player-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.75rem;
+        }
+        
+        .player-rank {
+            background: var(--ss-orange-primary);
+            color: white;
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+        
+        .player-controls {
+            display: flex;
+            gap: 0.5rem;
+        }
+        
+        .control-btn {
+            background: none;
+            border: 1px solid var(--ss-border);
+            border-radius: 4px;
+            padding: 0.25rem;
+            cursor: pointer;
+            color: var(--ss-text-secondary);
+            transition: all 0.2s ease;
+        }
+        
+        .control-btn:hover {
+            border-color: var(--ss-orange-primary);
+            color: var(--ss-orange-primary);
+        }
+        
+        .control-btn.danger:hover {
+            border-color: var(--ss-error);
+            color: var(--ss-error);
+            background: rgba(239, 68, 68, 0.1);
+        }
+        
+        .player-form {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.75rem;
+            font-size: 0.875rem;
+        }
+        
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .form-group.full-width {
+            grid-column: 1 / -1;
+        }
+        
+        .form-label {
+            font-size: 0.75rem;
+            font-weight: 500;
+            color: var(--ss-text-secondary);
+            margin-bottom: 0.25rem;
+        }
+        
+        .form-input, .form-select, .form-textarea {
+            border: 1px solid var(--ss-border);
+            border-radius: 4px;
+            padding: 0.5rem;
+            font-size: 0.875rem;
+            transition: border-color 0.2s ease;
+        }
+        
+        .form-input:focus, .form-select:focus, .form-textarea:focus {
+            outline: none;
+            border-color: var(--ss-orange-primary);
+            box-shadow: 0 0 0 2px rgba(251, 146, 60, 0.1);
+        }
+        
+        .form-textarea {
+            resize: vertical;
+            min-height: 60px;
+        }
+        
+        .form-checkbox {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-top: 0.5rem;
+        }
+        
+        .checkbox-input {
+            width: 16px;
+            height: 16px;
+        }
+        
+        .tier-breaks {
+            display: flex;
+            gap: 1rem;
+            margin-top: 0.5rem;
+        }
+        
+        .loading {
+            text-align: center;
+            padding: 2rem;
+            color: var(--ss-text-secondary);
+        }
+        
+        .error {
+            background: rgba(239, 68, 68, 0.1);
+            border: 1px solid var(--ss-error);
+            color: var(--ss-error);
+            padding: 1rem;
+            border-radius: var(--ss-border-radius);
+            margin: 1rem 0;
+        }
+        
+        .success {
+            background: rgba(34, 197, 94, 0.1);
+            border: 1px solid var(--ss-success);
+            color: var(--ss-success);
+            padding: 1rem;
+            border-radius: var(--ss-border-radius);
+            margin: 1rem 0;
+        }
+        
+        .drop-zone {
+            min-height: 100px;
+            border: 2px dashed var(--ss-border);
+            border-radius: var(--ss-border-radius);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--ss-text-muted);
+            font-size: 0.875rem;
+            margin: 1rem 0;
+            transition: all 0.2s ease;
+        }
+        
+        .drop-zone.drag-over {
+            border-color: var(--ss-orange-primary);
+            background: rgba(251, 146, 60, 0.05);
+        }
+        
+        @media (max-width: 768px) {
+            .positions-grid {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+            
+            .edit-header-content {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .edit-actions {
+                width: 100%;
+                justify-content: center;
+            }
+            
+            .player-form {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="edit-header">
+        <div class="edit-header-content">
+            <div>
+                <h1 class="edit-title">Edit Rankings</h1>
+                <div class="version-info">
+                    <span>Current Version: <span id="current-version">Loading...</span></span>
+                    <span>|</span>
+                    <span>Total Players: <span id="total-players">0</span></span>
+                </div>
+            </div>
+            <div class="edit-actions">
+                <button id="preview-btn" class="ss-btn ss-btn-secondary">
+                    Preview
+                </button>
+                <button id="update-rankings-btn" class="ss-btn ss-btn-primary">
+                    Update Rankings
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div class="edit-container">
+        <div id="loading" class="loading">
+            Loading player data...
+        </div>
+        
+        <div id="error-message" class="error" style="display: none;"></div>
+        <div id="success-message" class="success" style="display: none;"></div>
+        
+        <div id="positions-container" class="positions-grid" style="display: none;">
+            <div class="position-column" data-position="QB">
+                <div class="position-header">
+                    <span>QUARTERBACKS</span>
+                    <button class="add-player-btn" data-position="QB">+ Add</button>
+                </div>
+                <div class="players-list" id="qb-list"></div>
+            </div>
+            
+            <div class="position-column" data-position="RB">
+                <div class="position-header">
+                    <span>RUNNING BACKS</span>
+                    <button class="add-player-btn" data-position="RB">+ Add</button>
+                </div>
+                <div class="players-list" id="rb-list"></div>
+            </div>
+            
+            <div class="position-column" data-position="WR">
+                <div class="position-header">
+                    <span>WIDE RECEIVERS</span>
+                    <button class="add-player-btn" data-position="WR">+ Add</button>
+                </div>
+                <div class="players-list" id="wr-list"></div>
+            </div>
+            
+            <div class="position-column" data-position="TE">
+                <div class="position-header">
+                    <span>TIGHT ENDS</span>
+                    <button class="add-player-btn" data-position="TE">+ Add</button>
+                </div>
+                <div class="players-list" id="te-list"></div>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/edit-rankings.js"></script>
+</body>
+</html>
