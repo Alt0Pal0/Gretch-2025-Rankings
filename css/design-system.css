@@ -566,7 +566,7 @@
   }
   
   .header-info {
-    margin-left: calc(24px + 1rem); /* Align with title's left edge (logo width + gap) */
+    margin-left: calc(24px + 16px); /* Align with title's left edge (logo width + 1rem gap) */
     gap: 0.5rem;
     flex: 1;
     min-width: 0; /* Allow shrinking */
