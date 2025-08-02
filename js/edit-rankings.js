@@ -77,11 +77,6 @@ class EditRankings {
             this.updateRankings();
         });
 
-        // Download button - opens homepage in new tab and triggers print dialog
-        document.getElementById('download-btn').addEventListener('click', () => {
-            this.downloadPDF();
-        });
-
         // Modal close events
         document.querySelector('.modal-close').addEventListener('click', () => {
             this.closeModal();
@@ -110,13 +105,7 @@ class EditRankings {
                 });
             }
 
-            // Set up download button (in case header loads after this script)
-            const downloadBtn = document.getElementById('download-btn');
-            if (downloadBtn) {
-                downloadBtn.addEventListener('click', () => {
-                    this.downloadPDF();
-                });
-            }
+
         }, 100);
     }
 
@@ -460,6 +449,11 @@ class EditRankings {
     }
 
     async updateRankings() {
+        // Don't allow update if no changes have been made
+        if (!this.isDirty) {
+            return;
+        }
+
         const notes = prompt('Enter version notes (optional):');
         if (notes === null) return; // User cancelled
 
@@ -489,11 +483,12 @@ class EditRankings {
             this.showSuccess('Rankings updated successfully!');
             this.isDirty = false;
             
-            // Reset button appearance
+            // Reset button to inactive state
             const updateBtn = document.getElementById('update-rankings-btn');
+            updateBtn.classList.remove('ss-btn-active');
+            updateBtn.classList.add('ss-btn-inactive');
+            updateBtn.disabled = true;
             updateBtn.textContent = 'Update Rankings';
-            updateBtn.style.background = '';
-            updateBtn.style.animation = '';
             
             // Reload data to get new version info
             await this.loadData();
@@ -510,10 +505,12 @@ class EditRankings {
     markDirty() {
         this.isDirty = true;
         const updateBtn = document.getElementById('update-rankings-btn');
-        if (updateBtn && !updateBtn.textContent.includes('*')) {
+        if (updateBtn) {
+            // Remove inactive state and add active state
+            updateBtn.classList.remove('ss-btn-inactive');
+            updateBtn.classList.add('ss-btn-active');
+            updateBtn.disabled = false;
             updateBtn.textContent = 'Update Rankings *';
-            updateBtn.style.background = 'var(--ss-orange-primary)';
-            updateBtn.style.animation = 'pulse 2s infinite';
         }
     }
 
@@ -525,30 +522,6 @@ class EditRankings {
                 return 'You have unsaved changes. Are you sure you want to leave?';
             }
         });
-    }
-
-    downloadPDF() {
-        // Open homepage in a new window and trigger print dialog
-        const printWindow = window.open('/', '_blank');
-        
-        if (printWindow) {
-            // Use a more reliable approach to detect when page is loaded
-            const checkLoaded = () => {
-                if (printWindow.document.readyState === 'complete') {
-                    setTimeout(() => {
-                        printWindow.print();
-                    }, 1000); // Longer delay to ensure everything is rendered
-                } else {
-                    setTimeout(checkLoaded, 100);
-                }
-            };
-            
-            // Start checking after a brief delay
-            setTimeout(checkLoaded, 500);
-        } else {
-            // Fallback if popup is blocked
-            alert('Please allow popups for this site to download PDF, or use Preview button to open the page and print manually.');
-        }
     }
 
     showLoading(message = 'Loading...') {

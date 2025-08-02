@@ -151,6 +151,48 @@
   transform: translateY(0);
 }
 
+.ss-btn-inactive {
+  background-color: var(--ss-gray-light);
+  color: var(--ss-text-muted);
+  border: 2px solid var(--ss-border);
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.ss-btn-inactive:hover {
+  background-color: var(--ss-gray-light);
+  color: var(--ss-text-muted);
+  transform: none;
+  box-shadow: none;
+}
+
+.ss-btn-active {
+  background-color: var(--ss-orange-primary);
+  color: var(--ss-white);
+  border: 2px solid var(--ss-orange-primary);
+  animation: pulse-glow 2s infinite;
+  cursor: pointer;
+}
+
+.ss-btn-active:hover {
+  background-color: var(--ss-orange-light);
+  border-color: var(--ss-orange-light);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(255, 107, 53, 0.4);
+}
+
+@keyframes pulse-glow {
+  0% { 
+    box-shadow: 0 0 0 0 rgba(251, 146, 60, 0.4);
+  }
+  70% {
+    box-shadow: 0 0 0 6px rgba(251, 146, 60, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(251, 146, 60, 0);
+  }
+}
+
 /* FORM ELEMENTS */
 .ss-input {
   width: 100%;
