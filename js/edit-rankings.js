@@ -136,10 +136,7 @@ class EditRankings {
                     <div class="player-item" draggable="true" data-player-id="${player.id}" data-position="${player.position}">
                         <div class="player-rank">${rank}</div>
                         <div class="player-name${boldClass}${italicClass}">${player.name}</div>
-                        <div class="player-actions">
-                            <a href="#" class="edit-link" onclick="editRankings.editPlayer(${player.id}); return false;">edit</a>
-                            <a href="#" class="delete-link" onclick="editRankings.deletePlayerById(${player.id}); return false;">delete</a>
-                        </div>
+                        <a href="#" class="edit-link" onclick="editRankings.editPlayer(${player.id}); return false;">edit</a>
                     </div>
                 `;
                 
@@ -379,14 +376,6 @@ class EditRankings {
         
         // Show confirmation message
         this.showSuccess(`"${playerName}" deleted from ${playerPosition} rankings. Click "Update Rankings" to save changes.`);
-    }
-
-    deletePlayerById(playerId) {
-        const player = this.findPlayerById(playerId);
-        if (!player) return;
-        
-        this.currentEditingPlayer = player;
-        this.deletePlayer();
     }
 
     movePlayerToNewPosition(oldPosition, newPosition, newRank) {

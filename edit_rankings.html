@@ -210,36 +210,23 @@
             font-style: italic;
         }
         
-        /* Player actions container */
-        .player-actions {
-            display: flex;
-            gap: 0.375rem;
-            margin-left: 0.5rem;
-            opacity: 0;
-            transition: opacity 0.2s ease;
-        }
-        
-        .player-item:hover .player-actions {
-            opacity: 1;
-        }
-        
-        /* Edit and delete link styling */
-        .edit-link, .delete-link {
+        /* Edit link styling */
+        .edit-link {
             font-size: 0.6875rem; /* Same as player name font size */
+            color: var(--ss-orange-primary);
             text-decoration: none;
             font-weight: 400; /* Same as player name font weight */
             font-family: var(--ss-font-primary); /* Same as player name font family */
+            opacity: 0;
+            transition: opacity 0.2s ease;
+            margin-left: 0.5rem;
         }
         
-        .edit-link {
-            color: var(--ss-orange-primary);
+        .player-item:hover .edit-link {
+            opacity: 1;
         }
         
-        .delete-link {
-            color: var(--ss-error);
-        }
-        
-        .edit-link:hover, .delete-link:hover {
+        .edit-link:hover {
             text-decoration: underline;
         }
         
@@ -371,12 +358,9 @@
                 font-size: 0.75rem; /* Original mobile font size */
             }
             
-            .player-actions {
-                opacity: 1; /* Always visible on mobile */
-            }
-            
-            .edit-link, .delete-link {
+            .edit-link {
                 font-size: 0.75rem; /* Same as mobile player name font size */
+                opacity: 1; /* Always visible on mobile */
             }
             
             .tier-break {
@@ -424,7 +408,7 @@
                 padding: 0.1875rem 0.5rem;
             }
             
-            .edit-link, .delete-link {
+            .edit-link {
                 font-size: 0.6875rem; /* Same as smallest mobile player name font size */
             }
         }
