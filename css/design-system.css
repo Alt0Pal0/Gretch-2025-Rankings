@@ -244,6 +244,15 @@
   margin: 0 auto;
 }
 
+.header-row-top,
+.header-row-bottom {
+  display: contents; /* On desktop, these act as if they don't exist */
+}
+
+#reset-btn {
+  margin-left: auto; /* Keep reset button on the right on desktop */
+}
+
 .logo-link {
   display: inline-block;
   transition: all 0.3s ease;
@@ -529,30 +538,50 @@
     padding: 0.375rem 1rem;
   }
   
+  .header-content {
+    flex-direction: column;
+    gap: 0.5rem;
+    align-items: stretch;
+  }
+  
+  .header-row-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  
+  .header-row-bottom {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding-left: 0;
+  }
+  
   .logo {
     height: 24px;
     max-width: 120px;
   }
   
   .header-info {
-    margin-left: 1rem;
+    margin-left: 0;
     gap: 0.75rem;
+    flex: 1;
   }
   
   .header-title {
     font-size: 0.8125rem;
+    margin-right: 1rem;
   }
   
-  .header-version {
-    font-size: 0.5rem;
-    padding-left: 0.75rem;
-    border-left: 1px solid var(--ss-border);
-  }
-  
+  .header-version,
   .header-legend {
     font-size: 0.5rem;
     padding-left: 0.75rem;
     border-left: 1px solid var(--ss-border);
+  }
+  
+  #reset-btn {
+    margin-left: 0; /* Remove auto margin on mobile */
   }
   
 
