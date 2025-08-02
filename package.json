@@ -1,0 +1,17 @@
+{
+  "name": "gretch-2025-rankings",
+  "version": "1.0.0",
+  "description": "Dynamic NFL player rankings system",
+  "main": "index.js",
+  "scripts": {
+    "setup": "node scripts/setup.js",
+    "db:migrate": "node scripts/migrate.js"
+  },
+  "dependencies": {
+    "@vercel/postgres": "^0.5.1",
+    "dotenv": "^16.0.0"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}
