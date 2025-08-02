@@ -136,7 +136,10 @@ class EditRankings {
                     <div class="player-item" draggable="true" data-player-id="${player.id}" data-position="${player.position}">
                         <div class="player-rank">${rank}</div>
                         <div class="player-name${boldClass}${italicClass}">${player.name}</div>
-                        <a href="#" class="edit-link" onclick="editRankings.editPlayer(${player.id}); return false;">edit</a>
+                        <div class="player-actions">
+                            <a href="#" class="edit-link" onclick="editRankings.editPlayer(${player.id}); return false;">edit</a>
+                            <a href="#" class="delete-link" onclick="editRankings.deletePlayerById(${player.id}); return false;">delete</a>
+                        </div>
                     </div>
                 `;
                 
@@ -349,6 +352,41 @@ class EditRankings {
         this.renderPlayers();
         this.closeModal();
         this.markDirty();
+    }
+
+    deletePlayer() {
+        if (!this.currentEditingPlayer) return;
+        
+        const playerName = this.currentEditingPlayer.name;
+        const playerPosition = this.currentEditingPlayer.position;
+        
+        // Confirm deletion
+        if (!confirm(`Are you sure you want to delete "${playerName}" from the ${playerPosition} rankings?\n\nThis will remove them from the current version but preserve them in previous versions.`)) {
+            return;
+        }
+
+        // Remove player from current position
+        this.playersData[playerPosition] = this.playersData[playerPosition].filter(p => p.id !== this.currentEditingPlayer.id);
+        
+        // Re-rank remaining players
+        this.playersData[playerPosition].forEach((p, index) => {
+            p.position_rank = index + 1;
+        });
+
+        this.renderPlayers();
+        this.closeModal();
+        this.markDirty();
+        
+        // Show confirmation message
+        this.showSuccess(`"${playerName}" deleted from ${playerPosition} rankings. Click "Update Rankings" to save changes.`);
+    }
+
+    deletePlayerById(playerId) {
+        const player = this.findPlayerById(playerId);
+        if (!player) return;
+        
+        this.currentEditingPlayer = player;
+        this.deletePlayer();
     }
 
     movePlayerToNewPosition(oldPosition, newPosition, newRank) {

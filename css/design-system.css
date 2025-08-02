@@ -132,6 +132,25 @@
   color: var(--ss-text-primary);
 }
 
+.ss-btn-danger {
+  background-color: var(--ss-error);
+  color: var(--ss-white);
+  border: 2px solid var(--ss-error);
+}
+
+.ss-btn-danger:hover {
+  background-color: #dc2626;
+  border-color: #dc2626;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
+}
+
+.ss-btn-danger:active {
+  background-color: #b91c1c;
+  border-color: #b91c1c;
+  transform: translateY(0);
+}
+
 /* FORM ELEMENTS */
 .ss-input {
   width: 100%;

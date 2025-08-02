@@ -210,23 +210,36 @@
             font-style: italic;
         }
         
-        /* Edit link styling */
-        .edit-link {
-            font-size: 0.6875rem; /* Same as player name font size */
-            color: var(--ss-orange-primary);
-            text-decoration: none;
-            font-weight: 400; /* Same as player name font weight */
-            font-family: var(--ss-font-primary); /* Same as player name font family */
+        /* Player actions container */
+        .player-actions {
+            display: flex;
+            gap: 0.375rem;
+            margin-left: 0.5rem;
             opacity: 0;
             transition: opacity 0.2s ease;
-            margin-left: 0.5rem;
         }
         
-        .player-item:hover .edit-link {
+        .player-item:hover .player-actions {
             opacity: 1;
         }
         
-        .edit-link:hover {
+        /* Edit and delete link styling */
+        .edit-link, .delete-link {
+            font-size: 0.6875rem; /* Same as player name font size */
+            text-decoration: none;
+            font-weight: 400; /* Same as player name font weight */
+            font-family: var(--ss-font-primary); /* Same as player name font family */
+        }
+        
+        .edit-link {
+            color: var(--ss-orange-primary);
+        }
+        
+        .delete-link {
+            color: var(--ss-error);
+        }
+        
+        .edit-link:hover, .delete-link:hover {
             text-decoration: underline;
         }
         
@@ -358,9 +371,12 @@
                 font-size: 0.75rem; /* Original mobile font size */
             }
             
-            .edit-link {
-                font-size: 0.75rem; /* Same as mobile player name font size */
+            .player-actions {
                 opacity: 1; /* Always visible on mobile */
+            }
+            
+            .edit-link, .delete-link {
+                font-size: 0.75rem; /* Same as mobile player name font size */
             }
             
             .tier-break {
@@ -408,7 +424,7 @@
                 padding: 0.1875rem 0.5rem;
             }
             
-            .edit-link {
+            .edit-link, .delete-link {
                 font-size: 0.6875rem; /* Same as smallest mobile player name font size */
             }
         }
@@ -806,8 +822,15 @@
                 <div style="font-size: 0.65rem; color: var(--ss-text-secondary); margin-bottom: 0.75rem; text-align: center;">
                     Changes are saved locally. Click "Update Rankings" in header to save to database.
                 </div>
-                <button type="button" class="ss-btn ss-btn-secondary" onclick="editRankings.closeModal()">Cancel</button>
-                <button type="button" class="ss-btn ss-btn-primary" onclick="editRankings.savePlayer()">Apply Changes</button>
+                <div style="display: flex; justify-content: space-between; width: 100%;">
+                    <button type="button" class="ss-btn ss-btn-danger" onclick="editRankings.deletePlayer()" style="font-size: 0.75rem; padding: 0.5rem 1rem;">
+                        Delete Player
+                    </button>
+                    <div style="display: flex; gap: 0.75rem;">
+                        <button type="button" class="ss-btn ss-btn-secondary" onclick="editRankings.closeModal()">Cancel</button>
+                        <button type="button" class="ss-btn ss-btn-primary" onclick="editRankings.savePlayer()">Apply Changes</button>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
