@@ -850,8 +850,16 @@
     </style>
 </head>
 <body>
-    <!-- Password Protection Modal -->
-    <div id="auth-modal" class="auth-modal">
+    <!-- Loading Overlay (shown by default) -->
+    <div id="auth-loading" class="auth-loading">
+        <div class="auth-loading-content">
+            <div class="auth-spinner"></div>
+            <p>Verifying access...</p>
+        </div>
+    </div>
+
+    <!-- Password Protection Modal (hidden by default) -->
+    <div id="auth-modal" class="auth-modal" style="display: none;">
         <div class="auth-modal-content">
             <div class="auth-modal-header">
                 <img src="assets/images/logo.png" alt="Stealing Signals" class="auth-logo">
@@ -869,14 +877,6 @@
                 <button type="submit" class="auth-btn">Access Edit Interface</button>
             </form>
             <div id="auth-error" class="auth-error" style="display: none;"></div>
-        </div>
-    </div>
-
-    <!-- Loading Overlay -->
-    <div id="auth-loading" class="auth-loading" style="display: none;">
-        <div class="auth-loading-content">
-            <div class="auth-spinner"></div>
-            <p>Verifying access...</p>
         </div>
     </div>
 
@@ -1188,6 +1188,7 @@
             }
 
             showAuthModal() {
+                document.getElementById('auth-loading').style.display = 'none';
                 document.getElementById('auth-modal').style.display = 'flex';
                 document.getElementById('main-content').style.display = 'none';
                 
@@ -1198,6 +1199,7 @@
             }
 
             showMainContent() {
+                document.getElementById('auth-loading').style.display = 'none';
                 document.getElementById('auth-modal').style.display = 'none';
                 document.getElementById('main-content').style.display = 'block';
                 
@@ -1231,6 +1233,7 @@
             } catch (error) {
                 console.error('Failed to initialize authentication:', error);
                 // Fallback: show auth modal if initialization fails
+                document.getElementById('auth-loading').style.display = 'none';
                 document.getElementById('auth-modal').style.display = 'flex';
                 document.getElementById('main-content').style.display = 'none';
             }
