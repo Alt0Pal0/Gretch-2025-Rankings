@@ -480,8 +480,8 @@
         }
         
         .modal-form {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
+            display: flex;
+            flex-direction: column;
             gap: 0.75rem;
         }
         
@@ -491,7 +491,7 @@
         }
         
         .form-group.full-width {
-            grid-column: 1 / -1;
+            width: 100%;
         }
         
         .form-label {
@@ -634,6 +634,8 @@
             gap: 0.75rem !important;
             margin-bottom: 0.75rem !important;
             flex-wrap: nowrap !important;
+            border: 2px solid red !important; /* DEBUG: Should be STACKED vertically now */
+            padding: 0.5rem !important;
         }
         
         .form-row .form-group {
@@ -654,6 +656,8 @@
             margin-bottom: 0.75rem !important;
             justify-content: space-around !important;
             flex-wrap: nowrap !important;
+            border: 2px solid blue !important; /* DEBUG: Should be STACKED vertically now */
+            padding: 0.5rem !important;
         }
         
         .radio-section .form-radio {
