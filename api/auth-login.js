@@ -39,10 +39,11 @@ module.exports = async function handler(req, res) {
     `;
 
     if (isValid) {
-      // Set session cookie (24 hours = 86400 seconds)
+      // Set session cookie (24 hours = 86400 seconds) and persistent admin flag (1 year)
       res.setHeader('Set-Cookie', [
         `edit_session=${sessionToken}; HttpOnly; Path=/; Max-Age=86400; SameSite=Strict`,
-        `edit_session_expires=${Date.now() + 86400000}; Path=/; Max-Age=86400; SameSite=Strict`
+        `edit_session_expires=${Date.now() + 86400000}; Path=/; Max-Age=86400; SameSite=Strict`,
+        `admin_flag=true; Path=/; Max-Age=31536000; SameSite=Strict` // 1 year = 31536000 seconds
       ]);
 
       return res.status(200).json({ 

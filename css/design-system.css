@@ -311,9 +311,7 @@
   display: contents; /* These act as if they don't exist on desktop */
 }
 
-#reset-btn {
-  margin-left: auto; /* Keep reset button on the right on desktop */
-}
+/* Reset button styling is now handled by header-buttons container */
 
 .logo-link {
   display: inline-block;
@@ -338,6 +336,12 @@
   align-items: center;
   margin-left: 1.5rem; /* Space after title on desktop */
   gap: 1.5rem;
+}
+
+.header-buttons {
+  display: flex;
+  align-items: center;
+  margin-left: auto; /* Push buttons to the right */
 }
 
 .header-title {

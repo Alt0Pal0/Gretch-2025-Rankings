@@ -22,6 +22,7 @@
             font-family: var(--ss-font-primary);
             margin: 0;
             background-color: var(--ss-light-gray);
+         
             color: var(--ss-text-primary);
             /* Prevent horizontal bouncing/drift on mobile */
             overscroll-behavior-x: none;
@@ -1024,6 +1025,20 @@
             }
         }
 
+        // Check for admin flag cookie and show/hide Edit Rankings link
+        function checkAdminFlag() {
+            // Get admin_flag cookie
+            const cookies = document.cookie.split(';');
+            const adminCookie = cookies.find(cookie => cookie.trim().startsWith('admin_flag='));
+            const hasAdminFlag = adminCookie && adminCookie.includes('true');
+            
+            // Show/hide Edit Rankings link
+            const editLink = document.getElementById('edit-rankings-link');
+            if (editLink && hasAdminFlag) {
+                editLink.style.display = 'inline-block';
+            }
+        }
+
         // Load components and populate data
         document.addEventListener('DOMContentLoaded', function() {
             // Populate player rankings
@@ -1038,6 +1053,8 @@
                     setTimeout(initScrollBehavior, 100);
                     // Initialize reset button functionality
                     setTimeout(initResetButton, 100);
+                    // Check admin flag and show Edit Rankings link if needed
+                    setTimeout(checkAdminFlag, 100);
                 })
                 .catch(error => {
                     console.error('Error loading header:', error);
