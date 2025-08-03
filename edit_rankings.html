@@ -439,7 +439,7 @@
             background: white;
             border-radius: var(--ss-border-radius);
             padding: 1.25rem;
-            max-width: 580px !important;
+            max-width: 320px !important;
             width: 90% !important;
             max-height: 80vh;
             overflow-y: auto;
@@ -601,7 +601,6 @@
             gap: 0.75rem;
             margin-top: 1.5rem;
             padding-top: 1rem;
-            border-top: 1px solid var(--ss-border);
         }
         
         .loading {
@@ -779,11 +778,11 @@
             <form class="modal-form">
                 <!-- Row 1: Player Name, Position, Ranking -->
                 <div class="form-row">
-                    <div class="form-group">
+                    <div class="form-group" style="flex: 3;">
                         <label class="form-label">Player Name</label>
                         <input type="text" id="edit-name" class="form-input" placeholder="Enter player name">
                     </div>
-                    <div class="form-group">
+                    <div class="form-group" style="flex: 1; max-width: 60px;">
                         <label class="form-label">Position</label>
                         <select id="edit-position" class="form-select">
                             <option value="QB">QB</option>
@@ -792,7 +791,7 @@
                             <option value="TE">TE</option>
                         </select>
                     </div>
-                    <div class="form-group">
+                    <div class="form-group" style="flex: 1; max-width: 60px;">
                         <label class="form-label">Ranking</label>
                         <input type="number" id="edit-rank" class="form-input" placeholder="1" min="1">
                     </div>
@@ -800,7 +799,7 @@
                 
                 <!-- Row 2: NFL Team, Bye Week -->
                 <div class="form-row">
-                    <div class="form-group">
+                    <div class="form-group" style="flex: 3;">
                         <label class="form-label">NFL Team</label>
                         <select id="edit-team" class="form-select">
                             <option value="TBD">TBD</option>
@@ -838,7 +837,7 @@
                             <option value="WAS">WAS</option>
                         </select>
                     </div>
-                    <div class="form-group">
+                    <div class="form-group" style="flex: 2; max-width: 120px;">
                         <label class="form-label">Bye Week</label>
                         <select id="edit-bye-week" class="form-select">
                             <option value="">Select</option>
