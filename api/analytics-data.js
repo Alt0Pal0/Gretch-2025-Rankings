@@ -40,38 +40,35 @@ module.exports = async function handler(req, res) {
   try {
     // Ensure tables exist
     await ensureTablesExist();
-    // Get overall stats for different time periods - using US Eastern timezone
-    const easternToday = await sql`SELECT CURRENT_DATE AT TIME ZONE 'America/New_York' AT TIME ZONE 'UTC' as et_today`;
-    const etToday = easternToday.rows[0].et_today;
-    
+    // Get overall stats for different time periods - use simpler timezone handling
     const overallStats = await sql`
       SELECT 
         'page_views' as metric,
-        COUNT(*) FILTER (WHERE timestamp >= ${etToday}) as today,
-        COUNT(*) FILTER (WHERE timestamp >= ${etToday} - INTERVAL '7 days') as last_7_days,
-        COUNT(*) FILTER (WHERE timestamp >= ${etToday} - INTERVAL '30 days') as last_30_days,
-        COUNT(*) FILTER (WHERE timestamp >= ${etToday} - INTERVAL '1 year') as last_year,
+        COUNT(*) FILTER (WHERE timestamp >= (CURRENT_DATE - INTERVAL '5 hours')) as today,
+        COUNT(*) FILTER (WHERE timestamp >= (CURRENT_DATE - INTERVAL '5 hours') - INTERVAL '7 days') as last_7_days,
+        COUNT(*) FILTER (WHERE timestamp >= (CURRENT_DATE - INTERVAL '5 hours') - INTERVAL '30 days') as last_30_days,
+        COUNT(*) FILTER (WHERE timestamp >= (CURRENT_DATE - INTERVAL '5 hours') - INTERVAL '1 year') as last_year,
         COUNT(*) as all_time
       FROM page_views
       UNION ALL
       SELECT 
         'unique_visitors' as metric,
-        COUNT(DISTINCT ip_address || user_agent) FILTER (WHERE timestamp >= ${etToday}) as today,
-        COUNT(DISTINCT ip_address || user_agent) FILTER (WHERE timestamp >= ${etToday} - INTERVAL '7 days') as last_7_days,
-        COUNT(DISTINCT ip_address || user_agent) FILTER (WHERE timestamp >= ${etToday} - INTERVAL '30 days') as last_30_days,
-        COUNT(DISTINCT ip_address || user_agent) FILTER (WHERE timestamp >= ${etToday} - INTERVAL '1 year') as last_year,
+        COUNT(DISTINCT ip_address || user_agent) FILTER (WHERE timestamp >= (CURRENT_DATE - INTERVAL '5 hours')) as today,
+        COUNT(DISTINCT ip_address || user_agent) FILTER (WHERE timestamp >= (CURRENT_DATE - INTERVAL '5 hours') - INTERVAL '7 days') as last_7_days,
+        COUNT(DISTINCT ip_address || user_agent) FILTER (WHERE timestamp >= (CURRENT_DATE - INTERVAL '5 hours') - INTERVAL '30 days') as last_30_days,
+        COUNT(DISTINCT ip_address || user_agent) FILTER (WHERE timestamp >= (CURRENT_DATE - INTERVAL '5 hours') - INTERVAL '1 year') as last_year,
         COUNT(DISTINCT ip_address || user_agent) as all_time
       FROM page_views
     `;
 
-    // Get daily page views for last 60 days (for chart) - using US Eastern timezone
+    // Get daily page views for last 60 days (for chart) - simplified timezone handling
     const dailyViews = await sql`
       SELECT 
-        DATE(timestamp AT TIME ZONE 'UTC' AT TIME ZONE 'America/New_York') as date,
+        DATE(timestamp - INTERVAL '5 hours') as date,
         COUNT(*) as views
       FROM page_views 
-      WHERE timestamp >= (CURRENT_DATE AT TIME ZONE 'America/New_York' AT TIME ZONE 'UTC') - INTERVAL '60 days'
-      GROUP BY DATE(timestamp AT TIME ZONE 'UTC' AT TIME ZONE 'America/New_York')
+      WHERE timestamp >= CURRENT_DATE - INTERVAL '60 days'
+      GROUP BY DATE(timestamp - INTERVAL '5 hours')
       ORDER BY date ASC
     `;
 
@@ -79,10 +76,10 @@ module.exports = async function handler(req, res) {
     const pageStats = await sql`
       SELECT 
         page_path,
-        COUNT(*) FILTER (WHERE timestamp >= ${etToday}) as today,
-        COUNT(*) FILTER (WHERE timestamp >= ${etToday} - INTERVAL '7 days') as last_7_days,
-        COUNT(*) FILTER (WHERE timestamp >= ${etToday} - INTERVAL '30 days') as last_30_days,
-        COUNT(*) FILTER (WHERE timestamp >= ${etToday} - INTERVAL '1 year') as last_year,
+        COUNT(*) FILTER (WHERE timestamp >= (CURRENT_DATE - INTERVAL '5 hours')) as today,
+        COUNT(*) FILTER (WHERE timestamp >= (CURRENT_DATE - INTERVAL '5 hours') - INTERVAL '7 days') as last_7_days,
+        COUNT(*) FILTER (WHERE timestamp >= (CURRENT_DATE - INTERVAL '5 hours') - INTERVAL '30 days') as last_30_days,
+        COUNT(*) FILTER (WHERE timestamp >= (CURRENT_DATE - INTERVAL '5 hours') - INTERVAL '1 year') as last_year,
         COUNT(*) as all_time
       FROM page_views
       GROUP BY page_path
@@ -97,10 +94,10 @@ module.exports = async function handler(req, res) {
                  WHEN LENGTH(user_agent) > 60 THEN CONCAT(LEFT(user_agent, 57), '...')
                  ELSE COALESCE(user_agent, 'unknown')
                END) as visitor_id,
-        COUNT(*) FILTER (WHERE timestamp >= ${etToday}) as today,
-        COUNT(*) FILTER (WHERE timestamp >= ${etToday} - INTERVAL '7 days') as last_7_days,
-        COUNT(*) FILTER (WHERE timestamp >= ${etToday} - INTERVAL '30 days') as last_30_days,
-        COUNT(*) FILTER (WHERE timestamp >= ${etToday} - INTERVAL '1 year') as last_year,
+        COUNT(*) FILTER (WHERE timestamp >= (CURRENT_DATE - INTERVAL '5 hours')) as today,
+        COUNT(*) FILTER (WHERE timestamp >= (CURRENT_DATE - INTERVAL '5 hours') - INTERVAL '7 days') as last_7_days,
+        COUNT(*) FILTER (WHERE timestamp >= (CURRENT_DATE - INTERVAL '5 hours') - INTERVAL '30 days') as last_30_days,
+        COUNT(*) FILTER (WHERE timestamp >= (CURRENT_DATE - INTERVAL '5 hours') - INTERVAL '1 year') as last_year,
         COUNT(*) as all_time
       FROM page_views
       GROUP BY ip_address, user_agent
@@ -112,10 +109,10 @@ module.exports = async function handler(req, res) {
     const loginStats = await sql`
       SELECT 
         password_attempted,
-        COUNT(*) FILTER (WHERE success = TRUE AND timestamp >= ${etToday}) as today,
-        COUNT(*) FILTER (WHERE success = TRUE AND timestamp >= ${etToday} - INTERVAL '7 days') as last_7_days,
-        COUNT(*) FILTER (WHERE success = TRUE AND timestamp >= ${etToday} - INTERVAL '30 days') as last_30_days,
-        COUNT(*) FILTER (WHERE success = TRUE AND timestamp >= ${etToday} - INTERVAL '1 year') as last_year,
+        COUNT(*) FILTER (WHERE success = TRUE AND timestamp >= (CURRENT_DATE - INTERVAL '5 hours')) as today,
+        COUNT(*) FILTER (WHERE success = TRUE AND timestamp >= (CURRENT_DATE - INTERVAL '5 hours') - INTERVAL '7 days') as last_7_days,
+        COUNT(*) FILTER (WHERE success = TRUE AND timestamp >= (CURRENT_DATE - INTERVAL '5 hours') - INTERVAL '30 days') as last_30_days,
+        COUNT(*) FILTER (WHERE success = TRUE AND timestamp >= (CURRENT_DATE - INTERVAL '5 hours') - INTERVAL '1 year') as last_year,
         COUNT(*) FILTER (WHERE success = TRUE) as all_time
       FROM edit_access_logs
       WHERE success = TRUE
