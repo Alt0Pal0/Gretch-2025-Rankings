@@ -579,17 +579,15 @@ class EditRankings {
     }
 
     downloadCSV() {
-        // Generate CSV with ALL database columns for complete round-trip compatibility
-        const headers = ['id', 'version_id', 'name', 'position', 'position_rank', 'nfl_team', 'bye_week', 'is_bold', 'is_italic', 'small_tier_break', 'big_tier_break', 'news_copy', 'ranking_change', 'created_at'];
+        // Generate CSV with only user-editable columns (no id, version_id, ranking_change, created_at)
+        const headers = ['name', 'position', 'position_rank', 'nfl_team', 'bye_week', 'is_bold', 'is_italic', 'small_tier_break', 'big_tier_break', 'news_copy'];
         let csvContent = headers.join(',') + '\n';
         
-        // Add data for each position with ALL columns
+        // Add data for each position with only user-editable columns
         ['QB', 'RB', 'WR', 'TE'].forEach(position => {
             if (this.playersData[position]) {
                 this.playersData[position].forEach(player => {
                     const row = [
-                        player.id || '',
-                        player.version_id || '',
                         `"${player.name}"`,
                         player.position,
                         player.position_rank,
@@ -599,9 +597,7 @@ class EditRankings {
                         player.is_italic ? 'TRUE' : 'FALSE',
                         player.small_tier_break ? 'TRUE' : 'FALSE',
                         player.big_tier_break ? 'TRUE' : 'FALSE',
-                        `"${player.news_copy || ''}"`,
-                        player.ranking_change || 0,
-                        `"${player.created_at || ''}"`
+                        `"${player.news_copy || ''}"`
                     ];
                     csvContent += row.join(',') + '\n';
                 });
@@ -656,8 +652,8 @@ class EditRankings {
         const lines = csvText.split('\n');
         const headers = lines[0].split(',').map(h => h.trim());
         
-        // Expected headers with ALL database columns
-        const expectedHeaders = ['id', 'version_id', 'name', 'position', 'position_rank', 'nfl_team', 'bye_week', 'is_bold', 'is_italic', 'small_tier_break', 'big_tier_break', 'news_copy', 'ranking_change', 'created_at'];
+        // Expected headers for user-editable columns only
+        const expectedHeaders = ['name', 'position', 'position_rank', 'nfl_team', 'bye_week', 'is_bold', 'is_italic', 'small_tier_break', 'big_tier_break', 'news_copy'];
         
         // Parse all player data from CSV
         const players = [];
@@ -673,13 +669,10 @@ class EditRankings {
                 const cleanHeader = header.replace(/"/g, '');
                 let value = values[index] ? values[index].replace(/"/g, '') : '';
                 
-                // Convert data types appropriately
+                // Convert data types appropriately (no id, version_id, ranking_change, created_at)
                 switch (cleanHeader) {
-                    case 'id':
-                    case 'version_id':
                     case 'position_rank':
                     case 'bye_week':
-                    case 'ranking_change':
                         player[cleanHeader] = value ? parseInt(value) : null;
                         break;
                     case 'is_bold':
