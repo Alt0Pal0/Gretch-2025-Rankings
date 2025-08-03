@@ -736,7 +736,5 @@ class EditRankings {
     }
 }
 
-// Initialize when DOM is loaded
-document.addEventListener('DOMContentLoaded', () => {
-    window.editRankings = new EditRankings();
-});
+// EditRankings class is now initialized manually after authentication
+// No auto-initialization needed

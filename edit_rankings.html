@@ -775,15 +775,23 @@
             font-family: var(--ss-font-primary);
             cursor: pointer;
             transition: background 0.2s;
+            position: relative;
+            z-index: 10;
+            width: 100%;
         }
 
         .auth-btn:hover {
             background: var(--ss-orange-hover);
+            z-index: 11;
         }
 
         .auth-btn:disabled {
             background: var(--ss-gray-light);
             cursor: not-allowed;
+        }
+
+        .auth-btn:disabled:hover {
+            background: var(--ss-gray-light);
         }
 
         .auth-error {
@@ -1105,10 +1113,26 @@
 
             setupAuthForm() {
                 const form = document.getElementById('auth-form');
+                if (!form) {
+                    console.error('Auth form not found');
+                    return;
+                }
+                
                 form.addEventListener('submit', async (e) => {
                     e.preventDefault();
                     await this.handleLogin();
                 });
+                
+                // Also handle Enter key on password input
+                const passwordInput = document.getElementById('auth-password');
+                if (passwordInput) {
+                    passwordInput.addEventListener('keypress', async (e) => {
+                        if (e.key === 'Enter') {
+                            e.preventDefault();
+                            await this.handleLogin();
+                        }
+                    });
+                }
             }
 
             async handleLogin() {
@@ -1171,11 +1195,15 @@
                 document.getElementById('auth-modal').style.display = 'none';
                 document.getElementById('main-content').style.display = 'block';
                 
-                // Load edit header component
+                // Load edit header component and then initialize EditRankings
                 fetch('components/edit-header.html')
                     .then(response => response.text())
                     .then(html => {
                         document.getElementById('header-placeholder').innerHTML = html;
+                        // Now that everything is ready, initialize EditRankings
+                        if (typeof EditRankings !== 'undefined') {
+                            window.editRankings = new EditRankings();
+                        }
                     });
             }
 
@@ -1192,7 +1220,14 @@
 
         // Initialize authentication when page loads
         document.addEventListener('DOMContentLoaded', () => {
-            new EditAuth();
+            try {
+                new EditAuth();
+            } catch (error) {
+                console.error('Failed to initialize authentication:', error);
+                // Fallback: show auth modal if initialization fails
+                document.getElementById('auth-modal').style.display = 'flex';
+                document.getElementById('main-content').style.display = 'none';
+            }
         });
     </script>
 </body>
