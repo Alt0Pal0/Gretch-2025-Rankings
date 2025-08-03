@@ -1029,23 +1029,13 @@
         function checkAdminFlag() {
             // Get admin_flag cookie
             const cookies = document.cookie.split(';');
-            console.log('All cookies:', cookies);
-            
             const adminCookie = cookies.find(cookie => cookie.trim().startsWith('admin_flag='));
-            console.log('Admin cookie found:', adminCookie);
-            
             const hasAdminFlag = adminCookie && adminCookie.includes('true');
-            console.log('Has admin flag:', hasAdminFlag);
             
             // Show/hide Edit Rankings link
             const editLink = document.getElementById('edit-rankings-link');
-            console.log('Edit link element found:', editLink);
-            
             if (editLink && hasAdminFlag) {
                 editLink.style.display = 'inline-block';
-                console.log('✅ Edit Rankings link should now be visible');
-            } else {
-                console.log('❌ Edit Rankings link not shown. EditLink:', !!editLink, 'HasAdminFlag:', hasAdminFlag);
             }
         }
 
