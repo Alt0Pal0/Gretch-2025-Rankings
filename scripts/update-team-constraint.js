@@ -11,19 +11,19 @@ async function updateTeamConstraint() {
       DROP CONSTRAINT IF EXISTS players_nfl_team_check
     `;
     
-    // Add the new constraint with additional team abbreviations including TBD
+    // Add the new constraint with additional team abbreviations including TBD and JAC
     await sql`
       ALTER TABLE players 
       ADD CONSTRAINT players_nfl_team_check 
       CHECK (nfl_team IN (
         'ARZ','ARI','ATL','BAL','BLT','BUF','CAR','CHI','CIN','CLE','CLV','DAL','DEN',
-        'DET','GB','HOU','HST','IND','JAX','KC','LA','LAC','LAR','LV','MIA','MIN',
+        'DET','GB','HOU','HST','IND','JAC','JAX','KC','LA','LAC','LAR','LV','MIA','MIN',
         'NE','NO','NYG','NYJ','OAK','PHI','PIT','SEA','SF','TB','TEN','WAS','TBD'
       ))
     `;
     
     console.log('✅ NFL team constraint updated successfully!');
-    console.log('Added support for: ARI, BAL, CLE, HOU, LAR, LV, TBD');
+    console.log('Added support for: ARI, BAL, CLE, HOU, JAC, LAR, LV, TBD');
     
   } catch (error) {
     console.error('❌ Error updating constraint:', error);
