@@ -66,34 +66,51 @@ module.exports = async function handler(req, res) {
 
     const newVersionId = newVersionResult.rows[0].id;
 
-    // 5. Process and insert all players with new version_id
-    for (const player of players) {
-      // Calculate ranking change
-      const oldRank = oldPlayerRanks[`${player.name}_${player.position}`];
-      const newRank = player.position_rank;
-      const rankingChange = oldRank ? (oldRank - newRank) : 0; // Positive = moved up, negative = moved down
+    // 5. Group players by position and reorder rankings to prevent duplicates
+    const playersByPosition = {};
+    
+    // Group players by position
+    players.forEach(player => {
+      if (!playersByPosition[player.position]) {
+        playersByPosition[player.position] = [];
+      }
+      playersByPosition[player.position].push(player);
+    });
 
-      // Insert player with new version_id
-      await sql`
-        INSERT INTO players (
-          version_id, name, position, position_rank, nfl_team, bye_week,
-          is_bold, is_italic, small_tier_break, big_tier_break,
-          news_copy, ranking_change
-        ) VALUES (
-          ${newVersionId}, 
-          ${player.name}, 
-          ${player.position}, 
-          ${player.position_rank}, 
-          ${player.nfl_team || 'TBD'}, 
-          ${player.bye_week || null},
-          ${player.is_bold || false}, 
-          ${player.is_italic || false}, 
-          ${player.small_tier_break || false}, 
-          ${player.big_tier_break || false},
-          ${player.news_copy || null}, 
-          ${rankingChange}
-        )
-      `;
+    // Process each position separately to ensure sequential rankings
+    for (const [position, positionPlayers] of Object.entries(playersByPosition)) {
+      // Sort players by their intended ranking
+      positionPlayers.sort((a, b) => a.position_rank - b.position_rank);
+      
+      // Assign sequential rankings (1, 2, 3, 4...) to prevent duplicates
+      for (let i = 0; i < positionPlayers.length; i++) {
+        const player = positionPlayers[i];
+        const oldRank = oldPlayerRanks[`${player.name}_${player.position}`];
+        const newRank = i + 1; // Sequential ranking starting from 1
+        const rankingChange = oldRank ? (oldRank - newRank) : 0; // Positive = moved up, negative = moved down
+
+        // Insert player with corrected sequential ranking
+        await sql`
+          INSERT INTO players (
+            version_id, name, position, position_rank, nfl_team, bye_week,
+            is_bold, is_italic, small_tier_break, big_tier_break,
+            news_copy, ranking_change
+          ) VALUES (
+            ${newVersionId}, 
+            ${player.name}, 
+            ${player.position}, 
+            ${newRank}, 
+            ${player.nfl_team || 'TBD'}, 
+            ${player.bye_week || null},
+            ${player.is_bold || false}, 
+            ${player.is_italic || false}, 
+            ${player.small_tier_break || false}, 
+            ${player.big_tier_break || false},
+            ${player.news_copy || null}, 
+            ${rankingChange}
+          )
+        `;
+      }
     }
 
     // 6. Return success response

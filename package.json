@@ -16,7 +16,8 @@
     "db:fix-qb-rankings": "node scripts/fix-qb-rankings.js",
     "db:check-all-rankings": "node scripts/check-all-rankings.js",
     "auth:setup": "node scripts/setup-auth.js",
-    "auth:logs": "node scripts/view-audit-logs.js"
+    "auth:logs": "node scripts/view-audit-logs.js",
+    "test:csv-reordering": "node scripts/test-csv-reordering.js"
   },
   "dependencies": {
     "@vercel/postgres": "^0.5.1",
