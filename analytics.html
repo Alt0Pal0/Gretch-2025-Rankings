@@ -64,6 +64,12 @@
             border-bottom: 1px solid var(--ss-border);
         }
 
+        /* Center align all columns except the first */
+        .stats-table th:not(:first-child),
+        .stats-table td:not(:first-child) {
+            text-align: center;
+        }
+
         .stats-table th {
             background-color: var(--ss-light-gray);
             font-weight: 600;
