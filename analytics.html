@@ -321,6 +321,26 @@
                 </table>
             </div>
 
+            <!-- Visitor-Specific Stats -->
+            <div class="analytics-section">
+                <h2 class="section-title">Page Views by Unique Visitor</h2>
+                <table class="stats-table" id="visitor-stats">
+                    <thead>
+                        <tr>
+                            <th>Visitor (IP | User Agent)</th>
+                            <th>Today</th>
+                            <th>Last 7 Days</th>
+                            <th>Last 30 Days</th>
+                            <th>Last Year</th>
+                            <th>All Time</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Data loaded via JavaScript -->
+                    </tbody>
+                </table>
+            </div>
+
             <!-- Login Stats -->
             <div class="analytics-section">
                 <h2 class="section-title">Successful Logins by Password</h2>
@@ -471,6 +491,7 @@
                     
                     this.populateOverallStats(data.overall_stats);
                     this.populatePageStats(data.page_stats);
+                    this.populateVisitorStats(data.visitor_stats);
                     this.populateLoginStats(data.login_stats);
                     this.createDailyChart(data.daily_views);
                     
@@ -505,6 +526,24 @@
                     const tr = document.createElement('tr');
                     tr.innerHTML = `
                         <td>${row.page_path}</td>
+                        <td>${row.today.toLocaleString()}</td>
+                        <td>${row.last_7_days.toLocaleString()}</td>
+                        <td>${row.last_30_days.toLocaleString()}</td>
+                        <td>${row.last_year.toLocaleString()}</td>
+                        <td>${row.all_time.toLocaleString()}</td>
+                    `;
+                    tbody.appendChild(tr);
+                });
+            }
+
+            populateVisitorStats(stats) {
+                const tbody = document.querySelector('#visitor-stats tbody');
+                tbody.innerHTML = '';
+                
+                stats.forEach(row => {
+                    const tr = document.createElement('tr');
+                    tr.innerHTML = `
+                        <td style="font-family: monospace; font-size: 0.8rem;">${row.visitor_id}</td>
                         <td>${row.today.toLocaleString()}</td>
                         <td>${row.last_7_days.toLocaleString()}</td>
                         <td>${row.last_30_days.toLocaleString()}</td>

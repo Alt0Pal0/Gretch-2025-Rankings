@@ -86,6 +86,25 @@ module.exports = async function handler(req, res) {
       ORDER BY all_time DESC
     `;
 
+    // Get visitor stats (by IP + User Agent combination)
+    const visitorStats = await sql`
+      SELECT 
+        CONCAT(COALESCE(host(ip_address), 'unknown'), ' | ', 
+               CASE 
+                 WHEN LENGTH(user_agent) > 60 THEN CONCAT(LEFT(user_agent, 57), '...')
+                 ELSE COALESCE(user_agent, 'unknown')
+               END) as visitor_id,
+        COUNT(*) FILTER (WHERE timestamp >= CURRENT_DATE) as today,
+        COUNT(*) FILTER (WHERE timestamp >= CURRENT_DATE - INTERVAL '7 days') as last_7_days,
+        COUNT(*) FILTER (WHERE timestamp >= CURRENT_DATE - INTERVAL '30 days') as last_30_days,
+        COUNT(*) FILTER (WHERE timestamp >= CURRENT_DATE - INTERVAL '1 year') as last_year,
+        COUNT(*) as all_time
+      FROM page_views
+      GROUP BY ip_address, user_agent
+      ORDER BY all_time DESC
+      LIMIT 50
+    `;
+
     // Get login stats by password (from existing auth logs)
     const loginStats = await sql`
       SELECT 
@@ -105,6 +124,7 @@ module.exports = async function handler(req, res) {
       overall_stats: overallStats.rows || [],
       daily_views: dailyViews.rows || [],
       page_stats: pageStats.rows || [],
+      visitor_stats: visitorStats.rows || [],
       login_stats: loginStats.rows || []
     });
 
@@ -119,6 +139,7 @@ module.exports = async function handler(req, res) {
       ],
       daily_views: [],
       page_stats: [],
+      visitor_stats: [],
       login_stats: []
     });
   }
