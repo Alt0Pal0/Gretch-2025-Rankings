@@ -19,9 +19,9 @@ CREATE TABLE IF NOT EXISTS players (
   position VARCHAR(2) NOT NULL CHECK (position IN ('QB', 'RB', 'WR', 'TE')),
   position_rank INTEGER NOT NULL,
   nfl_team VARCHAR(3) NOT NULL CHECK (nfl_team IN (
-    'ARZ','ATL','BLT','BUF','CAR','CHI','CIN','CLV','DAL','DEN',
-    'DET','GB','HST','IND','JAX','KC','LA','LAC','MIA','MIN',
-    'NE','NO','NYG','NYJ','OAK','PHI','PIT','SEA','SF','TB','TEN','WAS'
+    'ARZ','ARI','ATL','BAL','BLT','BUF','CAR','CHI','CIN','CLE','CLV','DAL','DEN',
+    'DET','GB','HOU','HST','IND','JAX','KC','LA','LAC','LAR','LV','MIA','MIN',
+    'NE','NO','NYG','NYJ','OAK','PHI','PIT','SEA','SF','TB','TEN','WAS','TBD'
   )),
   bye_week INTEGER CHECK (bye_week BETWEEN 1 AND 18),
   is_bold BOOLEAN DEFAULT FALSE,

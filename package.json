@@ -5,7 +5,9 @@
   "main": "index.js",
   "scripts": {
     "setup": "node scripts/setup.js",
-    "db:migrate": "node scripts/migrate.js"
+    "db:migrate": "node scripts/migrate.js",
+    "db:update-teams": "node scripts/update-team-constraint.js",
+    "db:check-teams": "node scripts/check-team-usage.js"
   },
   "dependencies": {
     "@vercel/postgres": "^0.5.1",
