@@ -18,7 +18,7 @@ module.exports = async function handler(req, res) {
     // Start transaction-like operations
     console.log('Starting rankings update...');
 
-    // 1. Get current version info
+    // 1. Get current version info and find next available version number
     const currentVersionResult = await sql`
       SELECT id, version_number 
       FROM ranking_versions 
@@ -31,7 +31,15 @@ module.exports = async function handler(req, res) {
     }
 
     const currentVersion = currentVersionResult.rows[0];
-    const newVersionNumber = currentVersion.version_number + 1;
+
+    // Find the next available version number (in case of gaps from failed uploads)
+    const maxVersionResult = await sql`
+      SELECT MAX(version_number) as max_version 
+      FROM ranking_versions
+    `;
+    
+    const maxVersion = maxVersionResult.rows[0].max_version || 0;
+    const newVersionNumber = maxVersion + 1;
 
     // 2. Get current player positions for change calculation
     const currentPlayersResult = await sql`
