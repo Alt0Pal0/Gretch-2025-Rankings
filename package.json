@@ -8,7 +8,9 @@
     "db:migrate": "node scripts/migrate.js",
     "db:update-teams": "node scripts/update-team-constraint.js",
     "db:check-teams": "node scripts/check-team-usage.js",
-    "db:check-versions": "node scripts/check-versions.js"
+    "db:check-versions": "node scripts/check-versions.js",
+    "db:check-version-players": "node scripts/check-version-players.js",
+    "db:fix-current": "node scripts/fix-current-version.js"
   },
   "dependencies": {
     "@vercel/postgres": "^0.5.1",
