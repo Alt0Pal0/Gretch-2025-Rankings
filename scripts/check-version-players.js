@@ -5,8 +5,8 @@ async function checkVersionPlayers() {
   try {
     console.log('Checking player counts for recent versions...');
     
-    // Check player counts for the last few versions
-    const versions = [29, 23, 22]; // v24=ID 29, v23=ID 23, v22=ID 22
+    // Check player counts for the recent versions
+    const versions = [34, 33, 32, 31, 30, 29]; // v29=ID 34, v28=ID 33, etc.
     
     for (const versionId of versions) {
       const result = await sql`

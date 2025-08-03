@@ -10,7 +10,12 @@
     "db:check-teams": "node scripts/check-team-usage.js",
     "db:check-versions": "node scripts/check-versions.js",
     "db:check-version-players": "node scripts/check-version-players.js",
-    "db:fix-current": "node scripts/fix-current-version.js"
+    "db:fix-current": "node scripts/fix-current-version.js",
+    "db:check-qb-rankings": "node scripts/check-qb-rankings.js",
+    "db:fix-current-to-v27": "node scripts/fix-current-to-v27.js",
+    "db:fix-qb-rankings": "node scripts/fix-qb-rankings.js",
+    "db:check-all-rankings": "node scripts/check-all-rankings.js",
+    "auth:setup": "node scripts/setup-auth.js"
   },
   "dependencies": {
     "@vercel/postgres": "^0.5.1",
