@@ -439,7 +439,7 @@
             background: white;
             border-radius: var(--ss-border-radius);
             padding: 1.5rem;
-            max-width: 420px;
+            max-width: 520px;
             width: 90%;
             max-height: 80vh;
             overflow-y: auto;
@@ -531,6 +531,17 @@
             font-size: 0.625rem !important;
             text-align: center;
             height: 2.25rem !important;
+        }
+        
+        /* Hide number input spinner arrows */
+        input[type="number"]::-webkit-outer-spin-button,
+        input[type="number"]::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+        
+        input[type="number"] {
+            -moz-appearance: textfield;
         }
         
         .form-input:focus, .form-select:focus, .form-textarea:focus {
@@ -763,11 +774,11 @@
             </div>
             <form class="modal-form">
                 <div class="form-row">
-                    <div class="form-group" style="flex: 2;">
+                    <div class="form-group">
                         <label class="form-label">Player Name</label>
                         <input type="text" id="edit-name" class="form-input" placeholder="Enter player name">
                     </div>
-                    <div class="form-group" style="flex: 1;">
+                    <div class="form-group">
                         <label class="form-label">Position</label>
                         <select id="edit-position" class="form-select">
                             <option value="QB">QB</option>
@@ -776,12 +787,12 @@
                             <option value="TE">TE</option>
                         </select>
                     </div>
-                    <div class="form-group" style="flex: 1;">
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
                         <label class="form-label">Ranking</label>
                         <input type="number" id="edit-rank" class="form-input" placeholder="1" min="1">
                     </div>
-                </div>
-                <div class="form-row">
                     <div class="form-group">
                         <label class="form-label">NFL Team</label>
                         <select id="edit-team" class="form-select">
@@ -820,7 +831,9 @@
                             <option value="WAS">WAS</option>
                         </select>
                     </div>
-                    <div class="form-group">
+                </div>
+                <div class="form-row">
+                    <div class="form-group" style="max-width: 150px;">
                         <label class="form-label">Bye Week</label>
                         <select id="edit-bye-week" class="form-select">
                             <option value="">Select</option>
