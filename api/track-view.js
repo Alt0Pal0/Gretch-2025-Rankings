@@ -1,11 +1,45 @@
 const { sql } = require('@vercel/postgres');
 
+// Auto-create tables if they don't exist
+async function ensureTablesExist() {
+  try {
+    await sql`
+      CREATE TABLE IF NOT EXISTS page_views (
+        id SERIAL PRIMARY KEY,
+        page_path VARCHAR(255) NOT NULL,
+        ip_address INET,
+        user_agent TEXT,
+        referrer TEXT,
+        timestamp TIMESTAMP DEFAULT NOW(),
+        session_id VARCHAR(64),
+        is_unique_visitor BOOLEAN DEFAULT FALSE
+      )
+    `;
+    
+    await sql`
+      CREATE INDEX IF NOT EXISTS idx_page_views_timestamp ON page_views(timestamp)
+    `;
+    
+    await sql`
+      CREATE INDEX IF NOT EXISTS idx_page_views_page_path ON page_views(page_path)
+    `;
+    
+    await sql`
+      CREATE INDEX IF NOT EXISTS idx_page_views_ip_ua ON page_views(ip_address, user_agent)
+    `;
+  } catch (error) {
+    console.log('Tables may already exist:', error.message);
+  }
+}
+
 module.exports = async function handler(req, res) {
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
   try {
+    // Ensure tables exist
+    await ensureTablesExist();
     const { page_path, referrer } = req.body;
     const ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress || 'unknown';
     const userAgent = req.headers['user-agent'] || 'unknown';

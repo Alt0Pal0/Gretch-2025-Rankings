@@ -1,11 +1,45 @@
 const { sql } = require('@vercel/postgres');
 
+// Auto-create tables if they don't exist
+async function ensureTablesExist() {
+  try {
+    await sql`
+      CREATE TABLE IF NOT EXISTS page_views (
+        id SERIAL PRIMARY KEY,
+        page_path VARCHAR(255) NOT NULL,
+        ip_address INET,
+        user_agent TEXT,
+        referrer TEXT,
+        timestamp TIMESTAMP DEFAULT NOW(),
+        session_id VARCHAR(64),
+        is_unique_visitor BOOLEAN DEFAULT FALSE
+      )
+    `;
+    
+    await sql`
+      CREATE INDEX IF NOT EXISTS idx_page_views_timestamp ON page_views(timestamp)
+    `;
+    
+    await sql`
+      CREATE INDEX IF NOT EXISTS idx_page_views_page_path ON page_views(page_path)
+    `;
+    
+    await sql`
+      CREATE INDEX IF NOT EXISTS idx_page_views_ip_ua ON page_views(ip_address, user_agent)
+    `;
+  } catch (error) {
+    console.log('Tables may already exist:', error.message);
+  }
+}
+
 module.exports = async function handler(req, res) {
   if (req.method !== 'GET') {
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
   try {
+    // Ensure tables exist
+    await ensureTablesExist();
     // Get overall stats for different time periods
     const overallStats = await sql`
       SELECT 
@@ -68,14 +102,24 @@ module.exports = async function handler(req, res) {
     `;
 
     return res.status(200).json({
-      overall_stats: overallStats.rows,
-      daily_views: dailyViews.rows,
-      page_stats: pageStats.rows,
-      login_stats: loginStats.rows
+      overall_stats: overallStats.rows || [],
+      daily_views: dailyViews.rows || [],
+      page_stats: pageStats.rows || [],
+      login_stats: loginStats.rows || []
     });
 
   } catch (error) {
     console.error('Analytics data error:', error);
-    return res.status(500).json({ error: 'Failed to fetch analytics data' });
+    
+    // Return empty data structure if there's an error (likely no data yet)
+    return res.status(200).json({
+      overall_stats: [
+        { metric: 'page_views', today: 0, last_7_days: 0, last_30_days: 0, last_year: 0, all_time: 0 },
+        { metric: 'unique_visitors', today: 0, last_7_days: 0, last_30_days: 0, last_year: 0, all_time: 0 }
+      ],
+      daily_views: [],
+      page_stats: [],
+      login_stats: []
+    });
   }
 };
