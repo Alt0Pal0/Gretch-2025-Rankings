@@ -767,22 +767,28 @@
 
         .auth-btn {
             padding: 0.75rem 1.5rem;
-            background: var(--ss-orange-primary);
-            color: var(--ss-white);
-            border: none;
+            background: var(--ss-orange-primary) !important;
+            color: var(--ss-white) !important;
+            border: none !important;
             border-radius: 4px;
             font-size: 1rem;
             font-family: var(--ss-font-primary);
             cursor: pointer;
             transition: background 0.2s;
-            position: relative;
-            z-index: 10;
+            position: relative !important;
+            z-index: 9999 !important;
             width: 100%;
+            display: block !important;
+            visibility: visible !important;
+            opacity: 1 !important;
         }
 
         .auth-btn:hover {
-            background: var(--ss-orange-hover);
-            z-index: 11;
+            background: var(--ss-orange-hover) !important;
+            z-index: 10000 !important;
+            display: block !important;
+            visibility: visible !important;
+            opacity: 1 !important;
         }
 
         .auth-btn:disabled {

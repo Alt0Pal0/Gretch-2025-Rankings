@@ -33,8 +33,6 @@ module.exports = async function handler(req, res) {
     const sessionResult = await sql`
       SELECT COUNT(*) as count FROM edit_access_logs 
       WHERE session_token = ${sessionToken} AND success = TRUE
-      ORDER BY timestamp DESC
-      LIMIT 1
     `;
 
     if (sessionResult.rows[0].count > 0) {
