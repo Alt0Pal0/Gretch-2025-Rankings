@@ -1,0 +1,582 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Analytics - Gretch 2025 Rankings</title>
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" sizes="32x32" href="assets/images/favicon.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="assets/images/favicon.png">
+    <link rel="shortcut icon" href="assets/images/favicon.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="assets/images/favicon.png">
+    
+    <!-- Design System -->
+    <link rel="stylesheet" href="css/design-system.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@400;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Analytics Tracking -->
+    <script src="js/analytics-tracker.js"></script>
+    
+    <style>
+        body {
+            font-family: var(--ss-font-primary);
+            margin: 0;
+            background-color: var(--ss-light-gray);
+            color: var(--ss-text-primary);
+            overscroll-behavior-x: none;
+            touch-action: pan-y pinch-zoom;
+        }
+
+        .analytics-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .analytics-section {
+            background: var(--ss-white);
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        .section-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: var(--ss-text-primary);
+        }
+
+        .stats-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.875rem;
+        }
+
+        .stats-table th,
+        .stats-table td {
+            padding: 0.75rem;
+            text-align: left;
+            border-bottom: 1px solid var(--ss-border);
+        }
+
+        .stats-table th {
+            background-color: var(--ss-light-gray);
+            font-weight: 600;
+            color: var(--ss-text-secondary);
+        }
+
+        .stats-table td {
+            color: var(--ss-text-primary);
+        }
+
+        .chart-container {
+            height: 300px;
+            margin-top: 1rem;
+        }
+
+        /* Authentication styles (copied from edit_rankings.html) */
+        .auth-loading {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--ss-light-gray);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+        }
+
+        .auth-loading-content {
+            text-align: center;
+            color: var(--ss-text-secondary);
+        }
+
+        .auth-spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid var(--ss-border);
+            border-top: 4px solid var(--ss-orange-primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 1rem;
+        }
+
+        .auth-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 10000;
+        }
+
+        .auth-modal-content {
+            background: var(--ss-white);
+            padding: 2rem;
+            border-radius: 8px;
+            width: 90%;
+            max-width: 400px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .auth-modal-header {
+            text-align: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .auth-logo {
+            height: 60px;
+            margin-bottom: 1rem;
+        }
+
+        .auth-modal-header h2 {
+            margin: 0 0 0.5rem 0;
+            color: var(--ss-text-primary);
+            font-size: 1.5rem;
+        }
+
+        .auth-modal-header p {
+            margin: 0;
+            color: var(--ss-text-secondary);
+            font-size: 0.875rem;
+        }
+
+        .auth-form {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .auth-input {
+            padding: 0.75rem;
+            border: 2px solid var(--ss-border);
+            border-radius: 4px;
+            font-size: 1rem;
+            font-family: var(--ss-font-primary);
+            transition: border-color 0.2s;
+        }
+
+        .auth-input:focus {
+            outline: none;
+            border-color: var(--ss-orange-primary);
+            box-shadow: 0 0 0 3px rgba(251, 146, 60, 0.1);
+        }
+
+        .auth-btn {
+            padding: 0.75rem 1.5rem;
+            background: var(--ss-orange-primary) !important;
+            color: var(--ss-white) !important;
+            border: none !important;
+            border-radius: 4px;
+            font-size: 1rem;
+            font-family: var(--ss-font-primary);
+            cursor: pointer;
+            transition: background 0.2s;
+            position: relative !important;
+            z-index: 9999 !important;
+            width: 100%;
+            display: block !important;
+            visibility: visible !important;
+            opacity: 1 !important;
+        }
+
+        .auth-btn:hover {
+            background: var(--ss-orange-hover) !important;
+            z-index: 10000 !important;
+            display: block !important;
+            visibility: visible !important;
+            opacity: 1 !important;
+        }
+
+        .auth-btn:disabled {
+            background: var(--ss-gray-light);
+            cursor: not-allowed;
+        }
+
+        .auth-btn:disabled:hover {
+            background: var(--ss-gray-light);
+        }
+
+        .auth-error {
+            background: var(--ss-orange-pale);
+            border: 1px solid var(--ss-error);
+            color: var(--ss-error);
+            padding: 0.75rem;
+            border-radius: 4px;
+            margin-top: 1rem;
+            font-size: 0.875rem;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <!-- Loading Overlay (shown by default) -->
+    <div id="auth-loading" class="auth-loading">
+        <div class="auth-loading-content">
+            <div class="auth-spinner"></div>
+            <p>Verifying access...</p>
+        </div>
+    </div>
+
+    <!-- Password Protection Modal (hidden by default) -->
+    <div id="auth-modal" class="auth-modal" style="display: none;">
+        <div class="auth-modal-content">
+            <div class="auth-modal-header">
+                <img src="assets/images/logo.png" alt="Stealing Signals" class="auth-logo">
+                <h2>Analytics Access</h2>
+                <p>Please enter the password to access the analytics dashboard.</p>
+            </div>
+            <form id="auth-form" class="auth-form">
+                <input 
+                    type="password" 
+                    id="auth-password" 
+                    placeholder="Enter password"
+                    class="auth-input"
+                    autofocus
+                >
+                <button type="submit" class="auth-btn">Access Analytics</button>
+            </form>
+            <div id="auth-error" class="auth-error" style="display: none;"></div>
+        </div>
+    </div>
+
+    <!-- Main Content (hidden until authenticated) -->
+    <div id="main-content" style="display: none;">
+        <!-- Header -->
+        <div class="logo-header" id="logo-header">
+            <header class="header">
+                <div class="header-content">
+                    <div class="header-row-top">
+                        <a href="/" class="logo-link">
+                            <img src="assets/images/logo.png" alt="Stealing Signals" class="logo">
+                        </a>
+                        <h1 class="header-title">Analytics Dashboard</h1>
+                    </div>
+                </div>
+            </header>
+        </div>
+
+        <!-- Analytics Content -->
+        <div class="analytics-container">
+            <!-- Overall Stats -->
+            <div class="analytics-section">
+                <h2 class="section-title">Overall Statistics</h2>
+                <table class="stats-table" id="overall-stats">
+                    <thead>
+                        <tr>
+                            <th>Metric</th>
+                            <th>Today</th>
+                            <th>Last 7 Days</th>
+                            <th>Last 30 Days</th>
+                            <th>Last Year</th>
+                            <th>All Time</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Data loaded via JavaScript -->
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Daily Page Views Chart -->
+            <div class="analytics-section">
+                <h2 class="section-title">Daily Page Views (Last 60 Days)</h2>
+                <div class="chart-container">
+                    <canvas id="daily-chart" width="800" height="300"></canvas>
+                </div>
+            </div>
+
+            <!-- Page-Specific Stats -->
+            <div class="analytics-section">
+                <h2 class="section-title">Page Views by Page</h2>
+                <table class="stats-table" id="page-stats">
+                    <thead>
+                        <tr>
+                            <th>Page</th>
+                            <th>Today</th>
+                            <th>Last 7 Days</th>
+                            <th>Last 30 Days</th>
+                            <th>Last Year</th>
+                            <th>All Time</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Data loaded via JavaScript -->
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Login Stats -->
+            <div class="analytics-section">
+                <h2 class="section-title">Successful Logins by Password</h2>
+                <table class="stats-table" id="login-stats">
+                    <thead>
+                        <tr>
+                            <th>Password</th>
+                            <th>Today</th>
+                            <th>Last 7 Days</th>
+                            <th>Last 30 Days</th>
+                            <th>Last Year</th>
+                            <th>All Time</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Data loaded via JavaScript -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Authentication management (copied from edit_rankings.html)
+        class AnalyticsAuth {
+            constructor() {
+                this.checkAuthentication();
+                this.setupAuthForm();
+            }
+
+            async checkAuthentication() {
+                try {
+                    const response = await fetch('/api/auth-check');
+                    const result = await response.json();
+                    
+                    if (result.success) {
+                        // Already authenticated, show main content
+                        this.showMainContent();
+                    } else {
+                        // Not authenticated, show auth modal
+                        this.showAuthModal();
+                    }
+                } catch (error) {
+                    console.error('Auth check failed:', error);
+                    this.showAuthModal();
+                }
+            }
+
+            setupAuthForm() {
+                const form = document.getElementById('auth-form');
+                if (!form) {
+                    console.error('Auth form not found');
+                    return;
+                }
+                
+                form.addEventListener('submit', async (e) => {
+                    e.preventDefault();
+                    await this.handleLogin();
+                });
+                
+                const passwordInput = document.getElementById('auth-password');
+                if (passwordInput) {
+                    passwordInput.addEventListener('keypress', async (e) => {
+                        if (e.key === 'Enter') {
+                            e.preventDefault();
+                            await this.handleLogin();
+                        }
+                    });
+                }
+            }
+
+            async handleLogin() {
+                const password = document.getElementById('auth-password').value;
+                const submitBtn = document.querySelector('.auth-btn');
+                
+                if (!password) return;
+                
+                // Show loading state
+                submitBtn.disabled = true;
+                submitBtn.textContent = 'Verifying...';
+                this.hideError();
+
+                try {
+                    const response = await fetch('/api/auth-login', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({ password })
+                    });
+
+                    const result = await response.json();
+
+                    if (result.success) {
+                        // Authentication successful
+                        document.getElementById('auth-modal').style.display = 'none';
+                        this.showMainContent();
+                    } else {
+                        // Authentication failed
+                        this.showError(result.error || 'Invalid password');
+                        document.getElementById('auth-password').value = '';
+                        document.getElementById('auth-password').focus();
+                    }
+                } catch (error) {
+                    console.error('Login failed:', error);
+                    this.showError('Authentication failed. Please try again.');
+                } finally {
+                    // Reset button
+                    submitBtn.disabled = false;
+                    submitBtn.textContent = 'Access Analytics';
+                }
+            }
+
+            showAuthModal() {
+                document.getElementById('auth-loading').style.display = 'none';
+                document.getElementById('auth-modal').style.display = 'flex';
+                document.getElementById('main-content').style.display = 'none';
+                
+                // Focus password field
+                setTimeout(() => {
+                    document.getElementById('auth-password').focus();
+                }, 100);
+            }
+
+            showMainContent() {
+                document.getElementById('auth-loading').style.display = 'none';
+                document.getElementById('auth-modal').style.display = 'none';
+                document.getElementById('main-content').style.display = 'block';
+                
+                // Load analytics data
+                this.loadAnalyticsData();
+            }
+
+            showError(message) {
+                const errorDiv = document.getElementById('auth-error');
+                errorDiv.textContent = message;
+                errorDiv.style.display = 'block';
+            }
+
+            hideError() {
+                document.getElementById('auth-error').style.display = 'none';
+            }
+
+            async loadAnalyticsData() {
+                try {
+                    const response = await fetch('/api/analytics-data');
+                    const data = await response.json();
+                    
+                    this.populateOverallStats(data.overall_stats);
+                    this.populatePageStats(data.page_stats);
+                    this.populateLoginStats(data.login_stats);
+                    this.createDailyChart(data.daily_views);
+                    
+                } catch (error) {
+                    console.error('Failed to load analytics data:', error);
+                }
+            }
+
+            populateOverallStats(stats) {
+                const tbody = document.querySelector('#overall-stats tbody');
+                tbody.innerHTML = '';
+                
+                stats.forEach(row => {
+                    const tr = document.createElement('tr');
+                    tr.innerHTML = `
+                        <td>${row.metric.replace('_', ' ').toUpperCase()}</td>
+                        <td>${row.today.toLocaleString()}</td>
+                        <td>${row.last_7_days.toLocaleString()}</td>
+                        <td>${row.last_30_days.toLocaleString()}</td>
+                        <td>${row.last_year.toLocaleString()}</td>
+                        <td>${row.all_time.toLocaleString()}</td>
+                    `;
+                    tbody.appendChild(tr);
+                });
+            }
+
+            populatePageStats(stats) {
+                const tbody = document.querySelector('#page-stats tbody');
+                tbody.innerHTML = '';
+                
+                stats.forEach(row => {
+                    const tr = document.createElement('tr');
+                    tr.innerHTML = `
+                        <td>${row.page_path}</td>
+                        <td>${row.today.toLocaleString()}</td>
+                        <td>${row.last_7_days.toLocaleString()}</td>
+                        <td>${row.last_30_days.toLocaleString()}</td>
+                        <td>${row.last_year.toLocaleString()}</td>
+                        <td>${row.all_time.toLocaleString()}</td>
+                    `;
+                    tbody.appendChild(tr);
+                });
+            }
+
+            populateLoginStats(stats) {
+                const tbody = document.querySelector('#login-stats tbody');
+                tbody.innerHTML = '';
+                
+                stats.forEach(row => {
+                    const tr = document.createElement('tr');
+                    tr.innerHTML = `
+                        <td>${row.password_attempted}</td>
+                        <td>${row.today.toLocaleString()}</td>
+                        <td>${row.last_7_days.toLocaleString()}</td>
+                        <td>${row.last_30_days.toLocaleString()}</td>
+                        <td>${row.last_year.toLocaleString()}</td>
+                        <td>${row.all_time.toLocaleString()}</td>
+                    `;
+                    tbody.appendChild(tr);
+                });
+            }
+
+            createDailyChart(dailyData) {
+                const canvas = document.getElementById('daily-chart');
+                const ctx = canvas.getContext('2d');
+                
+                // Simple bar chart implementation
+                const maxViews = Math.max(...dailyData.map(d => d.views));
+                const barWidth = canvas.width / dailyData.length;
+                const barMaxHeight = canvas.height - 40;
+                
+                // Clear canvas
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                
+                // Draw bars
+                ctx.fillStyle = '#ff6b35';
+                dailyData.forEach((day, index) => {
+                    const barHeight = (day.views / maxViews) * barMaxHeight;
+                    const x = index * barWidth;
+                    const y = canvas.height - barHeight - 20;
+                    
+                    ctx.fillRect(x + 2, y, barWidth - 4, barHeight);
+                });
+                
+                // Draw labels (simplified)
+                ctx.fillStyle = '#374151';
+                ctx.font = '10px Inter';
+                ctx.textAlign = 'center';
+                
+                // Show max value
+                ctx.fillText(`Max: ${maxViews}`, canvas.width - 40, 15);
+            }
+        }
+
+        // Initialize authentication when page loads
+        document.addEventListener('DOMContentLoaded', () => {
+            try {
+                new AnalyticsAuth();
+            } catch (error) {
+                console.error('Failed to initialize authentication:', error);
+                // Fallback: show auth modal if initialization fails
+                document.getElementById('auth-loading').style.display = 'none';
+                document.getElementById('auth-modal').style.display = 'flex';
+                document.getElementById('main-content').style.display = 'none';
+            }
+        });
+    </script>
+</body>
+</html>
