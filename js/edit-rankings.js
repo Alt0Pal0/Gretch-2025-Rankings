@@ -292,13 +292,23 @@ class EditRankings {
         document.getElementById('edit-modal').classList.add('active');
         document.body.style.overflow = 'hidden';
         
-        // Auto-focus on name field for new players
+        // Auto-focus on appropriate field
         if (this.currentEditingPlayer && this.currentEditingPlayer.isNew) {
+            // Focus on name field for new players
             setTimeout(() => {
                 const nameField = document.getElementById('edit-name');
                 if (nameField) {
                     nameField.focus();
                     nameField.select(); // Also select the default "New Player" text
+                }
+            }, 100); // Small delay to ensure modal is fully rendered
+        } else {
+            // Focus on ranking field for existing players
+            setTimeout(() => {
+                const rankField = document.getElementById('edit-rank');
+                if (rankField) {
+                    rankField.focus();
+                    rankField.select(); // Select the current ranking for easy editing
                 }
             }, 100); // Small delay to ensure modal is fully rendered
         }
