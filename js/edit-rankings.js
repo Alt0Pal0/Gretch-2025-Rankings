@@ -577,6 +577,134 @@ class EditRankings {
             setTimeout(() => successEl.style.display = 'none', 3000);
         }
     }
+
+    downloadCSV() {
+        // Generate CSV from current player data
+        const headers = ['Name', 'Position', 'Ranking', 'NFL Team', 'Bye Week', 'Bold', 'Italic', 'Small Tier Break', 'Big Tier Break', 'News Copy'];
+        let csvContent = headers.join(',') + '\n';
+        
+        // Add data for each position
+        ['QB', 'RB', 'WR', 'TE'].forEach(position => {
+            if (this.playersData[position]) {
+                this.playersData[position].forEach(player => {
+                    const row = [
+                        `"${player.name}"`,
+                        player.position,
+                        player.position_rank,
+                        player.nfl_team || 'TBD',
+                        player.bye_week || '',
+                        player.is_bold ? 'TRUE' : 'FALSE',
+                        player.is_italic ? 'TRUE' : 'FALSE',
+                        player.small_tier_break ? 'TRUE' : 'FALSE',
+                        player.big_tier_break ? 'TRUE' : 'FALSE',
+                        `"${player.news_copy || ''}"`
+                    ];
+                    csvContent += row.join(',') + '\n';
+                });
+            }
+        });
+        
+        // Create and download file
+        const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+        const link = document.createElement('a');
+        if (link.download !== undefined) {
+            const url = URL.createObjectURL(blob);
+            link.setAttribute('href', url);
+            link.setAttribute('download', 'player-rankings.csv');
+            link.style.visibility = 'hidden';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+    }
+
+    uploadCSV() {
+        // Create hidden file input
+        const input = document.createElement('input');
+        input.type = 'file';
+        input.accept = '.csv';
+        input.style.display = 'none';
+        
+        input.onchange = (event) => {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    try {
+                        this.parseCSV(e.target.result);
+                        this.showSuccess('CSV file uploaded successfully!');
+                    } catch (error) {
+                        alert('Error parsing CSV file: ' + error.message);
+                    }
+                };
+                reader.readAsText(file);
+            }
+        };
+        
+        document.body.appendChild(input);
+        input.click();
+        document.body.removeChild(input);
+    }
+
+    parseCSV(csvText) {
+        const lines = csvText.split('\n');
+        const headers = lines[0].split(',');
+        
+        // Clear current data
+        this.playersData = { QB: [], RB: [], WR: [], TE: [] };
+        
+        for (let i = 1; i < lines.length; i++) {
+            const line = lines[i].trim();
+            if (!line) continue;
+            
+            const values = this.parseCSVLine(line);
+            if (values.length < headers.length) continue;
+            
+            const player = {
+                id: Date.now() + i, // Generate temporary ID
+                name: values[0].replace(/"/g, ''),
+                position: values[1],
+                position_rank: parseInt(values[2]),
+                nfl_team: values[3] || 'TBD',
+                bye_week: values[4] ? parseInt(values[4]) : null,
+                is_bold: values[5] === 'TRUE',
+                is_italic: values[6] === 'TRUE',
+                small_tier_break: values[7] === 'TRUE',
+                big_tier_break: values[8] === 'TRUE',
+                news_copy: values[9] ? values[9].replace(/"/g, '') : ''
+            };
+            
+            if (this.playersData[player.position]) {
+                this.playersData[player.position].push(player);
+            }
+        }
+        
+        // Re-render all data
+        this.renderPlayers();
+        this.markDirty();
+    }
+
+    parseCSVLine(line) {
+        const result = [];
+        let current = '';
+        let inQuotes = false;
+        
+        for (let i = 0; i < line.length; i++) {
+            const char = line[i];
+            
+            if (char === '"') {
+                inQuotes = !inQuotes;
+            } else if (char === ',' && !inQuotes) {
+                result.push(current);
+                current = '';
+            } else {
+                current += char;
+            }
+        }
+        
+        result.push(current);
+        return result;
+    }
 }
 
 // Initialize when DOM is loaded
