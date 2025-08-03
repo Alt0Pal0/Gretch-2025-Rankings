@@ -1,6 +1,10 @@
 {
   "rewrites": [
     {
+      "source": "/analytics",
+      "destination": "/analytics.html"
+    },
+    {
       "source": "/edit_rankings",
       "destination": "/edit_rankings.html"
     }
