@@ -634,7 +634,8 @@ class EditRankings {
                         await this.uploadCSVToDatabase(e.target.result);
                         this.showSuccess('CSV file uploaded and database updated successfully!');
                         // Reload the data to reflect database changes
-                        this.loadPlayers();
+                        await this.loadData();
+                        this.renderPlayers();
                     } catch (error) {
                         alert('Error uploading CSV file: ' + error.message);
                     }
