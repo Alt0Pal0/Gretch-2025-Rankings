@@ -36,6 +36,11 @@ module.exports = async function handler(req, res) {
     `;
 
     if (sessionResult.rows[0].count > 0) {
+      // Valid session - refresh the admin flag (1 year expiration)
+      res.setHeader('Set-Cookie', [
+        `admin_flag=true; Path=/; Max-Age=31536000; SameSite=Strict` // 1 year = 31536000 seconds
+      ]);
+      
       return res.status(200).json({ 
         success: true, 
         message: 'Session valid' 
