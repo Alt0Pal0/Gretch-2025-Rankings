@@ -576,10 +576,21 @@
                 const canvas = document.getElementById('daily-chart');
                 const ctx = canvas.getContext('2d');
                 
-                // Simple bar chart implementation
+                if (dailyData.length === 0) {
+                    // Show "No data" message if empty
+                    ctx.clearRect(0, 0, canvas.width, canvas.height);
+                    ctx.fillStyle = '#6b7280';
+                    ctx.font = '14px Inter';
+                    ctx.textAlign = 'center';
+                    ctx.fillText('No data available', canvas.width / 2, canvas.height / 2);
+                    return;
+                }
+                
+                // Chart dimensions
                 const maxViews = Math.max(...dailyData.map(d => d.views));
                 const barWidth = canvas.width / dailyData.length;
-                const barMaxHeight = canvas.height - 40;
+                const barMaxHeight = canvas.height - 60; // More space for labels
+                const chartStartY = 30; // Space for max value label
                 
                 // Clear canvas
                 ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -587,20 +598,46 @@
                 // Draw bars
                 ctx.fillStyle = '#ff6b35';
                 dailyData.forEach((day, index) => {
-                    const barHeight = (day.views / maxViews) * barMaxHeight;
+                    const barHeight = maxViews > 0 ? (day.views / maxViews) * barMaxHeight : 0;
                     const x = index * barWidth;
-                    const y = canvas.height - barHeight - 20;
+                    const y = canvas.height - barHeight - 30; // 30px for x-axis labels
                     
                     ctx.fillRect(x + 2, y, barWidth - 4, barHeight);
                 });
                 
-                // Draw labels (simplified)
+                // Draw y-axis max value
                 ctx.fillStyle = '#374151';
                 ctx.font = '10px Inter';
+                ctx.textAlign = 'left';
+                ctx.fillText(`Max: ${maxViews}`, 5, 15);
+                
+                // Draw x-axis date labels (show every 7th day to avoid crowding)
+                ctx.fillStyle = '#6b7280';
+                ctx.font = '8px Inter';
                 ctx.textAlign = 'center';
                 
-                // Show max value
-                ctx.fillText(`Max: ${maxViews}`, canvas.width - 40, 15);
+                dailyData.forEach((day, index) => {
+                    // Show date labels every 7 days or first/last
+                    if (index % 7 === 0 || index === dailyData.length - 1) {
+                        const x = index * barWidth + barWidth / 2;
+                        const date = new Date(day.date);
+                        const label = `${date.getMonth() + 1}/${date.getDate()}`;
+                        
+                        ctx.save();
+                        ctx.translate(x, canvas.height - 5);
+                        ctx.rotate(-Math.PI / 6); // Slight angle for readability
+                        ctx.fillText(label, 0, 0);
+                        ctx.restore();
+                    }
+                });
+                
+                // Draw a light line for x-axis
+                ctx.strokeStyle = '#e5e7eb';
+                ctx.lineWidth = 1;
+                ctx.beginPath();
+                ctx.moveTo(0, canvas.height - 30);
+                ctx.lineTo(canvas.width, canvas.height - 30);
+                ctx.stroke();
             }
         }
 
