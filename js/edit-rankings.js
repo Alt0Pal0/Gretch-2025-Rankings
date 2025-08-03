@@ -579,15 +579,17 @@ class EditRankings {
     }
 
     downloadCSV() {
-        // Generate CSV from current player data
-        const headers = ['Name', 'Position', 'Ranking', 'NFL Team', 'Bye Week', 'Bold', 'Italic', 'Small Tier Break', 'Big Tier Break', 'News Copy'];
+        // Generate CSV with ALL database columns for complete round-trip compatibility
+        const headers = ['id', 'version_id', 'name', 'position', 'position_rank', 'nfl_team', 'bye_week', 'is_bold', 'is_italic', 'small_tier_break', 'big_tier_break', 'news_copy', 'ranking_change', 'created_at'];
         let csvContent = headers.join(',') + '\n';
         
-        // Add data for each position
+        // Add data for each position with ALL columns
         ['QB', 'RB', 'WR', 'TE'].forEach(position => {
             if (this.playersData[position]) {
                 this.playersData[position].forEach(player => {
                     const row = [
+                        player.id || '',
+                        player.version_id || '',
                         `"${player.name}"`,
                         player.position,
                         player.position_rank,
@@ -597,7 +599,9 @@ class EditRankings {
                         player.is_italic ? 'TRUE' : 'FALSE',
                         player.small_tier_break ? 'TRUE' : 'FALSE',
                         player.big_tier_break ? 'TRUE' : 'FALSE',
-                        `"${player.news_copy || ''}"`
+                        `"${player.news_copy || ''}"`,
+                        player.ranking_change || 0,
+                        `"${player.created_at || ''}"`
                     ];
                     csvContent += row.join(',') + '\n';
                 });
@@ -629,12 +633,14 @@ class EditRankings {
             const file = event.target.files[0];
             if (file) {
                 const reader = new FileReader();
-                reader.onload = (e) => {
+                reader.onload = async (e) => {
                     try {
-                        this.parseCSV(e.target.result);
-                        this.showSuccess('CSV file uploaded successfully!');
+                        await this.uploadCSVToDatabase(e.target.result);
+                        this.showSuccess('CSV file uploaded and database updated successfully!');
+                        // Reload the data to reflect database changes
+                        this.loadPlayers();
                     } catch (error) {
-                        alert('Error parsing CSV file: ' + error.message);
+                        alert('Error uploading CSV file: ' + error.message);
                     }
                 };
                 reader.readAsText(file);
@@ -646,13 +652,15 @@ class EditRankings {
         document.body.removeChild(input);
     }
 
-    parseCSV(csvText) {
+    async uploadCSVToDatabase(csvText) {
         const lines = csvText.split('\n');
-        const headers = lines[0].split(',');
+        const headers = lines[0].split(',').map(h => h.trim());
         
-        // Clear current data
-        this.playersData = { QB: [], RB: [], WR: [], TE: [] };
+        // Expected headers with ALL database columns
+        const expectedHeaders = ['id', 'version_id', 'name', 'position', 'position_rank', 'nfl_team', 'bye_week', 'is_bold', 'is_italic', 'small_tier_break', 'big_tier_break', 'news_copy', 'ranking_change', 'created_at'];
         
+        // Parse all player data from CSV
+        const players = [];
         for (let i = 1; i < lines.length; i++) {
             const line = lines[i].trim();
             if (!line) continue;
@@ -660,28 +668,55 @@ class EditRankings {
             const values = this.parseCSVLine(line);
             if (values.length < headers.length) continue;
             
-            const player = {
-                id: Date.now() + i, // Generate temporary ID
-                name: values[0].replace(/"/g, ''),
-                position: values[1],
-                position_rank: parseInt(values[2]),
-                nfl_team: values[3] || 'TBD',
-                bye_week: values[4] ? parseInt(values[4]) : null,
-                is_bold: values[5] === 'TRUE',
-                is_italic: values[6] === 'TRUE',
-                small_tier_break: values[7] === 'TRUE',
-                big_tier_break: values[8] === 'TRUE',
-                news_copy: values[9] ? values[9].replace(/"/g, '') : ''
-            };
+            const player = {};
+            headers.forEach((header, index) => {
+                const cleanHeader = header.replace(/"/g, '');
+                let value = values[index] ? values[index].replace(/"/g, '') : '';
+                
+                // Convert data types appropriately
+                switch (cleanHeader) {
+                    case 'id':
+                    case 'version_id':
+                    case 'position_rank':
+                    case 'bye_week':
+                    case 'ranking_change':
+                        player[cleanHeader] = value ? parseInt(value) : null;
+                        break;
+                    case 'is_bold':
+                    case 'is_italic':
+                    case 'small_tier_break':
+                    case 'big_tier_break':
+                        player[cleanHeader] = value === 'TRUE';
+                        break;
+                    default:
+                        player[cleanHeader] = value || null;
+                }
+            });
             
-            if (this.playersData[player.position]) {
-                this.playersData[player.position].push(player);
+            if (player.name && player.position) {
+                players.push(player);
             }
         }
         
-        // Re-render all data
-        this.renderPlayers();
-        this.markDirty();
+        // Send to new bulk upload API endpoint
+        const response = await fetch('/api/upload-csv', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                players: players,
+                notes: `Bulk CSV upload at ${new Date().toISOString()}`
+            })
+        });
+        
+        if (!response.ok) {
+            const error = await response.text();
+            throw new Error(`Upload failed: ${error}`);
+        }
+        
+        const result = await response.json();
+        return result;
     }
 
     parseCSVLine(line) {
