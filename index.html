@@ -161,13 +161,20 @@
             align-items: center;
             padding: 0.1875rem 0.625rem; /* Smaller padding for desktop */
             transition: all 0.2s ease;
-            cursor: pointer;
             user-select: none; /* Prevent text selection on mobile taps */
             -webkit-tap-highlight-color: transparent; /* Remove tap highlight on iOS */
         }
         
-        .player-item:hover:not(.selected) {
+        .player-name:hover {
+            cursor: pointer;
             background-color: var(--ss-orange-pale);
+            border-radius: 2px;
+            padding: 1px 2px;
+            margin: -1px -2px;
+        }
+        
+        .player-item.selected .player-name:hover {
+            background-color: var(--ss-border);
         }
         
         .player-item.selected {
@@ -184,10 +191,7 @@
             color: var(--ss-text-muted); /* More muted for better contrast with available players */
         }
         
-        .player-item.selected:hover {
-            background-color: var(--ss-border);
-            opacity: 0.45; /* Slightly more visible on hover for interaction feedback */
-        }
+        /* Removed - hover effects now on player-name only */
         
         .player-rank {
             font-size: 0.625rem; /* Smaller for desktop */
@@ -204,6 +208,9 @@
             font-weight: 400;
             color: var(--ss-text-primary);
             line-height: 1.2;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border-radius: 2px;
         }
         
         .player-name.bold {
@@ -635,17 +642,27 @@
 
         // Function to add click/tap event listeners to all players
         function initializePlayerSelection() {
-            const allPlayers = document.querySelectorAll('.player-item');
-            allPlayers.forEach(player => {
-                player.addEventListener('click', function(e) {
+            const allPlayerNames = document.querySelectorAll('.player-name');
+            allPlayerNames.forEach(playerName => {
+                playerName.addEventListener('click', function(e) {
                     e.preventDefault();
-                    togglePlayerSelection(this);
+                    e.stopPropagation(); // Prevent event bubbling
+                    // Find the parent player-item to toggle selection
+                    const playerItem = this.closest('.player-item');
+                    if (playerItem) {
+                        togglePlayerSelection(playerItem);
+                    }
                 });
                 
                 // Add touch event for better mobile responsiveness
-                player.addEventListener('touchend', function(e) {
+                playerName.addEventListener('touchend', function(e) {
                     e.preventDefault();
-                    togglePlayerSelection(this);
+                    e.stopPropagation(); // Prevent event bubbling
+                    // Find the parent player-item to toggle selection
+                    const playerItem = this.closest('.player-item');
+                    if (playerItem) {
+                        togglePlayerSelection(playerItem);
+                    }
                 });
             });
         }
