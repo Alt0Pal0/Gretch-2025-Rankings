@@ -1081,6 +1081,123 @@
             }
         }
 
+        // CSV Download functionality
+        function generateCSV() {
+            if (!playersData) {
+                console.error('No player data available for CSV export');
+                return;
+            }
+
+            const csvRows = [];
+            
+            // Add header row
+            csvRows.push('Position,Rank,Player Name,NFL Team,Bye Week,Tier Break,Status,Version');
+            
+            // Process each position in order
+            ['QB', 'RB', 'WR', 'TE'].forEach(position => {
+                const players = playersData[position] || [];
+                
+                players.forEach(player => {
+                    // Determine tier break value
+                    let tierBreak = '';
+                    if (player.small_tier_break) {
+                        tierBreak = 'small';
+                    } else if (player.big_tier_break) {
+                        tierBreak = 'big';
+                    }
+                    
+                    // Determine status value (target = bold, fade = italic)
+                    let status = '';
+                    if (player.is_bold) {
+                        status = 'target';
+                    } else if (player.is_italic) {
+                        status = 'fade';
+                    }
+                    
+                    // Generate version string (v## - M/D/YYYY)
+                    let versionString = '';
+                    if (currentVersion) {
+                        const versionDate = new Date(currentVersion.version_date);
+                        const formattedDate = `${versionDate.getMonth() + 1}/${versionDate.getDate()}/${versionDate.getFullYear()}`;
+                        versionString = `v${currentVersion.version_number} - ${formattedDate}`;
+                    }
+                    
+                    // Escape player name if it contains commas or quotes
+                    let playerName = player.name || '';
+                    if (playerName.includes(',') || playerName.includes('"')) {
+                        playerName = `"${playerName.replace(/"/g, '""')}"`;
+                    }
+                    
+                    // Create CSV row
+                    const row = [
+                        position,
+                        player.position_rank || '',
+                        playerName,
+                        player.nfl_team || '',
+                        player.bye_week || '',
+                        tierBreak,
+                        status,
+                        versionString
+                    ].join(',');
+                    
+                    csvRows.push(row);
+                });
+            });
+            
+            return csvRows.join('\n');
+        }
+        
+        function downloadCSV() {
+            try {
+                const csvContent = generateCSV();
+                if (!csvContent) {
+                    alert('Unable to generate CSV. Please try again.');
+                    return;
+                }
+                
+                // Create blob and download link
+                const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+                const link = document.createElement('a');
+                
+                if (link.download !== undefined) {
+                    const url = URL.createObjectURL(blob);
+                    link.setAttribute('href', url);
+                    
+                    // Generate filename with current date
+                    const now = new Date();
+                    const dateString = now.getFullYear() + 
+                        String(now.getMonth() + 1).padStart(2, '0') + 
+                        String(now.getDate()).padStart(2, '0');
+                    link.setAttribute('download', `gretch-rankings-${dateString}.csv`);
+                    
+                    link.style.visibility = 'hidden';
+                    document.body.appendChild(link);
+                    link.click();
+                    document.body.removeChild(link);
+                }
+            } catch (error) {
+                console.error('Error downloading CSV:', error);
+                alert('Error downloading CSV. Please try again.');
+            }
+        }
+        
+        function initCSVButton() {
+            const csvBtn = document.getElementById('csv-download-btn');
+            if (csvBtn) {
+                // Only show CSV button on home page (not on /edit_rankings or /analytics)
+                const currentPath = window.location.pathname;
+                const isHomePage = currentPath === '/' || currentPath === '/index.html';
+                
+                if (isHomePage) {
+                    csvBtn.style.display = 'inline-block';
+                    csvBtn.addEventListener('click', function(e) {
+                        e.preventDefault();
+                        downloadCSV();
+                    });
+                }
+            }
+        }
+
         // Check for admin flag cookie and show/hide Edit Rankings link
         function checkAdminFlag() {
             // Get admin_flag cookie
@@ -1109,6 +1226,8 @@
                     setTimeout(initScrollBehavior, 100);
                     // Initialize reset button functionality
                     setTimeout(initResetButton, 100);
+                    // Initialize CSV download button
+                    setTimeout(initCSVButton, 100);
                     // Check admin flag and show Edit Rankings link if needed
                     setTimeout(checkAdminFlag, 100);
                 })

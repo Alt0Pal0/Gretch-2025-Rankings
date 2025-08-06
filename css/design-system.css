@@ -699,6 +699,11 @@
     min-width: auto;
   }
   
+  #csv-download-btn {
+    /* Hide CSV download button on mobile */
+    display: none !important;
+  }
+  
 
   
   .footer {
