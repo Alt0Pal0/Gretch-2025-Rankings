@@ -8,6 +8,29 @@ module.exports = async function handler(req, res) {
   try {
     const { players, notes } = req.body;
 
+    // Enhanced debugging
+    console.log('=== UPDATE RANKINGS DEBUG ===');
+    console.log('Request body keys:', Object.keys(req.body));
+    console.log('Players type:', typeof players);
+    console.log('Players structure:', players ? Object.keys(players) : 'null');
+    
+    if (players) {
+      Object.entries(players).forEach(([position, positionPlayers]) => {
+        console.log(`${position}: ${Array.isArray(positionPlayers) ? positionPlayers.length : 'not array'} players`);
+        if (Array.isArray(positionPlayers) && positionPlayers.length > 0) {
+          const firstPlayer = positionPlayers[0];
+          console.log(`  Sample ${position} player:`, {
+            name: firstPlayer.name,
+            nfl_team: firstPlayer.nfl_team,
+            bye_week: firstPlayer.bye_week,
+            position: firstPlayer.position
+          });
+        }
+      });
+    }
+    console.log('Notes:', notes);
+    console.log('=========================');
+
     if (!players || typeof players !== 'object') {
       return res.status(400).json({ 
         success: false, 
@@ -106,35 +129,50 @@ module.exports = async function handler(req, res) {
     }
 
     // 6. Insert all players for new version
+    console.log(`Inserting ${allPlayers.length} players for version ${newVersionNumber}`);
+    
     for (const player of allPlayers) {
-      // For new players (with temporary IDs), don't include the ID in the insert
-      if (player.isNew || player.id > 900000000) { // Temporary IDs are large numbers
-        await sql`
-          INSERT INTO players (
-            version_id, name, position, position_rank, nfl_team, bye_week,
-            is_bold, is_italic, small_tier_break, big_tier_break, 
-            news_copy, ranking_change
-          ) VALUES (
-            ${player.version_id}, ${player.name}, ${player.position}, 
-            ${player.position_rank}, ${player.nfl_team}, ${player.bye_week},
-            ${player.is_bold}, ${player.is_italic}, ${player.small_tier_break}, 
-            ${player.big_tier_break}, ${player.news_copy || null}, ${player.ranking_change}
-          )
-        `;
-      } else {
-        // For existing players, we still create new records (versioned system)
-        await sql`
-          INSERT INTO players (
-            version_id, name, position, position_rank, nfl_team, bye_week,
-            is_bold, is_italic, small_tier_break, big_tier_break, 
-            news_copy, ranking_change
-          ) VALUES (
-            ${player.version_id}, ${player.name}, ${player.position}, 
-            ${player.position_rank}, ${player.nfl_team}, ${player.bye_week},
-            ${player.is_bold}, ${player.is_italic}, ${player.small_tier_break}, 
-            ${player.big_tier_break}, ${player.news_copy || null}, ${player.ranking_change}
-          )
-        `;
+      try {
+        // Validate required fields
+        if (!player.name || !player.position || !player.nfl_team) {
+          console.error('Invalid player data:', player);
+          throw new Error(`Invalid player data for ${player.name || 'unknown player'}`);
+        }
+        
+        // For new players (with temporary IDs), don't include the ID in the insert
+        if (player.isNew || player.id > 900000000) { // Temporary IDs are large numbers
+          await sql`
+            INSERT INTO players (
+              version_id, name, position, position_rank, nfl_team, bye_week,
+              is_bold, is_italic, small_tier_break, big_tier_break, 
+              news_copy, ranking_change
+            ) VALUES (
+              ${player.version_id}, ${player.name}, ${player.position}, 
+              ${player.position_rank}, ${player.nfl_team}, ${player.bye_week},
+              ${player.is_bold || false}, ${player.is_italic || false}, 
+              ${player.small_tier_break || false}, ${player.big_tier_break || false}, 
+              ${player.news_copy || null}, ${player.ranking_change}
+            )
+          `;
+        } else {
+          // For existing players, we still create new records (versioned system)
+          await sql`
+            INSERT INTO players (
+              version_id, name, position, position_rank, nfl_team, bye_week,
+              is_bold, is_italic, small_tier_break, big_tier_break, 
+              news_copy, ranking_change
+            ) VALUES (
+              ${player.version_id}, ${player.name}, ${player.position}, 
+              ${player.position_rank}, ${player.nfl_team}, ${player.bye_week},
+              ${player.is_bold || false}, ${player.is_italic || false}, 
+              ${player.small_tier_break || false}, ${player.big_tier_break || false}, 
+              ${player.news_copy || null}, ${player.ranking_change}
+            )
+          `;
+        }
+      } catch (playerError) {
+        console.error(`Failed to insert player ${player.name}:`, playerError);
+        throw new Error(`Failed to insert player ${player.name}: ${playerError.message}`);
       }
     }
 
@@ -155,15 +193,26 @@ module.exports = async function handler(req, res) {
     
     // Try to restore current version if something went wrong
     try {
-      await sql`
+      // Find the most recent version before any potential new version created
+      const restoreResult = await sql`
         UPDATE ranking_versions 
         SET is_current = TRUE 
-        WHERE version_number = (
-          SELECT MAX(version_number) 
-          FROM ranking_versions 
-          WHERE version_number < (SELECT MAX(version_number) FROM ranking_versions)
+        WHERE id = (
+          SELECT id FROM ranking_versions 
+          WHERE id != (SELECT MAX(id) FROM ranking_versions)
+          ORDER BY version_number DESC 
+          LIMIT 1
         )
       `;
+      
+      // If that didn't work, just pick the highest version number that exists
+      if (restoreResult.rowCount === 0) {
+        await sql`
+          UPDATE ranking_versions 
+          SET is_current = TRUE 
+          WHERE version_number = (SELECT MAX(version_number) FROM ranking_versions)
+        `;
+      }
     } catch (restoreError) {
       console.error('Failed to restore current version:', restoreError);
     }
