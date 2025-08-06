@@ -649,16 +649,17 @@
         }
 
         // Function to create player HTML
-        function createPlayerHTML(player, rank) {
+        function createPlayerHTML(player, rank, isFirstInPosition = false) {
             const boldClass = player.is_bold ? ' bold' : '';
             const italicClass = player.is_italic ? ' italic' : '';
+            const byeWeekLabel = isFirstInPosition ? ' (bye week)' : '';
             
             return `
                 <div class="player-item" data-player="${player.name}" data-rank="${rank}" data-player-id="${player.id}">
                     <div class="player-rank">${rank}</div>
                     <div class="player-name${boldClass}${italicClass}">
                         <span class="player-name-text">${player.name}</span>
-                        <span class="player-details${boldClass}${italicClass}"> - ${player.nfl_team} - ${player.bye_week}</span>
+                        <span class="player-details${boldClass}${italicClass}"> - ${player.nfl_team} - ${player.bye_week}${byeWeekLabel}</span>
                     </div>
                 </div>
             `;
@@ -852,8 +853,8 @@
             let html = '';
             
             players.forEach((player, index) => {
-                // Add the player
-                html += createPlayerHTML(player, player.position_rank);
+                // Add the player (first player gets bye week label)
+                html += createPlayerHTML(player, player.position_rank, index === 0);
                 
                 // Check if there's a tier break after this player
                 if (player.small_tier_break) {

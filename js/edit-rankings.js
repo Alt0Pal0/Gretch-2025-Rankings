@@ -120,13 +120,14 @@ class EditRankings {
                 const rank = player.position_rank;
                 const boldClass = player.is_bold ? ' bold' : '';
                 const italicClass = player.is_italic ? ' italic' : '';
+                const byeWeekLabel = index === 0 ? ' (bye week)' : '';
                 
                 html += `
                     <div class="player-item" draggable="true" data-player-id="${player.id}" data-position="${player.position}">
                         <div class="player-rank">${rank}</div>
                         <div class="player-name${boldClass}${italicClass}">
                             <span class="player-name-text">${player.name}</span>
-                            <span class="player-details${boldClass}${italicClass}"> - ${player.nfl_team} - ${player.bye_week}</span>
+                            <span class="player-details${boldClass}${italicClass}"> - ${player.nfl_team} - ${player.bye_week}${byeWeekLabel}</span>
                         </div>
                         <a href="#" class="edit-link" onclick="editRankings.editPlayer(${player.id}); return false;">edit</a>
                     </div>
