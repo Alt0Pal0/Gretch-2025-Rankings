@@ -124,7 +124,10 @@ class EditRankings {
                 html += `
                     <div class="player-item" draggable="true" data-player-id="${player.id}" data-position="${player.position}">
                         <div class="player-rank">${rank}</div>
-                        <div class="player-name${boldClass}${italicClass}">${player.name}</div>
+                        <div class="player-name${boldClass}${italicClass}">
+                            <span class="player-name-text">${player.name}</span>
+                            <span class="player-details${boldClass}${italicClass}"> - ${player.nfl_team} - ${player.bye_week}</span>
+                        </div>
                         <a href="#" class="edit-link" onclick="editRankings.editPlayer(${player.id}); return false;">edit</a>
                     </div>
                 `;

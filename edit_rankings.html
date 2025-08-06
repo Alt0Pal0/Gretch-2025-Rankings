@@ -213,6 +213,25 @@
             font-style: italic;
         }
         
+        .player-name-text {
+            /* Main player name styling - inherits from parent */
+        }
+        
+        .player-details {
+            font-size: 0.5rem; /* Smaller than player name */
+            font-weight: 400;
+            color: var(--ss-text-secondary);
+            line-height: 1.2;
+        }
+        
+        .player-details.bold {
+            font-weight: 700;
+        }
+        
+        .player-details.italic {
+            font-style: italic;
+        }
+        
         /* Edit link styling */
         .edit-link {
             font-size: 0.6875rem; /* Same as player name font size */
@@ -359,6 +378,10 @@
             
             .player-name {
                 font-size: 0.75rem; /* Original mobile font size */
+            }
+            
+            .player-details {
+                font-size: 0.5625rem; /* Smaller on mobile but proportional */
             }
             
             .edit-link {
