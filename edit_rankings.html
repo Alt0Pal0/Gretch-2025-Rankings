@@ -278,15 +278,15 @@
         .tier-break::before {
             content: '';
             flex: 1;
-            height: 1px;
+            height: 0.75px; /* Thinner line for small breaks */
             background: var(--ss-border);
-            opacity: 0.6;
+            opacity: 0.5;
         }
         
         .tier-break-text {
-            font-size: 0.4375rem; /* Smaller default for small breaks */
+            font-size: 0.375rem; /* Smaller default for small breaks */
             color: var(--ss-text-muted);
-            opacity: 0.7;
+            opacity: 0.6;
             padding: 0 0.5rem;
             background: var(--ss-white);
             text-transform: uppercase;
@@ -298,9 +298,9 @@
         .tier-break::after {
             content: '';
             flex: 1;
-            height: 1px;
+            height: 0.75px; /* Thinner line for small breaks */
             background: var(--ss-border);
-            opacity: 0.6;
+            opacity: 0.5;
         }
         
         .tier-break.big::before,
@@ -379,7 +379,7 @@
             }
             
             .tier-break-text {
-                font-size: 0.375rem; /* Even smaller on mobile for small breaks */
+                font-size: 0.3125rem; /* Even smaller on mobile for small breaks */
                 padding: 0 0.375rem;
             }
             
