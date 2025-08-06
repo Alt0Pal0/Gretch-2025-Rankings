@@ -133,10 +133,16 @@ module.exports = async function handler(req, res) {
     
     for (const player of allPlayers) {
       try {
-        // Validate required fields
-        if (!player.name || !player.position || !player.nfl_team) {
-          console.error('Invalid player data:', player);
-          throw new Error(`Invalid player data for ${player.name || 'unknown player'}`);
+        // Validate required fields with detailed logging
+        const missingFields = [];
+        if (!player.name) missingFields.push('name');
+        if (!player.position) missingFields.push('position'); 
+        if (!player.nfl_team) missingFields.push('nfl_team');
+        
+        if (missingFields.length > 0) {
+          console.error(`Player ${player.name || 'unknown'} missing fields:`, missingFields);
+          console.error('Full player data:', JSON.stringify(player, null, 2));
+          throw new Error(`Invalid player data for ${player.name || 'unknown player'}: missing ${missingFields.join(', ')}`);
         }
         
         // For new players (with temporary IDs), don't include the ID in the insert
