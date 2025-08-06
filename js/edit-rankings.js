@@ -260,6 +260,13 @@ class EditRankings {
 
         this.currentEditingPlayer = player;
         
+        // Debug: Log the player data being edited
+        console.log('=== EDIT PLAYER DEBUG ===');
+        console.log('Player being edited:', JSON.stringify(player, null, 2));
+        console.log('Has nfl_team:', !!player.nfl_team, '(value:', player.nfl_team, ')');
+        console.log('Has bye_week:', !!player.bye_week, '(value:', player.bye_week, ')');
+        console.log('========================');
+        
         // Populate form
         document.getElementById('edit-name').value = player.name || '';
         document.getElementById('edit-rank').value = player.position_rank || 1;
@@ -336,6 +343,14 @@ class EditRankings {
         this.currentEditingPlayer.position = document.getElementById('edit-position').value;
         this.currentEditingPlayer.bye_week = document.getElementById('edit-bye-week').value ? parseInt(document.getElementById('edit-bye-week').value) : null;
         this.currentEditingPlayer.news_copy = document.getElementById('edit-news').value;
+        
+        // Debug: Log the updated player data
+        console.log('=== SAVE PLAYER DEBUG ===');
+        console.log('Updated player data:', JSON.stringify(this.currentEditingPlayer, null, 2));
+        console.log('Form values:');
+        console.log('  Team field value:', document.getElementById('edit-team').value);
+        console.log('  Bye week field value:', document.getElementById('edit-bye-week').value);
+        console.log('=========================');
         
         // Get new rank from form
         const newRank = parseInt(document.getElementById('edit-rank').value) || 1;
